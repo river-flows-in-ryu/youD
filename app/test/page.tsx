@@ -1,15 +1,10 @@
-'use client'
+"use client";
 
-import React from 'react'
-import { usePathname } from 'next/navigation'
+import React from "react";
+import { usePathname } from "next/navigation";
 
 export default function Page() {
-  const pathname=usePathname();
+  const pathname = usePathname();
   console.log(pathname);
-  return (
-    <div>
-      zzzzfwfwf
-    </div>
-    
-  )
+  return <div></div>;
 }

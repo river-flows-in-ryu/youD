@@ -17,12 +17,15 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body className={inter.className}>
-        <header className="w-full bg-[#3CB371] h-16 flex justify-center">
-          <div className="min-w-[1200px] px-5 py-3 bg-red-300 flex justify-between leading-10">
-            <div>zzzzz</div>
+        <header className="w-full bg-[#8FBC8F] h-16 flex justify-center">
+          <div className="w-[1200px] px-5 py-3 flex justify-between">
+            <div className="leading-10">zzz</div>
             <div className=" ">
-              <input className="mr-[15px] rounded-md"></input>
-              <button className="rounded-md ">검색하기</button>
+              <input
+                className="mr-[15px] rounded-md px-3 py-[9px] placeholder:text-base h-10"
+                placeholder="검색어를 입력해주세요"
+              ></input>
+              <button className="rounded-md border px-4 py-2">검색하기</button>
             </div>
           </div>
         </header>

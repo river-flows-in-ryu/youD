@@ -14,7 +14,7 @@ export default function Home() {
   if (isTrue)
     return (
       <main className="flex min-h-screen flex-col items-center">
-        <div>zz</div>
+        <div></div>
       </main>
     );
 }
