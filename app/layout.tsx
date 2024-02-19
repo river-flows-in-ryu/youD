@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+
 import "./globals.css";
+import MainLayout from "@/components/mainLayout";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -17,18 +19,7 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body className={inter.className}>
-        <header className="w-full bg-[#8FBC8F] h-16 flex justify-center">
-          <div className="w-[1200px] px-5 py-3 flex justify-between">
-            <div className="leading-10">zzz</div>
-            <div className=" ">
-              <input
-                className="mr-[15px] rounded-md px-3 py-[9px] placeholder:text-base h-10"
-                placeholder="검색어를 입력해주세요"
-              ></input>
-              <button className="rounded-md border px-4 py-2">검색하기</button>
-            </div>
-          </div>
-        </header>
+        <MainLayout />
         {children}
       </body>
     </html>
