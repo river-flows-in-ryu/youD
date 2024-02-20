@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useRef, useState, useEffect } from "react";
 
 import Image from "next/image";
 
@@ -9,9 +9,39 @@ import hamburger from "../public/hamburger.png";
 import Slide from "./slide";
 
 import { useMainHamburgerToggleStore } from "@/app/store";
+import HamburgerDropdown from "./hamburgerDropdown";
 
 export default function MainLayout() {
   const { toggle, setToggle } = useMainHamburgerToggleStore();
+
+  const windowWidth: number = window?.innerWidth ?? 0;
+
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const slidedownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      const isInsideDropdown = dropdownRef?.current?.contains(
+        event.target as Node
+      );
+      const isInsideSlide = slidedownRef?.current?.contains(
+        event.target as Node
+      );
+      if (toggle) {
+        if (
+          !isInsideDropdown &&
+          dropdownRef &&
+          slidedownRef &&
+          !isInsideSlide
+        ) {
+          setToggle();
+        }
+      }
+    }
+    document.addEventListener("click", handleClickOutside);
+    return () => document.removeEventListener("click", handleClickOutside);
+  }, [dropdownRef, setToggle, toggle, slidedownRef]);
+
   return (
     <header className="w-full  h-16 flex justify-center ">
       <div className="w-[1200px] px-5 py-3 flex justify-between relative">
@@ -30,11 +60,21 @@ export default function MainLayout() {
         <button className="sm:hidden">
           <Image src={search} alt="searchImage" />
         </button>
+        <div
+          className={`
+          ${windowWidth >= 640 && toggle ? "block" : "hidden"}
+          absolute w-[150px] h-[450px] bg-[#77C497] top-[100%] xl:left-[-40px] left-0
+          `}
+          ref={dropdownRef}
+        >
+          <HamburgerDropdown />
+        </div>
       </div>
       <div
         className={`${
-          toggle ? "block" : "hidden"
+          windowWidth < 640 && toggle ? "block" : "hidden"
         } absolute left-0 top-0 bg-[#77C497] w-[80%] h-full`}
+        ref={slidedownRef}
       >
         <Slide />
       </div>
