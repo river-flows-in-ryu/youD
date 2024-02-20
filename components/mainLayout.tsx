@@ -14,7 +14,7 @@ import HamburgerDropdown from "./hamburgerDropdown";
 export default function MainLayout() {
   const { toggle, setToggle } = useMainHamburgerToggleStore();
 
-  const windowWidth: number = window?.innerWidth ?? 0;
+  const windowWidth = typeof window !== "undefined" ? window.innerWidth : 0;
 
   const dropdownRef = useRef<HTMLDivElement>(null);
   const slidedownRef = useRef<HTMLDivElement>(null);
