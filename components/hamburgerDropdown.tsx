@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function HamburgerDropdown({ ref }) {
+export default function HamburgerDropdown() {
   return (
     //
 
