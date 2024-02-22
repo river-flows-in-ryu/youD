@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
+import dynamic from "next/dynamic";
 import { Inter } from "next/font/google";
 
 import "./globals.css";
+
 import MainLayout from "@/components/mainLayout";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -16,10 +18,14 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const TabBarComponent = dynamic(() => import("../components/tabBar"), {
+    ssr: false,
+  });
   return (
     <html lang="ko">
       <body className={inter.className}>
         <MainLayout />
+        <TabBarComponent />
         {children}
       </body>
     </html>

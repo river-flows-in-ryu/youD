@@ -3,7 +3,7 @@ import React, { useRef, useState, useEffect } from "react";
 
 import Image from "next/image";
 
-import search from "../public/search.png";
+import cart from "../public/cart.png";
 import hamburger from "../public/hamburger.png";
 
 import Slide from "./slide";
@@ -43,8 +43,8 @@ export default function MainLayout() {
   }, [dropdownRef, setToggle, toggle, slidedownRef]);
 
   return (
-    <header className="w-full  h-16 flex justify-center ">
-      <div className="w-[1200px] px-5 py-3 flex justify-between relative">
+    <header className="w-full  flex justify-center ">
+      <div className="w-[1280px] px-5 pt-3 sm:pt-5 pb-3 flex justify-between relative">
         <div className="pt-2">
           <button onClick={setToggle}>
             <Image src={hamburger} alt="hamburgerImage" />
@@ -58,7 +58,7 @@ export default function MainLayout() {
           <button className="rounded-md border px-4 py-2">검색하기</button>
         </div>
         <button className="sm:hidden">
-          <Image src={search} alt="searchImage" />
+          <Image src={cart} alt="searchImage" />
         </button>
         <div
           className={`
