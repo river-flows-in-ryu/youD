@@ -63,7 +63,7 @@ export default function MainLayout() {
         <div
           className={`
           ${windowWidth >= 640 && toggle ? "block" : "hidden"}
-          absolute w-[150px] h-[450px] bg-[#77C497] top-[100%] xl:left-[-40px] left-0
+          absolute w-[150px] h-[450px] bg-primary top-[100%] xl:left-[-40px] left-0
           `}
           ref={dropdownRef}
         >
@@ -73,7 +73,7 @@ export default function MainLayout() {
       <div
         className={`${
           windowWidth < 640 && toggle ? "block" : "hidden"
-        } absolute left-0 top-0 bg-[#77C497] w-[80%] h-full`}
+        } absolute left-0 top-0 bg-primary w-[80%] h-full`}
         ref={slidedownRef}
       >
         <Slide />

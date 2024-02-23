@@ -26,7 +26,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <MainLayout />
         <TabBarComponent />
-        {children}
+        <div className="min-h-[calc(100vh-107.5px)] ">{children}</div>
       </body>
     </html>
   );
