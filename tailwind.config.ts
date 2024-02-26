@@ -16,6 +16,10 @@ const config: Config = {
       colors: {
         primary: "#77C497",
       },
+      spacing: {
+        web: "",
+        mobile: "62.5px",
+      },
     },
   },
   plugins: [],

@@ -26,7 +26,9 @@ export default function RootLayout({
       <body className={inter.className}>
         <MainLayout />
         <TabBarComponent />
-        <div className="min-h-[calc(100vh-107.5px)] ">{children}</div>
+        <div className="min-h-[calc(100vh-theme(spacing.mobile))] pb-[45px] sm:pb-0">
+          {children}
+        </div>
       </body>
     </html>
   );

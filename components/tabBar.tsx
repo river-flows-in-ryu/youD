@@ -12,7 +12,7 @@ export default function TabBar() {
   const windowWidth = typeof window !== "undefined" ? window.innerWidth : 0;
   return (
     <div className="block sm:hidden ">
-      <div className="fixed bottom-0 w-full">
+      <div className="fixed bottom-0 w-full border z-10 bg-white">
         <div className=" w-full h-[45px] flex ">
           <Link
             href="/search"
