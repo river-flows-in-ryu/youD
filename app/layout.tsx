@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import dynamic from "next/dynamic";
 import { Inter } from "next/font/google";
 
 import "./globals.css";
 
 import MainLayout from "@/components/mainLayout";
+import TabBar from "@/components/tabBar";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,17 +18,14 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const TabBarComponent = dynamic(() => import("../components/tabBar"), {
-    ssr: false,
-  });
   return (
     <html lang="ko">
       <body className={inter.className}>
         <MainLayout />
-        <TabBarComponent />
-        <div className="min-h-[calc(100vh-theme(spacing.mobile))] pb-[45px] sm:pb-0">
+        <div className="min-h-[calc(100vh-theme(spacing.mobile))] sm:min-h-[calc(100vh-theme(spacing.web))]  ">
           {children}
         </div>
+        <TabBar />
       </body>
     </html>
   );

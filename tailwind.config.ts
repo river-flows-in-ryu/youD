@@ -17,8 +17,8 @@ const config: Config = {
         primary: "#77C497",
       },
       spacing: {
-        web: "",
-        mobile: "62.5px",
+        web: "130px",
+        mobile: "107.5px",
       },
     },
   },
