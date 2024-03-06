@@ -19,12 +19,15 @@ export default function TabBar() {
           >
             <Image src={search} alt="search" />
           </Link>
-          <button className="flex-1 items-center justify-center flex ">
+          <Link href="/" className="flex-1 items-center justify-center flex ">
             <Image src={home} alt="home" />
-          </button>
-          <button className="flex-1 items-center justify-center flex ">
+          </Link>
+          <Link
+            href="/mypage"
+            className="flex-1 items-center justify-center flex "
+          >
             <Image src={person} alt="person" />
-          </button>
+          </Link>
         </div>
       </div>
     </div>

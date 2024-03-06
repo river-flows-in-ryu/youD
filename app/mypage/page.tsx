@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function Page() {
+export default async function Page() {
   return (
     <div className="text-center items-center py-10">
       <div className="flex justify-center">

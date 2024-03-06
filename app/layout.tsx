@@ -22,7 +22,7 @@ export default function RootLayout({
     <html lang="ko">
       <body className={inter.className}>
         <MainLayout />
-        <div className="min-h-[calc(100vh-theme(spacing.mobile))] sm:min-h-[calc(100vh-theme(spacing.web))]  ">
+        <div className="min-h-[calc(100vh-theme(spacing.mobile))] sm:min-h-[calc(100vh-theme(spacing.web))] flex items-stretch	">
           {children}
         </div>
         <TabBar />

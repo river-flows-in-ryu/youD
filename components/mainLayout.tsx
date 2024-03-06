@@ -43,9 +43,9 @@ export default function MainLayout() {
 
   const PCLayout = () => (
     <div className="">
-      <div className="fixed w-full py-5 h-[130px] border-[#dedede] border-b">
-        <div className="flex flex-col w-[1280px] m-auto">
-          <div className="flex justify-between px-5">
+      <div className="fixed w-full py-5 h-[130px] border-[#dedede] border-b bg-white z-10">
+        <div className="flex flex-col  m-auto">
+          <div className="flex justify-between px-5 sm:w-full xl:w-[1280px] m-auto ">
             <button onClick={setToggle} className="relative">
               <Image src={hamburger} alt="hamburgerImage" />
             </button>
