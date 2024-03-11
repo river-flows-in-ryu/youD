@@ -3,7 +3,10 @@ import { useState } from "react";
 
 import Link from "next/link";
 
+import { useRouter } from "next/navigation";
+
 export default function Page() {
+  const router = useRouter();
   const [userID, setUserID] = useState("");
   const [userPW, setUserPW] = useState("");
 
@@ -13,26 +16,25 @@ export default function Page() {
     username: userID,
     password: userPW,
   };
-  const options = {
-    method: "post",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(payload),
-  };
+
+  async function userDataFetch() {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/login/`, {
+      method: "post",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+      credentials: "include",
+    });
+    const userData = await res.json();
+    return userData;
+  }
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/login/`,
-        options
-      );
-      const userData = await res.json();
-      console.log(userData);
-    } catch (error: any) {
-      console.log(error.massage);
-      setErr(!err);
+    const userData = await userDataFetch();
+    if (userData) {
+      router.push("/");
     }
   }
 

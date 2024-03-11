@@ -1,18 +1,14 @@
 "use client";
+import Link from "next/link";
 import { Suspense, useEffect, useState } from "react";
 
-import useFecth from "@/hooks/useFetch";
-
 export default function Home() {
-  const { data, err } = useFecth(
-    `${process.env.NEXT_PUBLIC_API_URL}/user_list`,
-    "get"
-  );
-  console.log(data, err);
-
   return (
-    <main className="flex f-full ">
+    <main className="flex flex-1 f-full flex-col">
       <div className="w-full h-[300px] bg-blue-300"></div>
+      <Link href="/goods/1">
+        <button className="w-10 h-10">이동하자</button>
+      </Link>
     </main>
   );
 }
