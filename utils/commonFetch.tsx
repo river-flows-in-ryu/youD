@@ -14,21 +14,14 @@ export const commonFetch = async (
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer${cookieStore.get("access_token")?.value}` ?? "",
+        withcredentials: "include",
       },
       body: JSON.stringify(payload),
     };
-    console.log(cookieStore.get("access_token")?.value);
     const response = await fetch(url, options);
-    console.log(response.status);
-    if (response.status === 401) {
-      const result = await getAccessTokenUpdate();
-      if (result === "SUCCESS") {
-        return commonFetch(url, method, payload);
-      } else {
-        throw new Error("fetch error");
-      }
-    } else {
-      return response.json();
+    if (response.status === 200) {
+      const jsonData = await response.json();
+      return jsonData;
     }
   } catch (error) {
     console.log(error, "catch부분");

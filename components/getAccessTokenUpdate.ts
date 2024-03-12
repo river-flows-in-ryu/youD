@@ -12,10 +12,11 @@ export default async function getAccessTokenUpdate() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ refresh: refreshToken }),
+        body: JSON.stringify({ Refresh: refreshToken }),
       }
     );
-    if (res.ok) {
+    console.log(res.status);
+    if (res.status === 200) {
       const { access_token } = await res.json();
       cookieStore.set("access_token", access_token);
       return "SUCCESS";
@@ -24,10 +25,9 @@ export default async function getAccessTokenUpdate() {
     }
   } catch (error: any) {
     if (error.message === "fetch error") {
-      alert("dpfjfjwklfwj");
-      window.location.href = "/login";
+      console.log("fetch error");
     } else {
-      throw new Error(error);
+      console.log(error);
     }
   }
 }
