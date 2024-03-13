@@ -10,6 +10,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
     return res;
   }
   const userData = await fetchData();
+  console.log(userData);
   return (
     //
     <div></div>

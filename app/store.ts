@@ -6,10 +6,8 @@ interface MainHamburgerToggle {
 }
 
 interface IsUserId {
-  isUserId: boolean;
-  setIsUserId: () => void;
-  userId: string | null;
-  setUserId: (num: string) => void;
+  userId: number;
+  setUserId: (num: number) => void;
 }
 
 export const useMainHamburgerToggleStore = create<MainHamburgerToggle>()(
@@ -19,13 +17,15 @@ export const useMainHamburgerToggleStore = create<MainHamburgerToggle>()(
   })
 );
 
-// export const useUserIdStore = create<IsUserId>(
-//   persist<>(
-//     (set) => ({
-//       isUserId: false,
-//       userId: null,
-//       setIsUserId : ()=> set({!isUserId}),
-//       setUserId: (num) => set({ userId: num }),
-//     })
-//   )
-// )
+export const useUserIdStore = create(
+  persist<IsUserId>(
+    (set) => ({
+      userId: 0,
+      setUserId: (num: number) => set((state) => ({ userId: num })),
+    }),
+    {
+      name: "userId",
+      storage: createJSONStorage(() => localStorage),
+    }
+  )
+);

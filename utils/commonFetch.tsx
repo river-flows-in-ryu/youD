@@ -1,7 +1,5 @@
 import { cookies } from "next/headers";
 
-import getAccessTokenUpdate from "@/components/getAccessTokenUpdate";
-
 export const commonFetch = async (
   url: string,
   method: string,
@@ -24,6 +22,6 @@ export const commonFetch = async (
       return jsonData;
     }
   } catch (error) {
-    console.log(error, "catch부분");
+    console.log(error, "commonFetch catch부분");
   }
 };

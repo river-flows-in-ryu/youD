@@ -15,7 +15,6 @@ export default async function getAccessTokenUpdate() {
         body: JSON.stringify({ Refresh: refreshToken }),
       }
     );
-    console.log(res.status);
     if (res.status === 200) {
       const { access_token } = await res.json();
       cookieStore.set("access_token", access_token);

@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 
 import { useRouter } from "next/navigation";
+import { useUserIdStore } from "../store";
 
 export default function Page() {
   const router = useRouter();
@@ -11,6 +12,8 @@ export default function Page() {
   const [userPW, setUserPW] = useState("");
 
   const [err, setErr] = useState(true);
+
+  const { userId, setUserId } = useUserIdStore();
 
   const payload = {
     username: userID,
@@ -27,6 +30,9 @@ export default function Page() {
       credentials: "include",
     });
     const userData = await res.json();
+    if (userData) {
+      setUserId(userData?.user?.id);
+    }
     return userData;
   }
 

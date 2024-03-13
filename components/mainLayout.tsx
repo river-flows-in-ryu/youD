@@ -1,16 +1,19 @@
 "use client";
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useEffect } from "react";
 
 import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useCookies } from "react-cookie";
 
 import cart from "../public/cart.png";
 import hamburger from "../public/hamburger.png";
 
 import Drawer from "./drawer";
+import HamburgerDropdown from "./hamburgerDropdown";
 
 import { useMainHamburgerToggleStore } from "@/app/store";
-import HamburgerDropdown from "./hamburgerDropdown";
-import Link from "next/link";
+import { useUserIdStore } from "@/app/store";
 
 export default function MainLayout() {
   const { toggle, setToggle } = useMainHamburgerToggleStore();
@@ -18,6 +21,7 @@ export default function MainLayout() {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const slidedownRef = useRef<HTMLDivElement>(null);
 
+  const { userId, setUserId } = useUserIdStore();
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       const isInsideDropdown = dropdownRef?.current?.contains(
@@ -40,6 +44,17 @@ export default function MainLayout() {
     document.addEventListener("click", handleClickOutside);
     return () => document.removeEventListener("click", handleClickOutside);
   }, [dropdownRef, setToggle, toggle, slidedownRef]);
+
+  const router = useRouter();
+  const [, , removeCookie] = useCookies(["access_token"]);
+
+  async function handleLogout() {
+    setUserId(0);
+    useUserIdStore?.persist?.clearStorage();
+    removeCookie("access_token");
+    router.refresh();
+    router.push("login");
+  }
 
   const PCLayout = () => (
     <div className="">
@@ -69,12 +84,25 @@ w-[150px] h-[450px] bg-primary absolute top-20
           <div className="block mt-2">
             <div className="w-full flex justify-center">
               <div className="w-[1280px] flex justify-end pr-5 gap-9">
-                <Link href="/">
-                  <span className="text-primary">회원가입</span>
-                </Link>
-                <Link href="/login">
-                  <span>로그인</span>
-                </Link>
+                {!userId ? (
+                  <>
+                    <Link href="/">
+                      <span className="text-primary">회원가입</span>
+                    </Link>
+                    <Link href="/login">
+                      <span>로그인</span>
+                    </Link>
+                  </>
+                ) : (
+                  <>
+                    <Link href="/mypage">
+                      <span>마이페이지</span>
+                    </Link>
+                    <button onClick={handleLogout}>
+                      <span>로그아웃</span>
+                    </button>
+                  </>
+                )}
                 <Link href="/cart">
                   <span>장바구니</span>
                 </Link>
