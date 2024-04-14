@@ -80,7 +80,7 @@ export default function Page() {
               <Link href="">
                 <span>아이디 찾기</span>
               </Link>
-              <Link href="">
+              <Link href="/find-password">
                 <span>비밀번호 찾기</span>
               </Link>
             </div>

@@ -10,6 +10,11 @@ interface IsUserId {
   setUserId: (num: number) => void;
 }
 
+interface GuestUserId {
+  userId: number;
+  setUserId: (num: number) => void;
+}
+
 export const useMainHamburgerToggleStore = create<MainHamburgerToggle>()(
   (set) => ({
     toggle: false,
@@ -29,3 +34,8 @@ export const useUserIdStore = create(
     }
   )
 );
+
+export const guestUserId = create<GuestUserId>((set) => ({
+  userId: 0,
+  setUserId: (num: number) => set((state) => ({ userId: num })),
+}));

@@ -18,7 +18,7 @@ const config: Config = {
       },
       spacing: {
         web: "130px",
-        mobile: "107.5px",
+        mobile: "64px",
       },
     },
   },

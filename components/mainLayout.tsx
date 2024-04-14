@@ -14,6 +14,7 @@ import HamburgerDropdown from "./hamburgerDropdown";
 
 import { useMainHamburgerToggleStore } from "@/app/store";
 import { useUserIdStore } from "@/app/store";
+import useStore from "../hooks/useStore";
 
 export default function MainLayout() {
   const { toggle, setToggle } = useMainHamburgerToggleStore();
@@ -22,6 +23,7 @@ export default function MainLayout() {
   const slidedownRef = useRef<HTMLDivElement>(null);
 
   const { userId, setUserId } = useUserIdStore();
+
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       const isInsideDropdown = dropdownRef?.current?.contains(
@@ -53,7 +55,7 @@ export default function MainLayout() {
     useUserIdStore?.persist?.clearStorage();
     removeCookie("access_token");
     router.refresh();
-    router.push("login");
+    router.push("/login");
   }
 
   const PCLayout = () => (
