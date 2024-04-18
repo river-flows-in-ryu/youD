@@ -5,6 +5,7 @@ import getAccessTokenUpdate from "./components/getAccessTokenUpdate";
 
 export async function middleware(request: NextRequest) {
   let accessCookie = request.cookies.get("access_token")?.value;
+  let refreshCookie = request.cookies.get("refresh_token")?.value;
 
   if (!accessCookie) {
     return NextResponse.redirect(new URL("/login", request.url));
@@ -30,5 +31,5 @@ export async function middleware(request: NextRequest) {
   return NextResponse.next();
 }
 export const config = {
-  matcher: ["/goods/:path*"],
+  matcher: [],
 };

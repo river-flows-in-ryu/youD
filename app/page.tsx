@@ -19,7 +19,6 @@ export default function Home() {
   }
 
   console.log(data);
-  const htmlString = data[0]?.info;
 
   if (data && data[0]?.image_url)
     return (
@@ -28,7 +27,7 @@ export default function Home() {
           <div className="w-full h-[300px]">
             <Image src={fdwqe} alt="image" className="w-full h-full" />
           </div>
-          <Link href="/goods/1">
+          <Link href="/goods/2/?user_id=5">
             <button className="w-10 h-10">이동하자</button>
           </Link>
           <div className="flex gap-[10px] overflow-x-auto scrollbar-hide px-[10px]">

@@ -1,13 +1,10 @@
 "use client";
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useCookies } from "react-cookie";
-
-import cart from "../public/cart.png";
-import hamburger from "../public/hamburger.png";
 
 import Drawer from "./drawer";
 import HamburgerDropdown from "./hamburgerDropdown";
@@ -15,6 +12,12 @@ import HamburgerDropdown from "./hamburgerDropdown";
 import { useMainHamburgerToggleStore } from "@/app/store";
 import { useUserIdStore } from "@/app/store";
 import useStore from "../hooks/useStore";
+
+import cart from "../public/cart.png";
+import hamburger from "../public/hamburger.png";
+import arrowBack from "../public/arrow_back.png";
+import home from "../public/home.png";
+import search from "../public/search.png";
 
 export default function MainLayout() {
   const { toggle, setToggle } = useMainHamburgerToggleStore();
@@ -24,6 +27,14 @@ export default function MainLayout() {
 
   const { userId, setUserId } = useUserIdStore();
 
+  const pathname = usePathname();
+  useEffect(() => {
+    setIsNumericPath(
+      pathname.startsWith("/goods/") && /^\d+$/.test(pathname?.split("/").pop())
+    );
+  }, [pathname]);
+
+  const [isNumericPath, setIsNumericPath] = useState(false);
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       const isInsideDropdown = dropdownRef?.current?.contains(
@@ -116,7 +127,47 @@ w-[150px] h-[450px] bg-primary absolute top-20
     </div>
   );
 
-  const MobileLayout = () => (
+  const GoodsDetailLayout = () => (
+    <div className="">
+      <div className="w-full h-[64px] px-5 py-3 fixed  border-[#dedede] border-b  bg-white z-10 ">
+        <div className="flex justify-between px-5 pt-2 ">
+          <div>
+            <button onClick={() => router.back()} className="mr-[15px]">
+              <Image src={arrowBack} alt="arrowBack" width={20} height={20} />
+            </button>
+            <button onClick={setToggle}>
+              <Image src={hamburger} alt="hamburgerImage" />
+            </button>
+          </div>
+          <div>
+            <Link href={"/"}>
+              <button className="sm:hidden mr-[15px]">
+                <Image src={home} alt="searchImage" />
+              </button>
+            </Link>
+            <Link href={"/search"}>
+              <button className="sm:hidden mr-[15px]">
+                <Image src={search} alt="searchImage" />
+              </button>
+            </Link>
+            <button className="sm:hidden">
+              <Image src={cart} alt="searchImage" />
+            </button>
+          </div>
+        </div>
+      </div>
+      <div
+        className={`${
+          toggle ? "block" : "hidden"
+        } absolute left-0 top-0 bg-primary w-[80%] h-full `}
+        ref={slidedownRef}
+      >
+        <Drawer />
+      </div>
+    </div>
+  );
+
+  const MobileBasicLayout = () => (
     <div className="">
       <div className="w-full h-[64px] px-5 py-3 fixed  border-[#dedede] border-b  bg-white z-10">
         <div className="flex justify-between px-5 pt-2">
@@ -145,7 +196,7 @@ w-[150px] h-[450px] bg-primary absolute top-20
         <PCLayout />
       </div>
       <div className="block sm:hidden">
-        <MobileLayout />
+        {isNumericPath ? <GoodsDetailLayout /> : <MobileBasicLayout />}
       </div>
     </header>
   );
