@@ -13,7 +13,6 @@ export default function Page({ params }: { params: { slug: string } }) {
       if (userId) {
         const res = await fetchData();
         const like = await fetchLikeData();
-        console.log(like);
         setProductDetail(res);
         // fetchLikeData();
       }
@@ -54,7 +53,6 @@ export default function Page({ params }: { params: { slug: string } }) {
     );
     // console.log(res);
   };
-
   return (
     <div className="mx-auto">
       <div className="sm:w-[1050px] sm:mt-[30px]">

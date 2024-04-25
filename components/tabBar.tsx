@@ -18,6 +18,8 @@ import ProductDetailOption from "./productDetailOption";
 
 export default function TabBar() {
   const pathname = usePathname();
+  const [isOptionChoiceSection, setIsOptionChoiceSection] = useState(false);
+
   useEffect(() => {
     setIsNumericPath(
       pathname.startsWith("/goods/") && /^\d+$/.test(pathname?.split("/").pop())
@@ -72,8 +74,6 @@ export default function TabBar() {
     }
   };
 
-  console.log(optionArray);
-
   const options = [
     { id: 1, value: "s", label: "s", price: 1000 },
     { id: 2, value: "m", label: "m", price: 2000 },
@@ -84,57 +84,66 @@ export default function TabBar() {
   ];
 
   return isNumericPath ? (
-    // <div className="block sm:hidden  ">
-    //   <div className="fixed bottom-0 w-full border z-10 bg-white">
-    //     <div className=" w-full h-[70px] flex px-3 py-2">
-    //       <button className="h-[52px] border border-[#dedede] w-[15%] mr-2 rounded ">
-    //         <Image
-    //           src={emptyHeart}
-    //           alt="emptyHeart"
-    //           width={30}
-    //           height={30}
-    //           className="m-auto"
-    //         />
-    //       </button>
-    //       <button className="w-[85%] h-[52px] border border-[#dedede] bg-primary text-white font-bold	rounded">
-    //         구매하기
-    //       </button>
-    //     </div>
-    //   </div>
-    // </div>
-    <div className="block sm:hidden  ">
-      <div className="fixed bottom-0 w-full border z-10 bg-white">
-        <div className=" w-full min-h-[240px] max-h-[450px] flex flex-col px-[10px] ">
-          <button className="mx-auto h-[30px] w-[30px]">
-            <Image src={arrowDown} alt="toggleButton" />
-          </button>
-          <Select
-            onChange={handleChange}
-            defaultValue="옵션 선택"
-            className="h-[50px] mb-5"
-            options={options}
-          />
-          <div className="bg-[#dedede] min-h-[55px] mb-5 max-h-[250px] overflow-auto p-[10px]	">
-            <div className="flex flex-col">
-              {optionArray
-                ?.slice()
-                ?.reverse()
-                .map((option, index) => (
-                  <ProductDetailOption
-                    option={option}
-                    onDelete={onDelete}
-                    onAdd={onAdd}
-                    onMinus={onMinus}
-                  />
-                ))}
-            </div>
+    !isOptionChoiceSection ? (
+      <div className="block sm:hidden  ">
+        <div className="fixed bottom-0 w-full border z-10 bg-white">
+          <div className=" w-full h-[70px] flex px-3 py-2">
+            <button className="h-[52px] border border-[#dedede] w-[15%] mr-2 rounded ">
+              <Image
+                src={emptyHeart}
+                alt="emptyHeart"
+                width={30}
+                height={30}
+                className="m-auto"
+              />
+            </button>
+            <button
+              className="w-[85%] h-[52px] border border-[#dedede] bg-primary text-white font-bold	rounded "
+              onClick={() => setIsOptionChoiceSection(true)}
+            >
+              구매하기
+            </button>
           </div>
-          <button className="h-[50px] w-full bg-primary text-white font-bold	rounded">
-            장바구니 담기
-          </button>
         </div>
       </div>
-    </div>
+    ) : (
+      <div className="block sm:hidden ">
+        <div className="fixed bottom-0 w-full border z-10 bg-white">
+          <div className=" w-full min-h-[240px] max-h-[450px] flex flex-col px-[10px] ">
+            <button
+              className="mx-auto h-[30px] w-[30px]"
+              onClick={() => setIsOptionChoiceSection(false)}
+            >
+              <Image src={arrowDown} alt="toggleButton" />
+            </button>
+            <Select
+              onChange={handleChange}
+              defaultValue="옵션 선택"
+              className="h-[50px] mb-5"
+              options={options}
+            />
+            <div className="bg-[#dedede] min-h-[55px] mb-5 max-h-[250px] overflow-auto p-[10px]	">
+              <div className="flex flex-col">
+                {optionArray
+                  ?.slice()
+                  ?.reverse()
+                  .map((option, index) => (
+                    <ProductDetailOption
+                      option={option}
+                      onDelete={onDelete}
+                      onAdd={onAdd}
+                      onMinus={onMinus}
+                    />
+                  ))}
+              </div>
+            </div>
+            <button className="h-[50px] w-full bg-primary text-white font-bold	rounded">
+              장바구니 담기
+            </button>
+          </div>
+        </div>
+      </div>
+    )
   ) : (
     <div className="block sm:hidden  ">
       <div className="fixed bottom-0 w-full border z-10 bg-white">

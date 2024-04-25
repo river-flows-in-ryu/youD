@@ -142,7 +142,7 @@ w-[150px] h-[450px] bg-primary absolute top-20
           <div>
             <Link href={"/"}>
               <button className="sm:hidden mr-[15px]">
-                <Image src={home} alt="searchImage" />
+                <Image src={home} alt="home" />
               </button>
             </Link>
             <Link href={"/search"}>
@@ -151,18 +151,10 @@ w-[150px] h-[450px] bg-primary absolute top-20
               </button>
             </Link>
             <button className="sm:hidden">
-              <Image src={cart} alt="searchImage" />
+              <Image src={cart} alt="cart" />
             </button>
           </div>
         </div>
-      </div>
-      <div
-        className={`${
-          toggle ? "block" : "hidden"
-        } absolute left-0 top-0 bg-primary w-[80%] h-full `}
-        ref={slidedownRef}
-      >
-        <Drawer />
       </div>
     </div>
   );

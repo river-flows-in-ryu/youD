@@ -27,6 +27,7 @@ export default function Page() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(payload),
+      credentials: "include",
     });
     const userData = await res.json();
     console.log(userData);
