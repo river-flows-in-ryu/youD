@@ -1,36 +1,73 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import Image from "next/image";
-import { commonFetch } from "@/utils/commonFetch";
+
+import Loading from "@/app/loading";
+
 import { serverFetch } from "@/components/serverFetch";
 import { useUserIdStore } from "@/app/store";
 
-export default function Page({ params }: { params: { slug: string } }) {
+import GoodsDetailTabBar from "@/components/goodsDetailTabBar";
+import GoodsOptionTabBar from "@/components/goodsOptionTabBar";
+import Modal from "@/components/modal";
+import CartSuccessAddModal from "@/components/cartSuccessAddModal";
+import { commonFetch } from "@/utils/commonFetch";
+
+export default function Page({
+  params: { slug },
+}: {
+  params: { slug: string };
+}) {
   const { userId } = useUserIdStore();
+  const [isOptionChoiceSection, setIsOptionChoiceSection] = useState(false);
+  const [optionArray, setOptionArray] = useState([]);
+  const [totalQuantity, setTotalQuantity] = useState(0);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const [productDetailData, setProductDetailData] = useState([]);
+  const [options, setOptions] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  console.log(optionArray);
+
+  useEffect(() => {
+    setTotalQuantity(
+      optionArray.reduce((acc, option) => acc + option?.quantity, 0)
+    );
+  }, [optionArray]);
+
   useEffect(() => {
     const fetchAsync = async () => {
-      if (userId) {
-        const res = await fetchData();
-        const like = await fetchLikeData();
-        setProductDetail(res);
-        // fetchLikeData();
-      }
+      setIsLoading(true);
+      // if (userId) {
+      const res = await fetchData();
+      console.log(res);
+      const like = await fetchLikeData();
+      setProductDetailData(res);
+      // fetchLikeData();
+      setIsLoading(false);
+      const optionArray = res?.product?.size_attributes?.map(
+        (option: { id: number; size: { name: string } }) => ({
+          id: option.id,
+          value: option?.size?.name,
+          label: option?.size?.name,
+        })
+      );
+      setOptions(optionArray);
+      // }
     };
     fetchAsync();
   }, [userId]);
-  const [productDetail, setProductDetail] = useState([]);
-
-  console.log(productDetail);
 
   const payload = {
     user_id: userId,
-    product_id: params.slug,
+    product_id: slug,
   };
 
   async function fetchData() {
-    const res = await serverFetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/product_list/${params.slug}`,
+    const res = await commonFetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/product_list/${slug}`,
       "get"
     );
     return res;
@@ -53,48 +90,132 @@ export default function Page({ params }: { params: { slug: string } }) {
     );
     // console.log(res);
   };
+
+  const handleChange = (value: string) => {
+    const optionIndex = optionArray.findIndex(
+      (option) => option.value === value
+    );
+    if (optionIndex !== -1) {
+      alert("이미 선택한 옵션입니다.");
+    } else {
+      const selectedOption = options.find((option) => option.value === value);
+      setOptionArray([
+        ...optionArray,
+        {
+          productId: slug,
+          optionId: selectedOption?.id,
+          value,
+          quantity: 1,
+        },
+      ]);
+    }
+  };
+
+  const onDelete = (id: number) => {
+    console.log(optionArray);
+    setOptionArray(optionArray.filter((option) => option.optionId !== id));
+  };
+  const onAdd = (id: number) => {
+    setOptionArray(
+      optionArray.map((option) =>
+        option.optionId === id
+          ? { ...option, quantity: option.quantity + 1 }
+          : option
+      )
+    );
+  };
+
+  const onMinus = (id: number) => {
+    const selectedOption = optionArray.find((option) => option.optionId === id);
+    if (selectedOption && selectedOption.quantity > 1) {
+      setOptionArray(
+        optionArray.map((option) =>
+          option.id === id
+            ? { ...option, quantity: option.quantity - 1 }
+            : option
+        )
+      );
+    } else {
+      onDelete(id);
+    }
+  };
+
+  // if (isLoading) return <Loading />;
+  // console.log(productDetailData);
   return (
-    <div className="mx-auto">
-      <div className="sm:w-[1050px] sm:mt-[30px]">
+    <div className="sm:mx-auto w-full">
+      <Modal
+        isOpen={isModalOpen}
+        onClose={setIsModalOpen}
+        children={<CartSuccessAddModal />}
+      />
+      <div className="sm:w-[1050px] sm:mt-[30px] sm:mx-auto sm:flex justify-between h-full">
         <>
-          {productDetail?.product?.image_url && (
+          {productDetailData?.product?.image_url && (
             <Image
-              src={productDetail?.product?.image_url}
+              src={productDetailData?.product?.image_url}
               alt="zzz"
-              width={3000}
-              height={3000}
-              className="w-full h-full sm:w-[500px] sm:h-[600px]"
+              width={300}
+              height={300}
+              priority
+              className="w-full sm:w-[500px] sm:h-[600px]"
             />
           )}
         </>
         <div className="px-4 py-5 text-xl	">
           <div className="flex flex-col mb-3">
             <span className="text-sm">
-              {productDetail?.product?.user?.username}
+              {productDetailData?.product?.user?.username}
             </span>
             <h2 className="font-extrabold">
-              {productDetail?.product?.productName}
+              {productDetailData?.product?.productName}
             </h2>
             <p className="text-sm	text-[#b5b5b5]">
-              {productDetail?.product?.productShortName}
+              {productDetailData?.product?.productShortName}
             </p>
           </div>
           <div className="flex ">
             <span className="text-primary font-medium mr-2">
-              {productDetail?.product?.discountRate}%
+              {productDetailData?.product?.discountRate}%
             </span>
             <span className="font-medium mr-2">
-              {productDetail?.product?.discountPrice.toLocaleString()}원
+              {productDetailData?.product?.discountPrice.toLocaleString()}원
             </span>
             <span className="line-through	text-base leading-7 text-[#b5b5b5]	">
-              {productDetail?.product?.OriginPrice.toLocaleString()}원
+              {productDetailData?.product?.OriginPrice.toLocaleString()}원
             </span>
           </div>
+          <button className="w-10 h-10" onClick={handleLikeClick}>
+            1
+          </button>
+          <button
+            className="w-10 h-10"
+            onClick={() => {
+              setIsModalOpen(!isModalOpen);
+            }}
+          >
+            1
+          </button>
         </div>
 
-        <button className="w-10 h-10" onClick={handleLikeClick}>
-          누르면 바뀜
-        </button>
+        {!isOptionChoiceSection ? (
+          <GoodsDetailTabBar
+            setIsOptionChoiceSection={setIsOptionChoiceSection}
+          />
+        ) : (
+          <GoodsOptionTabBar
+            setIsOptionChoiceSection={setIsOptionChoiceSection}
+            handleChange={handleChange}
+            options={options}
+            optionArray={optionArray}
+            onDelete={onDelete}
+            onAdd={onAdd}
+            onMinus={onMinus}
+            totalQuantity={totalQuantity}
+            price={productDetailData?.product?.discountPrice}
+            setIsModalOpen={setIsModalOpen}
+          />
+        )}
       </div>
     </div>
   );

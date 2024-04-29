@@ -15,10 +15,17 @@ const config: Config = {
       },
       colors: {
         primary: "#77C497",
+        secondary: "#cecece",
       },
       spacing: {
         web: "130px",
         mobile: "64px",
+      },
+      padding: {
+        primary: "47px",
+      },
+      backgroundColor: {
+        backDrop: "rgba(0, 0, 0, 0.65)",
       },
     },
   },

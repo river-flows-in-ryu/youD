@@ -5,47 +5,92 @@ import { useEffect, useState } from "react";
 import { CookiesProvider } from "react-cookie";
 
 import fdwqe from "../public/fdwqe.jpeg";
+import Container from "@/components/container";
+
+import Loding from "./loading";
+
+interface Product {
+  id: number;
+  image_url: string;
+  user: {
+    username: string;
+  };
+  productName: string;
+  OriginPrice: number;
+  discountRate: number;
+  discountPrice: number;
+}
 
 export default function Home() {
-  const [data, setData] = useState([]);
+  const [productData, setProductData] = useState([]);
+  const [bannerData, setBannerData] = useState([]);
+
   useEffect(() => {
-    fetchData();
+    async function fetch() {
+      await fetchProductData();
+      await fetchBannerData();
+    }
+    fetch();
   }, []);
 
-  async function fetchData() {
+  async function fetchProductData() {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/product_list`);
     const jsonRes = await res.json();
-    setData(jsonRes);
+    setProductData(jsonRes);
   }
 
-  console.log(data);
+  async function fetchBannerData() {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/banner`);
+    const jsonRes = await res.json();
+    setBannerData(jsonRes);
+  }
 
-  if (data && data[0]?.image_url)
-    return (
-      <CookiesProvider>
+  if (!productData) {
+    return <Loding />;
+  }
+  console.log(productData);
+  return (
+    <CookiesProvider>
+      <Container>
         <main className="flex flex-1 f-full flex-col w-screen">
           <div className="w-full h-[300px]">
             <Image src={fdwqe} alt="image" className="w-full h-full" />
           </div>
-          <Link href="/goods/2/?user_id=5">
-            <button className="w-10 h-10">이동하자</button>
-          </Link>
+          <div className="my-5 px-[10px]">많이 팔리는 상품</div>
           <div className="flex gap-[10px] overflow-x-auto scrollbar-hide px-[10px]">
-            <div className="flex-shrink-0 w-[150px] h-[150px] bg-red-300">
-              z
-            </div>
-            <div className="flex-shrink-0 w-[150px] h-[150px] bg-red-300">
-              z
-            </div>
-            <div className="flex-shrink-0 w-[150px] h-[150px] bg-red-300">
-              z
-            </div>
-            <div className=" flex-shrink-0 w-[150px] h-[150px] bg-red-300">
-              z
-            </div>
+            {productData?.map((product: Product) => (
+              <Link href={`/goods/${product?.id}`} key={product?.id}>
+                <div className="w-[150px] h-[180px] rounded">
+                  <Image
+                    src={product?.image_url}
+                    alt="image"
+                    width={150}
+                    height={180}
+                    className="rounded w-[150px] h-[180px]"
+                  />
+                </div>
+                <div className="w-[150px]  flex flex-col mt-2">
+                  <span>{product?.user?.username}</span>
+                </div>
+                <div className="leading-[1.3] overflow-hidden text-ellipsis line-clamp-2 ">
+                  <span>{product?.productName}</span>
+                </div>
+                <span className="line-through	text-xs text-secondary">
+                  {(product?.OriginPrice || 0).toLocaleString()}원
+                </span>
+                <div className="flex">
+                  <span className="text-red-500 mr-1">
+                    {product?.discountRate || 0}%
+                  </span>
+                  <span>
+                    {(product?.discountPrice).toLocaleString() || 0}원
+                  </span>
+                </div>
+              </Link>
+            ))}
           </div>
-          {/* <div dangerouslySetInnerHTML={{ __html: htmlString }} /> */}
         </main>
-      </CookiesProvider>
-    );
+      </Container>
+    </CookiesProvider>
+  );
 }

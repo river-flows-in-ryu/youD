@@ -11,7 +11,6 @@ import HamburgerDropdown from "./hamburgerDropdown";
 
 import { useMainHamburgerToggleStore } from "@/app/store";
 import { useUserIdStore } from "@/app/store";
-import useStore from "../hooks/useStore";
 
 import cart from "../public/cart.png";
 import hamburger from "../public/hamburger.png";
@@ -151,7 +150,7 @@ w-[150px] h-[450px] bg-primary absolute top-20
               </button>
             </Link>
             <button className="sm:hidden">
-              <Image src={cart} alt="cart" />
+              <Image src={cart} alt="cart" />
             </button>
           </div>
         </div>

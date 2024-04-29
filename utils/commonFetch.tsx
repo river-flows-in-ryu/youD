@@ -1,4 +1,4 @@
-import { cookies } from "next/headers";
+// import { cookies } from "next/headers";
 
 export const commonFetch = async (
   url: string,
@@ -6,12 +6,12 @@ export const commonFetch = async (
   payload?: any
 ): Promise<any> => {
   try {
-    const cookieStore = cookies();
+    // const cookieStore = cookies();
     const options = {
       method: method,
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer${cookieStore.get("access_token")?.value}` ?? "",
+        // Authorization: `Bearer${cookieStore.get("access_token")?.value}` ?? "",
         withcredentials: "include",
       },
       body: JSON.stringify(payload),

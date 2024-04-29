@@ -8,6 +8,8 @@ import SignupAddressArea from "@/components/signupAddressArea";
 import SignupPhoneArea from "@/components/signupPhoneArea";
 import SignupBirthArea from "@/components/signupBirthArea";
 
+import Container from "@/components/container";
+
 export default function Page() {
   const [ID, setID] = useState("");
   const [PW, setPW] = useState("");
@@ -307,105 +309,107 @@ export default function Page() {
   };
 
   return (
-    <div className="w-full h-full px-5">
-      <h2 className="text-center font-bold py-5 text-lg	">회원가입</h2>
-      <InputArea
-        text="아이디"
-        placeholder="아이디를 입력해주세요"
-        isRequired={true}
-        isButton={true}
-        type="text"
-        state={ID}
-        setState={setID}
-        buttonId="ID"
-        onClick={handleClickIsDuplicate}
-        errorMessage={idErrorMessage}
-      />
-      <InputArea
-        text="비밀번호"
-        placeholder="비밀번호를 입력해주세요"
-        isRequired={true}
-        type="password"
-        state={PW}
-        setState={setPW}
-        errorMessage={pwErrorMessage}
-      />
-      <InputArea
-        text="비밀번호 확인"
-        placeholder="비밀번호를 한번 더 입력해주세요"
-        isRequired={true}
-        type="password"
-        state={checkPW}
-        setState={setCheckPW}
-        errorMessage={checkPwErrorMessage}
-      />
-      <InputArea
-        text="이름"
-        placeholder="이름을 입력해주세요"
-        isRequired={true}
-        type="text"
-        state={name}
-        setState={setName}
-      />
-      <SignupBirthArea
-        year={year}
-        month={month}
-        day={day}
-        setYear={setYear}
-        setMonth={setMonth}
-        setDay={setDay}
-        birthErrorMessage={birthErrorMessage}
-      />
+    <Container>
+      <div className="w-full h-full px-5 pb-primary">
+        <h2 className="text-center font-bold py-5 text-lg	">회원가입</h2>
+        <InputArea
+          text="아이디"
+          placeholder="아이디를 입력해주세요"
+          isRequired={true}
+          isButton={true}
+          type="text"
+          state={ID}
+          setState={setID}
+          buttonId="ID"
+          onClick={handleClickIsDuplicate}
+          errorMessage={idErrorMessage}
+        />
+        <InputArea
+          text="비밀번호"
+          placeholder="비밀번호를 입력해주세요"
+          isRequired={true}
+          type="password"
+          state={PW}
+          setState={setPW}
+          errorMessage={pwErrorMessage}
+        />
+        <InputArea
+          text="비밀번호 확인"
+          placeholder="비밀번호를 한번 더 입력해주세요"
+          isRequired={true}
+          type="password"
+          state={checkPW}
+          setState={setCheckPW}
+          errorMessage={checkPwErrorMessage}
+        />
+        <InputArea
+          text="이름"
+          placeholder="이름을 입력해주세요"
+          isRequired={true}
+          type="text"
+          state={name}
+          setState={setName}
+        />
+        <SignupBirthArea
+          year={year}
+          month={month}
+          day={day}
+          setYear={setYear}
+          setMonth={setMonth}
+          setDay={setDay}
+          birthErrorMessage={birthErrorMessage}
+        />
 
-      <InputArea
-        text="이메일"
-        placeholder="이메일을 입력해주세요"
-        isRequired={true}
-        type="email"
-        state={email}
-        setState={setEmail}
-        isButton={true}
-        buttonId="email"
-        onClick={handleClickIsDuplicate}
-        errorMessage={emailErrorMessage}
-      />
-      <SignupPhoneArea
-        phone1={phone1}
-        phone2={phone2}
-        phone3={phone3}
-        setPhone1={setPhone1}
-        setPhone2={setPhone2}
-        setPhone3={setPhone3}
-        phoneErrorMessage={phoneErrorMessage}
-      />
-      <SignupAddressArea address={address} setAddress={setAddress} />
-      <InputArea
-        text="상세 주소"
-        placeholder="상세주소를 입력해세요"
-        type="text"
-        state={addressDetail}
-        setState={setAddressDetail}
-      />
-      <SignupSexArea
-        selectedSexOption={selectedSexOption}
-        handleOptionChange={handleOptionChange}
-      />
-      <SignupUniversityArea
-        university={university}
-        major={major}
-        universityOptions={universityOptions}
-        majorOptions={majorOptions}
-        setUniversity={setUniversity}
-        setMajor={setMajor}
-      />
-      <div className="py-5">
-        <button
-          className="w-full h-[45px] border border-primary rounded text-white bg-primary font-bold"
-          onClick={handleClickSubmit}
-        >
-          가입하기
-        </button>
+        <InputArea
+          text="이메일"
+          placeholder="이메일을 입력해주세요"
+          isRequired={true}
+          type="email"
+          state={email}
+          setState={setEmail}
+          isButton={true}
+          buttonId="email"
+          onClick={handleClickIsDuplicate}
+          errorMessage={emailErrorMessage}
+        />
+        <SignupPhoneArea
+          phone1={phone1}
+          phone2={phone2}
+          phone3={phone3}
+          setPhone1={setPhone1}
+          setPhone2={setPhone2}
+          setPhone3={setPhone3}
+          phoneErrorMessage={phoneErrorMessage}
+        />
+        <SignupAddressArea address={address} setAddress={setAddress} />
+        <InputArea
+          text="상세 주소"
+          placeholder="상세주소를 입력해세요"
+          type="text"
+          state={addressDetail}
+          setState={setAddressDetail}
+        />
+        <SignupSexArea
+          selectedSexOption={selectedSexOption}
+          handleOptionChange={handleOptionChange}
+        />
+        <SignupUniversityArea
+          university={university}
+          major={major}
+          universityOptions={universityOptions}
+          majorOptions={majorOptions}
+          setUniversity={setUniversity}
+          setMajor={setMajor}
+        />
+        <div className="py-5">
+          <button
+            className="w-full h-[45px] border border-primary rounded text-white bg-primary font-bold"
+            onClick={handleClickSubmit}
+          >
+            가입하기
+          </button>
+        </div>
       </div>
-    </div>
+    </Container>
   );
 }

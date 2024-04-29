@@ -7,6 +7,8 @@ import { serverFetch } from "@/components/serverFetch";
 import search from "../../public/search.png";
 import cancel from "../../public/cancel.png";
 
+import Container from "@/components/container";
+
 export default function Page() {
   const [searchText, setSearchText] = useState("");
 
@@ -25,33 +27,35 @@ export default function Page() {
   }
 
   return (
-    <div className="w-full min-h-full flex flex-col justify-center items-center sm:hidden ">
-      <div className="relative ">
-        <input
-          className="w-[250px] h-[40px] border border-[#dadce0] relative px-[35px] rounded-2xl bg-[#f4f4f4]"
-          value={searchText}
-          onChange={(e) => setSearchText(e.target.value)}
-        />
-        <Image
-          src={search}
-          alt="search"
-          className=" top-0 left-0 z-10 absolute mt-[10px] ml-2"
-          width={20}
-          height={20}
-          onClick={handleSubmit}
-        />
-        {(searchText !== "" && (
+    <Container>
+      <div className="w-full min-h-full flex flex-col justify-center items-center sm:hidden ">
+        <div className="relative ">
+          <input
+            className="w-[250px] h-[40px] border border-[#dadce0] relative px-[35px] rounded-2xl bg-[#f4f4f4]"
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
+          />
           <Image
-            src={cancel}
-            alt="cancel"
+            src={search}
+            alt="search"
+            className=" top-0 left-0 z-10 absolute mt-[10px] ml-2"
             width={20}
             height={20}
-            className="top-0 right-0 z-10 absolute mt-[10px] mr-2"
-            onClick={() => setSearchText("")}
+            onClick={handleSubmit}
           />
-        )) ||
-          null}
+          {(searchText !== "" && (
+            <Image
+              src={cancel}
+              alt="cancel"
+              width={20}
+              height={20}
+              className="top-0 right-0 z-10 absolute mt-[10px] mr-2"
+              onClick={() => setSearchText("")}
+            />
+          )) ||
+            null}
+        </div>
       </div>
-    </div>
+    </Container>
   );
 }

@@ -1,6 +1,16 @@
+import Image from "next/image";
+
+import spinner from "../public/spinner.gif";
+import Container from "@/components/container";
+
 export default function Loading() {
   return (
-    //
-    <div>뭐야 이게</div>
+    <Container>
+      <div className="flex justify-center h-full">
+        <div className="m-auto">
+          <Image src={spinner} alt="loading" />
+        </div>
+      </div>
+    </Container>
   );
 }
