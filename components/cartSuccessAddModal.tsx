@@ -7,7 +7,6 @@ interface Props {
 }
 export default function CartSuccessAddModal({ onClose }: Props) {
   return (
-    //
     <div className="w-[90%] h-[300px] p-6 sm:w-[450px] sm:h-[300px] sm:p-8  bg-white rounded text-center">
       <p className="mt-6 mb-11">선택한 상품이 장바구니에 담겼습니다.</p>
       <button

@@ -4,11 +4,11 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { CookiesProvider } from "react-cookie";
 
-import fdwqe from "../public/fdwqe.jpeg";
 import Container from "@/components/container";
 
 import Loding from "./loading";
 
+import testBanner from "../public/testBanner.jpeg";
 interface Product {
   id: number;
   image_url: string;
@@ -54,9 +54,9 @@ export default function Home() {
       <Container>
         <main className="flex flex-1 f-full flex-col w-screen">
           <div className="w-full h-[300px]">
-            <Image src={fdwqe} alt="image" className="w-full h-full" />
+            <Image src={testBanner} alt="image" className="w-full h-full" />
           </div>
-          <div className="my-5 px-[10px]">많이 팔리는 상품</div>
+          <div className="my-5 px-[10px]">MD pick!</div>
           <div className="flex gap-[10px] overflow-x-auto scrollbar-hide px-[10px]">
             {productData?.map((product: Product) => (
               <Link href={`/goods/${product?.id}`} key={product?.id}>

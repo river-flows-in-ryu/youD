@@ -140,7 +140,7 @@ export default function Page({
     }
   };
 
-  // if (isLoading) return <Loading />;
+  if (isLoading) return <Loading />;
   // console.log(productDetailData);
   return (
     <div className="sm:mx-auto w-full">
@@ -167,7 +167,7 @@ export default function Page({
             <span className="text-sm">
               {productDetailData?.product?.user?.username}
             </span>
-            <h2 className="font-extrabold">
+            <h2 className="font-extrabold overflow-hidden text-ellipsis ">
               {productDetailData?.product?.productName}
             </h2>
             <p className="text-sm	text-[#b5b5b5]">
@@ -185,7 +185,7 @@ export default function Page({
               {productDetailData?.product?.OriginPrice.toLocaleString()}원
             </span>
           </div>
-          <button className="w-10 h-10" onClick={handleLikeClick}>
+          {/* <button className="w-10 h-10" onClick={handleLikeClick}>
             1
           </button>
           <button
@@ -195,7 +195,17 @@ export default function Page({
             }}
           >
             1
-          </button>
+          </button> */}
+          <p>하단은 정보</p>
+          <div className="w-full h-[30px] bg-[#b5b5b5] flex justify-around ">
+            <div>정보</div>
+            <div>리뷰</div>
+          </div>
+          <div
+            dangerouslySetInnerHTML={{
+              __html: productDetailData?.product?.info,
+            }}
+          />
         </div>
 
         {!isOptionChoiceSection ? (
