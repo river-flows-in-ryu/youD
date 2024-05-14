@@ -5,10 +5,15 @@ import Link from "next/link";
 interface Props {
   onClose: () => void;
   productId: number;
+  optionId: number;
 }
-export default function CartDeleteModal({ onClose, productId }: Props) {
+export default function CartDeleteModal({
+  onClose,
+  productId,
+  optionId,
+}: Props) {
   const handleClickDelete = () => {
-    console.log(productId);
+    console.log(productId, optionId);
   };
 
   return (

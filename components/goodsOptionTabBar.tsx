@@ -17,10 +17,10 @@ interface Props {
   handleChange: (value: string) => void;
   options: { value: string; label: string; id: number; price: number }[];
   optionArray: {
-    productId: number;
+    productId: string;
     optionId: number;
-    name: string;
-    count: number;
+    name?: string;
+    count?: number;
   }[];
   onDelete: (id: number) => void;
   onAdd: (id: number) => void;

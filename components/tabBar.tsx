@@ -15,7 +15,7 @@ export default function TabBar() {
   const [isNumericPath, setIsNumericPath] = useState(false);
 
   useEffect(() => {
-    if (pathname?.startsWith("/goods/")) {
+    if (pathname?.startsWith("/goods/") || pathname?.startsWith("/cart")) {
       setIsNumericPath(true);
     } else setIsNumericPath(false);
   }, [pathname, setIsNumericPath, isNumericPath]);

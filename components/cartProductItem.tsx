@@ -7,7 +7,7 @@ import close from "../public/close.png";
 
 interface Props {
   item: PropsItems;
-  handleClickDelete: (productId: number) => void;
+  handleClickDelete: (productId: number, optionId: number) => void;
   checkedItems: string[];
   handleCheckboxChange: (index: string) => void;
 }
@@ -25,13 +25,12 @@ interface PropsItems {
   };
   size_attribute: {
     id: number;
-    name: string;
     size: {
       name: string;
     };
   };
   quantity: number;
-  checked: boolean;
+  index: string;
 }
 
 export default function CartProductItem({
@@ -79,7 +78,9 @@ export default function CartProductItem({
           </div>
           <button
             className="w-5 h-5"
-            onClick={() => handleClickDelete(item?.product?.id)}
+            onClick={() =>
+              handleClickDelete(item?.product?.id, item?.size_attribute?.id)
+            }
           >
             <Image src={close} alt="close" width={20} height={20} />
           </button>

@@ -14,6 +14,50 @@ import Modal from "@/components/modal";
 import CartSuccessAddModal from "@/components/cartSuccessAddModal";
 import { commonFetch } from "@/utils/commonFetch";
 
+interface Option {
+  optionId: number;
+  productId: string;
+  quantity: number;
+  value: string;
+  name?: string;
+  count?: number;
+}
+interface SelectedOption {
+  id: number;
+  label: string;
+  value: string;
+}
+
+interface Products {
+  product: {
+    image_url: string;
+    productName: string;
+    productShortName: string;
+    discountRate: number;
+    discountPrice: number;
+    info: string;
+    OriginPrice: number;
+    user: {
+      username: string;
+    };
+  };
+}
+
+const initialProductDetailData: Products = {
+  product: {
+    image_url: "",
+    productName: "",
+    productShortName: "",
+    discountRate: 0,
+    discountPrice: 0,
+    info: "",
+    OriginPrice: 0,
+    user: {
+      username: "",
+    },
+  },
+};
+
 export default function Page({
   params: { slug },
 }: {
@@ -21,19 +65,21 @@ export default function Page({
 }) {
   const { userId } = useUserIdStore();
   const [isOptionChoiceSection, setIsOptionChoiceSection] = useState(false);
-  const [optionArray, setOptionArray] = useState([]);
+  const [optionArray, setOptionArray] = useState<Option[]>([]);
   const [totalQuantity, setTotalQuantity] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const [productDetailData, setProductDetailData] = useState([]);
+  const [productDetailData, setProductDetailData] = useState<Products>(
+    initialProductDetailData
+  );
   const [options, setOptions] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  console.log(optionArray);
+  // console.log(typeof productDetailData);
 
   useEffect(() => {
     setTotalQuantity(
-      optionArray.reduce((acc, option) => acc + option?.quantity, 0)
+      optionArray.reduce((acc, option: Option) => acc + option?.quantity, 0)
     );
   }, [optionArray]);
 
@@ -42,7 +88,7 @@ export default function Page({
       setIsLoading(true);
       // if (userId) {
       const res = await fetchData();
-      console.log(res);
+      // console.log(res);
       const like = await fetchLikeData();
       setProductDetailData(res);
       // fetchLikeData();
@@ -92,18 +138,21 @@ export default function Page({
   };
 
   const handleChange = (value: string) => {
-    const optionIndex = optionArray.findIndex(
-      (option) => option.value === value
-    );
+    const optionIndex = optionArray.findIndex((option: Option) => {
+      option.value === value;
+    });
     if (optionIndex !== -1) {
       alert("이미 선택한 옵션입니다.");
     } else {
-      const selectedOption = options.find((option) => option.value === value);
+      //todo
+      const selectedOption: any = options.find((option: SelectedOption) => {
+        option.value === value;
+      });
       setOptionArray([
         ...optionArray,
         {
           productId: slug,
-          optionId: selectedOption?.id,
+          optionId: selectedOption.id,
           value,
           quantity: 1,
         },
@@ -112,7 +161,6 @@ export default function Page({
   };
 
   const onDelete = (id: number) => {
-    console.log(optionArray);
     setOptionArray(optionArray.filter((option) => option.optionId !== id));
   };
   const onAdd = (id: number) => {
@@ -127,10 +175,11 @@ export default function Page({
 
   const onMinus = (id: number) => {
     const selectedOption = optionArray.find((option) => option.optionId === id);
+    // console.log(selectedOption);
     if (selectedOption && selectedOption.quantity > 1) {
       setOptionArray(
         optionArray.map((option) =>
-          option.id === id
+          option.optionId === id
             ? { ...option, quantity: option.quantity - 1 }
             : option
         )
@@ -141,14 +190,11 @@ export default function Page({
   };
 
   if (isLoading) return <Loading />;
-  // console.log(productDetailData);
   return (
     <div className="sm:mx-auto w-full">
-      <Modal
-        isOpen={isModalOpen}
-        onClose={setIsModalOpen}
-        children={<CartSuccessAddModal />}
-      />
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+        <CartSuccessAddModal onClose={() => setIsModalOpen(false)} />
+      </Modal>
       <div className="sm:w-[1050px] sm:mt-[30px] sm:mx-auto sm:flex justify-between h-full">
         <>
           {productDetailData?.product?.image_url && (

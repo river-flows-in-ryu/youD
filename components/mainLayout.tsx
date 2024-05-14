@@ -64,6 +64,7 @@ export default function MainLayout() {
     setUserId(0);
     useUserIdStore?.persist?.clearStorage();
     removeCookie("access_token");
+    sessionStorage.removeItem("selectedProducts");
     router.refresh();
     router.push("/login");
   }

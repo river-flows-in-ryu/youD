@@ -21,16 +21,9 @@ export default function Modal({ isOpen, onClose, children }: Props) {
     event: React.MouseEvent<HTMLDivElement, MouseEvent>
   ) => {
     if (modalRef.current !== event.target) {
-      onClose();
+      onClose(false);
     }
   };
-
-  const childrenWithProps = React.Children.map(children, (child) => {
-    if (React.isValidElement(child)) {
-      return React.cloneElement(child as React.ReactElement, { onClose });
-    }
-    return child;
-  });
 
   return (
     <>
@@ -40,7 +33,7 @@ export default function Modal({ isOpen, onClose, children }: Props) {
           onClick={handleClickBackdrop}
         >
           <div className="flex  justify-center items-center w-full h-full ">
-            {childrenWithProps}
+            {children}
           </div>
         </div>
       ) : null}
