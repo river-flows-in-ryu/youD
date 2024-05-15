@@ -26,6 +26,7 @@ interface SelectedOption {
   id: number;
   label: string;
   value: string;
+  quantity?: number;
 }
 
 interface Products {
@@ -75,7 +76,7 @@ export default function Page({
   const [options, setOptions] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  // console.log(typeof productDetailData);
+  // console.log(optionArray);
 
   useEffect(() => {
     setTotalQuantity(
@@ -144,19 +145,21 @@ export default function Page({
     if (optionIndex !== -1) {
       alert("이미 선택한 옵션입니다.");
     } else {
-      //todo
-      const selectedOption: any = options.find((option: SelectedOption) => {
-        option.value === value;
-      });
-      setOptionArray([
-        ...optionArray,
-        {
-          productId: slug,
-          optionId: selectedOption.id,
-          value,
-          quantity: 1,
-        },
-      ]);
+      const selectedOption: any = options.find(
+        (option: SelectedOption) => option.value === value
+      );
+
+      if (selectedOption) {
+        setOptionArray([
+          ...optionArray,
+          {
+            productId: slug,
+            optionId: selectedOption.id,
+            value,
+            quantity: 1,
+          },
+        ]);
+      }
     }
   };
 

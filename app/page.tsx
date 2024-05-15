@@ -54,7 +54,8 @@ export default function Home() {
       <Container>
         <main className="flex flex-1 f-full flex-col w-screen">
           <div className="w-full h-[300px]">
-            <Image src={testBanner} alt="image" className="w-full h-full" />
+            {/* <Image src={testBanner} alt="image" className="w-full h-full" /> */}
+            <div className="w-full h-full bg-black"></div>
           </div>
           <div className="my-5 px-[10px]">MD pick!</div>
           <div className="flex gap-[10px] overflow-x-auto scrollbar-hide px-[10px]">

@@ -8,6 +8,7 @@ import close from "../public/close.png";
 
 interface Props {
   option: {
+    productId: string;
     optionId: number;
     value: string;
     quantity: number;
@@ -25,7 +26,6 @@ export default function ProductDetailOption({
   onMinus,
   price,
 }: Props) {
-  console.log(option);
   const { optionId, value, quantity } = option;
   return (
     <div className="w-full flex justify-between h-[50px]  p-2 bg-white leading-[48px] m-[0.5px]">

@@ -29,7 +29,8 @@ export default function MainLayout() {
   const pathname = usePathname();
   useEffect(() => {
     setIsNumericPath(
-      pathname.startsWith("/goods/") && /^\d+$/.test(pathname?.split("/").pop())
+      pathname.startsWith("/goods/") &&
+        /^\d+$/.test(pathname?.split("/").pop() as string)
     );
   }, [pathname]);
 

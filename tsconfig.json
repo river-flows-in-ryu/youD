@@ -28,6 +28,7 @@
     ".next/types/**/*.ts",
     "app/signup",
     "app/login"
+    // , "app/goods/[slug]/page.jsx"
   ],
   "exclude": ["node_modules"]
 }

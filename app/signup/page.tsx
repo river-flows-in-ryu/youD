@@ -25,8 +25,8 @@ export default function Page() {
   const [address, setAddress] = useState("");
   const [addressDetail, setAddressDetail] = useState("");
   const [selectedSexOption, setSelectedSexOption] = useState("");
-  const [university, setUniversity] = useState("");
-  const [major, setMajor] = useState("");
+  const [university, setUniversity] = useState(0);
+  const [major, setMajor] = useState(0);
 
   const [isNotIdDuplicated, setIsNotIdDuplicated] = useState(false);
   const [isNotEmailDuplicated, setIsNotEmailDuplicated] = useState(false);

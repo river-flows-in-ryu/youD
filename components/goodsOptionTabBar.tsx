@@ -19,8 +19,8 @@ interface Props {
   optionArray: {
     productId: string;
     optionId: number;
-    name?: string;
-    count?: number;
+    value: string;
+    quantity: number;
   }[];
   onDelete: (id: number) => void;
   onAdd: (id: number) => void;
@@ -28,6 +28,13 @@ interface Props {
   totalQuantity: number;
   price: number;
   setIsModalOpen: (value: boolean) => void;
+}
+
+interface Option {
+  productId: string;
+  optionId: number;
+  value: string;
+  quantity: number;
 }
 
 export default function GoodsOptionTabBar({
@@ -92,16 +99,18 @@ export default function GoodsOptionTabBar({
               {optionArray
                 ?.slice()
                 ?.reverse()
-                .map((option, index) => (
-                  <ProductDetailOption
-                    option={option}
-                    onDelete={onDelete}
-                    onAdd={onAdd}
-                    onMinus={onMinus}
-                    price={price}
-                    key={index}
-                  />
-                ))}
+                .map((option: Option, index) => {
+                  return (
+                    <ProductDetailOption
+                      option={option}
+                      onDelete={onDelete}
+                      onAdd={onAdd}
+                      onMinus={onMinus}
+                      price={price}
+                      key={index}
+                    />
+                  );
+                })}
             </div>
           </div>
           <div className="w-full h-[50px]">

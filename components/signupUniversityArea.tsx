@@ -4,11 +4,11 @@ import Select from "react-select";
 
 interface Props {
   universityOptions: { id: number; value: string; label: string }[];
-  majorOptions: { value: string; label: string }[];
-  university: string;
-  major: string;
-  setUniversity: (university: string) => void;
-  setMajor: (major: string) => void;
+  majorOptions: { id: number; value: string; label: string }[];
+  university: number;
+  major: number;
+  setUniversity: (university: number) => void;
+  setMajor: (major: number) => void;
 }
 
 interface SelectOption {
@@ -25,18 +25,20 @@ export default function SignupUniversityArea({
   setUniversity,
   setMajor,
 }: Props) {
+  console.log(university);
   return (
     <div>
       <div className="pt-4 pb-2">
         <label className="">대학교</label>
       </div>
-      <div className={`mb-${university !== "" ? "0" : "[30px]"}`}>
+      <div className={`mb-${university !== 0 ? "0" : "[30px]"}`}>
         <Select
           options={universityOptions}
           isClearable={true}
           placeholder="입력 혹은 선택해주세요"
-          onChange={(target: SelectOption) => {
+          onChange={(target: SelectOption | null) => {
             if (target) {
+              console.log(typeof target?.id);
               setUniversity(target?.id);
             }
           }}
@@ -45,7 +47,7 @@ export default function SignupUniversityArea({
           }}
         />
       </div>
-      {university !== "" ? (
+      {university !== 0 ? (
         <div className="">
           <div className="pt-4 pb-2">
             <label className="">학과</label>
@@ -55,7 +57,7 @@ export default function SignupUniversityArea({
               options={majorOptions}
               isClearable={true}
               placeholder="입력 혹은 선택해주세요"
-              onChange={(target: SelectOption) => {
+              onChange={(target: SelectOption | null) => {
                 if (target) {
                   setMajor(target?.id);
                 }
