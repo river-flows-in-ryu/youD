@@ -58,16 +58,16 @@ export default function Home() {
             <div className="w-full h-full bg-black"></div>
           </div>
           <div className="my-5 px-[10px]">MD pick!</div>
-          <div className="flex gap-[10px] overflow-x-auto scrollbar-hide px-[10px]">
+          <div className="flex  gap-[10px] overflow-x-auto scrollbar-hide px-[10px] sm:w-[1280px] sm:mx-auto">
             {productData?.map((product: Product) => (
               <Link href={`/goods/${product?.id}`} key={product?.id}>
-                <div className="w-[150px] h-[180px] rounded">
+                <div className="w-[150px] h-[180px] rounded sm:w-[250px] sm:h-[300px]">
                   <Image
                     src={product?.image_url}
                     alt="image"
                     width={150}
                     height={180}
-                    className="rounded w-[150px] h-[180px]"
+                    className="rounded w-[150px] h-[180px] sm:w-[250px] sm:h-[300px]"
                   />
                 </div>
                 <div className="w-[150px]  flex flex-col mt-2">

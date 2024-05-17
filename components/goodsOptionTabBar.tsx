@@ -15,7 +15,7 @@ import { useUserIdStore } from "@/app/store";
 interface Props {
   setIsOptionChoiceSection: React.Dispatch<React.SetStateAction<boolean>>;
   handleChange: (value: string) => void;
-  options: { value: string; label: string; id: number; price: number }[];
+  options: { value: string; label: string; id: number; price?: number }[];
   optionArray: {
     productId: string;
     optionId: number;
@@ -88,12 +88,14 @@ export default function GoodsOptionTabBar({
           >
             <Image src={arrowDown} alt="toggleButton" />
           </button>
-          <Select
-            onChange={handleChange}
-            defaultValue="옵션 선택"
-            className="h-[50px] mb-5"
-            options={options}
-          />
+          <>
+            <Select
+              onChange={handleChange}
+              defaultValue="옵션 선택"
+              className="h-[50px] mb-5"
+              options={options}
+            />
+          </>
           <div className="bg-[#dedede] min-h-[55px] mb-5 max-h-[200px] overflow-auto p-[10px]	">
             <div className="flex flex-col">
               {optionArray

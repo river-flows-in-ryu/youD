@@ -204,7 +204,9 @@ export default function Page() {
                 % SALE
               </span>
               <span>
-                -{(totalOriginPrice - totalDiscountPrice)?.toLocaleString()}원
+                -
+                {(totalOriginPrice - totalDiscountPrice || 0)?.toLocaleString()}
+                원
               </span>
             </div>
           </div>

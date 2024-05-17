@@ -8,7 +8,7 @@ export default function Loading() {
     <Container>
       <div className="flex justify-center h-full">
         <div className="m-auto">
-          <Image src={spinner} alt="loading" />
+          <Image src={spinner} alt="loading" priority={true} />
         </div>
       </div>
     </Container>

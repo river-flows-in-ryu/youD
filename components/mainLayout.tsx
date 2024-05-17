@@ -134,7 +134,13 @@ w-[150px] h-[450px] bg-primary absolute top-20
         <div className="flex justify-between px-5 pt-2 ">
           <div>
             <button onClick={() => router.back()} className="mr-[15px]">
-              <Image src={arrowBack} alt="arrowBack" width={20} height={20} />
+              <Image
+                src={arrowBack}
+                alt="arrowBack"
+                width={20}
+                height={20}
+                priority={true}
+              />
             </button>
             <button onClick={setToggle}>
               <Image src={hamburger} alt="hamburgerImage" />
@@ -165,7 +171,7 @@ w-[150px] h-[450px] bg-primary absolute top-20
       <div className="w-full h-[64px] px-5 py-3 fixed  border-[#dedede] border-b  bg-white z-10">
         <div className="flex justify-between px-5 pt-2">
           <button onClick={setToggle}>
-            <Image src={hamburger} alt="hamburgerImage" />
+            <Image src={hamburger} alt="hamburgerImage" priority />
           </button>
           <button className="sm:hidden">
             <Image src={cart} alt="searchImage" />
