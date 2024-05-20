@@ -182,7 +182,7 @@ export default function GoodsClientPage({ data, slug }: Props) {
     }
   };
 
-  if (!data) return <Loading />;
+  // if (!data) return <Loading />;
   return (
     <div className="sm:mx-auto w-full">
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
@@ -198,6 +198,7 @@ export default function GoodsClientPage({ data, slug }: Props) {
               style={{ objectFit: "contain" }}
               loading="eager"
               priority={true}
+              sizes=""
             />
           )}
         </div>

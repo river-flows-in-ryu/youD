@@ -1,5 +1,9 @@
 // import { getCookie, setCookie } from "../utils/cookie";
+"use server";
+
+import cookieServerAction from "@/app/cookieServerAction";
 import { cookies } from "next/headers";
+import { NextResponse } from "next/server";
 
 export default async function getAccessTokenUpdate() {
   const cookieStore = cookies();
@@ -12,13 +16,12 @@ export default async function getAccessTokenUpdate() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ Refresh: refreshToken }),
+        body: JSON.stringify({ refresh: refreshToken }),
       }
     );
     if (res.status === 200) {
-      const { access_token } = await res.json();
-      cookieStore.set("access_token", access_token);
-      return "SUCCESS";
+      const resJson = await res.json();
+      return resJson;
     } else {
       throw new Error("fetch error");
     }

@@ -1,20 +1,39 @@
-import React from "react";
+import React, { SetStateAction } from "react";
 
 import Link from "next/link";
+import { commonFetch } from "@/utils/commonFetch";
 
 interface Props {
   onClose: () => void;
   productId: number;
   optionId: number;
+  userId: number;
+  setRefreshFlag: (value: boolean) => void;
+  refreshFlag: boolean;
 }
 export default function CartDeleteModal({
   onClose,
   productId,
   optionId,
+  userId,
+  setRefreshFlag,
+  refreshFlag,
 }: Props) {
-  const handleClickDelete = () => {
-    console.log(productId, optionId);
+  const payload = {
+    productId,
+    optionId,
+    userId,
   };
+  async function handleClickDelete() {
+    const res = await commonFetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/cart`,
+      "DELETE",
+      payload
+    );
+    if (res.message === "SUCCESS") {
+      setRefreshFlag(!refreshFlag);
+    }
+  }
 
   return (
     <div className="w-[90%] h-[300px] p-6 sm:w-[450px] sm:h-[300px] sm:p-8  bg-white rounded text-center">

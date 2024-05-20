@@ -7,10 +7,9 @@ export async function middleware(request: NextRequest) {
   let accessCookie = request.cookies.get("access_token")?.value;
   let refreshCookie = request.cookies.get("refresh_token")?.value;
 
-  if (!accessCookie) {
+  if (!refreshCookie) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
-
   const verifyResult = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/login/verify/`,
     {
@@ -18,17 +17,20 @@ export async function middleware(request: NextRequest) {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ Token: accessCookie }),
+      body: JSON.stringify({ token: refreshCookie }),
     }
   );
-  if (verifyResult.status === 401) {
-    const getAccessTokenResult = await getAccessTokenUpdate();
-    if (getAccessTokenResult === "SUCCESS") {
-      const response = NextResponse.next();
-      return response;
+  if (verifyResult.status === 200) {
+    if (accessCookie) {
+      return NextResponse.next();
     }
+    const getAccessTokenResult = await getAccessTokenUpdate();
+    const response = NextResponse.next();
+    response.cookies.set("access_token", getAccessTokenResult.access);
+    return response;
+  } else {
+    return NextResponse.redirect(new URL("/login", request.url));
   }
-  return NextResponse.next();
 }
 export const config = {
   matcher: ["/cart"],

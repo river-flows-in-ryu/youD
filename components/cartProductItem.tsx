@@ -39,6 +39,10 @@ export default function CartProductItem({
   checkedItems,
   handleCheckboxChange,
 }: Props) {
+  function handleClickChangeCartItem(productId: number, optionId: number) {
+    console.log(productId, optionId);
+  }
+
   return (
     <div className="flex mb-5 ">
       <input
@@ -94,7 +98,15 @@ export default function CartProductItem({
           </span>
         </div>
         <div className="flex justify-between mt-1 ">
-          <button className="border border-secondary text-sm px-2.5">
+          <button
+            className="border border-secondary text-sm px-2.5"
+            onClick={() =>
+              handleClickChangeCartItem(
+                item?.product?.id,
+                item?.size_attribute?.id
+              )
+            }
+          >
             옵션/수량
           </button>
           <span className="text-bold text-black">

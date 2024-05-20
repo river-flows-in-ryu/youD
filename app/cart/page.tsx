@@ -9,6 +9,7 @@ import CartDeleteModal from "@/components/cartDeleteModal";
 import { useRouter } from "next/navigation";
 
 import CartProductItem from "@/components/cartProductItem";
+import CartOptionChangeModal from "@/components/cartOptionChangeModal";
 
 interface Products {
   quantity: number;
@@ -43,11 +44,16 @@ export default function Page() {
   const [cartItems, setCartItems] = useState([]);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isOptionChangeModalOpen, setIsOptionChangeModalOpen] = useState(false);
   const [selectedProductId, setSelectedProductId] = useState(0);
   const [selectedProductOptionId, setSelectedProductOptionId] = useState(0);
 
+  const [changeProductId, setChangeProductId] = useState(0);
+  const [changeOptionId, setChangeOptionId] = useState(0);
+
+  const [refreshFlag, setRefreshFlag] = useState(false);
+
   const [checkedItems, setCheckedItems] = useState<string[]>([]);
-  console.log(cartItems);
 
   const router = useRouter();
 
@@ -77,7 +83,7 @@ export default function Page() {
       }
     };
     fetchData();
-  }, [userId]);
+  }, [userId, refreshFlag]);
 
   function handleClickDelete(productId: number, optionId: number) {
     setIsModalOpen(true);
@@ -151,7 +157,16 @@ export default function Page() {
           onClose={() => setIsModalOpen(false)}
           productId={selectedProductId}
           optionId={selectedProductOptionId}
+          userId={userId}
+          setRefreshFlag={setRefreshFlag}
+          refreshFlag={refreshFlag}
         />
+      </Modal>
+      <Modal
+        isOpen={isOptionChangeModalOpen}
+        onClose={() => setIsOptionChangeModalOpen(false)}
+      >
+        <CartOptionChangeModal />
       </Modal>
       <div className="w-full h-2.5 bg-[#f2f2f2] " />
       <div className=" w-full h-[50px]  bg-white text-center leading-[50px]">
