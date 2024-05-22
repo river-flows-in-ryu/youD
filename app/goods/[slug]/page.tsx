@@ -12,8 +12,10 @@ export default async function Page({ params }: { params: { slug: string } }) {
         "get"
       );
       return res;
-    } catch (event) {
-      console.log(event);
+    } catch (error) {
+      if (error instanceof Error) {
+        alert(error?.message);
+      }
     }
   }
   const data = await getData(params?.slug);

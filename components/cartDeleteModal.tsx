@@ -3,6 +3,8 @@ import React, { SetStateAction } from "react";
 import Link from "next/link";
 import { commonFetch } from "@/utils/commonFetch";
 
+import { useCartCountStore } from "@/app/store";
+
 interface Props {
   onClose: () => void;
   productId: number;
@@ -19,19 +21,27 @@ export default function CartDeleteModal({
   setRefreshFlag,
   refreshFlag,
 }: Props) {
+  const { fetchCartItemCount } = useCartCountStore();
   const payload = {
     productId,
     optionId,
     userId,
   };
   async function handleClickDelete() {
-    const res = await commonFetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/cart`,
-      "DELETE",
-      payload
-    );
-    if (res.message === "SUCCESS") {
-      setRefreshFlag(!refreshFlag);
+    try {
+      const res = await commonFetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/cart`,
+        "DELETE",
+        payload
+      );
+      if (res.message === "SUCCESS") {
+        await fetchCartItemCount(userId);
+        setRefreshFlag(!refreshFlag);
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        alert(error?.message);
+      }
     }
   }
 

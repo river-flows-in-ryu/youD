@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useMemo, useState } from "react";
 
-import { useUserIdStore } from "@/app/store";
+import { useCartCountStore, useUserIdStore } from "@/app/store";
 import { commonFetch } from "@/utils/commonFetch";
 
 import Modal from "@/components/modal";
@@ -77,8 +77,10 @@ export default function Page() {
             );
             setCartItems(addCheckedArray);
           }
-        } catch (e) {
-          console.log(e);
+        } catch (error) {
+          if (error instanceof Error) {
+            alert(error.message);
+          }
         }
       }
     };

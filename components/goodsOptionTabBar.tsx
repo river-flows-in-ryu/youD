@@ -10,7 +10,7 @@ import { commonFetch } from "@/utils/commonFetch";
 
 import arrowDown from "../public/arrow_down.png";
 
-import { useUserIdStore } from "@/app/store";
+import { useCartCountStore, useUserIdStore } from "@/app/store";
 
 interface Props {
   setIsOptionChoiceSection: React.Dispatch<React.SetStateAction<boolean>>;
@@ -50,6 +50,7 @@ export default function GoodsOptionTabBar({
   setIsModalOpen,
 }: Props) {
   const { userId } = useUserIdStore();
+  const { fetchCartItemCount } = useCartCountStore();
   const router = useRouter();
 
   const payload = {
@@ -68,13 +69,20 @@ export default function GoodsOptionTabBar({
       alert("옵션를 선택하십시오.");
       return;
     }
-    const res = await commonFetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/cart`,
-      "post",
-      payload
-    );
-    if (res) {
-      setIsModalOpen(true);
+    try {
+      const res = await commonFetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/cart`,
+        "post",
+        payload
+      );
+      if (res) {
+        await fetchCartItemCount(userId);
+        setIsModalOpen(true);
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        alert(error?.message);
+      }
     }
   };
 

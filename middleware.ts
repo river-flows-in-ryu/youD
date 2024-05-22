@@ -26,7 +26,9 @@ export async function middleware(request: NextRequest) {
     }
     const getAccessTokenResult = await getAccessTokenUpdate();
     const response = NextResponse.next();
-    response.cookies.set("access_token", getAccessTokenResult.access);
+    response.cookies.set("access_token", getAccessTokenResult.access, {
+      maxAge: 1800,
+    });
     return response;
   } else {
     return NextResponse.redirect(new URL("/login", request.url));

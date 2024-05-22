@@ -8,10 +8,17 @@ import search from "../../public/search.png";
 import cancel from "../../public/cancel.png";
 
 import Container from "@/components/container";
+import Pagination from "@/utils/pagination";
 
 export default function Page() {
   const [searchText, setSearchText] = useState("");
+  const [currentPage, setCurrentPage] = useState<number | null>(null);
 
+  const handlePageChange = (page: number) => {
+    if (page !== null) {
+      setCurrentPage(page);
+    }
+  };
   const payload = {
     keyword: searchText,
   };
@@ -56,6 +63,12 @@ export default function Page() {
             null}
         </div>
       </div>
+      <Pagination
+        page={currentPage}
+        totalCount={61}
+        pageSize={5}
+        onChange={handlePageChange}
+      />
     </Container>
   );
 }

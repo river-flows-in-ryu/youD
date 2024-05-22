@@ -5,11 +5,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import { useCookies } from "react-cookie";
+import { Badge } from "antd";
 
 import Drawer from "./drawer";
 import HamburgerDropdown from "./hamburgerDropdown";
 
-import { useMainHamburgerToggleStore } from "@/app/store";
+import { useCartCountStore, useMainHamburgerToggleStore } from "@/app/store";
 import { useUserIdStore } from "@/app/store";
 
 import cart from "../public/cart.png";
@@ -20,11 +21,13 @@ import search from "../public/search.png";
 
 export default function MainLayout() {
   const { toggle, setToggle } = useMainHamburgerToggleStore();
+  const [scrollPosition, setScrollPosition] = useState(0);
 
   const dropdownRef = useRef<HTMLDivElement>(null);
   const slidedownRef = useRef<HTMLDivElement>(null);
 
   const { userId, setUserId } = useUserIdStore();
+  const { fetchCartItemCount, itemCount } = useCartCountStore();
 
   const pathname = usePathname();
   useEffect(() => {
@@ -33,6 +36,25 @@ export default function MainLayout() {
         /^\d+$/.test(pathname?.split("/").pop() as string)
     );
   }, [pathname]);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        await fetchCartItemCount(userId);
+      } catch (error) {
+        if (error instanceof Error) {
+          alert(error?.message);
+        }
+      }
+    }
+    if (userId !== 0) fetchData();
+  }, [fetchCartItemCount, userId]);
+
+  useEffect(() => {
+    if (toggle) {
+      setScrollPosition(window?.scrollY);
+    }
+  }, [toggle]);
 
   const [isNumericPath, setIsNumericPath] = useState(false);
   useEffect(() => {
@@ -69,7 +91,7 @@ export default function MainLayout() {
     router.refresh();
     router.push("/login");
   }
-
+  const primaryColor = "#77C497";
   const PCLayout = () => (
     <div className="">
       <div className="fixed w-full py-5 h-[130px] border-[#dedede] border-b bg-white z-10">
@@ -118,7 +140,14 @@ w-[150px] h-[450px] bg-primary absolute top-20
                   </>
                 )}
                 <Link href="/cart">
-                  <span>장바구니</span>
+                  <span className="mr-[3px]">장바구니</span>
+                  {userId ? (
+                    <Badge
+                      count={itemCount}
+                      color={primaryColor}
+                      styles={{ root: { margin: "0 0 3px 0" } }}
+                    ></Badge>
+                  ) : null}
                 </Link>
               </div>
             </div>
@@ -157,11 +186,23 @@ w-[150px] h-[450px] bg-primary absolute top-20
                 <Image src={search} alt="searchImage" />
               </button>
             </Link>
-            <button className="sm:hidden">
-              <Image src={cart} alt="cart" />
-            </button>
+            <Link href="/cart">
+              <Badge count={itemCount} color={primaryColor}>
+                <button className="sm:hidden">
+                  <Image src={cart} alt="cart" />
+                </button>
+              </Badge>
+            </Link>
           </div>
         </div>
+      </div>
+      <div
+        className={`${
+          toggle ? "block" : "hidden"
+        } absolute left-0 top-[${scrollPosition}px] bg-primary w-[80%] h-full z-10 mt-[64px]`}
+        ref={slidedownRef}
+      >
+        <Drawer />
       </div>
     </div>
   );
@@ -173,15 +214,19 @@ w-[150px] h-[450px] bg-primary absolute top-20
           <button onClick={setToggle}>
             <Image src={hamburger} alt="hamburgerImage" priority />
           </button>
-          <button className="sm:hidden">
-            <Image src={cart} alt="searchImage" />
-          </button>
+          <Link href={"/cart"}>
+            <Badge count={itemCount} color={primaryColor}>
+              <button className="sm:hidden">
+                <Image src={cart} alt="searchImage" />
+              </button>
+            </Badge>
+          </Link>
         </div>
       </div>
       <div
         className={`${
           toggle ? "block" : "hidden"
-        } absolute left-0 top-0 bg-primary w-[80%] h-full `}
+        } absolute left-0 top-[${scrollPosition}px] mt-[64px] bg-primary w-[80%] h-full `}
         ref={slidedownRef}
       >
         <Drawer />
