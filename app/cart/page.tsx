@@ -50,6 +50,7 @@ export default function Page() {
 
   const [changeProductId, setChangeProductId] = useState(0);
   const [changeOptionId, setChangeOptionId] = useState(0);
+  const [changeQuantity, setChangeQuantity] = useState(0);
 
   const [refreshFlag, setRefreshFlag] = useState(false);
 
@@ -92,6 +93,7 @@ export default function Page() {
     setSelectedProductId(productId);
     setSelectedProductOptionId(optionId);
   }
+
   function handleCheckboxChange(index: string) {
     setCheckedItems((checkedItems) => {
       if (checkedItems.includes(index)) {
@@ -168,23 +170,33 @@ export default function Page() {
         isOpen={isOptionChangeModalOpen}
         onClose={() => setIsOptionChangeModalOpen(false)}
       >
-        <CartOptionChangeModal />
+        <CartOptionChangeModal
+          onClose={() => setIsOptionChangeModalOpen(false)}
+          previousProductId={changeProductId}
+          previousOptionId={changeOptionId}
+          previousQuantiry={changeQuantity}
+        />
       </Modal>
       <div className="w-full h-2.5 bg-[#f2f2f2] " />
-      <div className=" w-full h-[50px]  bg-white text-center leading-[50px]">
-        <input
-          type="checkbox"
-          className={`w-5 h-5 checked:bg-primary border  border-[#ccc] checked:border-primary bg-[#fff] rounded-full mr-2.5 appearance-none checked:bg-checkedWhite 	`}
-          onChange={handleClickAllCheck}
-          checked={checkedItems.length === totalCount}
-          style={{
-            backgroundImage: "url('/check_white.png')",
-            backgroundRepeat: "no-repeat",
-            backgroundPosition: "center",
-            backgroundSize: "contain",
-          }}
-        />
-        총 장바구니 갯수 <span className="text-primary">{totalCount}</span> 개
+      <div className=" w-full h-[50px]  bg-white text-center leading-[50px] flex px-[15px] justify-center">
+        <div className="pt-1">
+          <input
+            type="checkbox"
+            className={`w-5 h-5 checked:bg-primary border  border-[#ccc] checked:border-primary bg-[#fff] rounded-full mr-2.5 appearance-none checked:bg-checkedWhite 	`}
+            onChange={handleClickAllCheck}
+            checked={checkedItems.length === totalCount}
+            style={{
+              backgroundImage: "url('/check_white.png')",
+              backgroundRepeat: "no-repeat",
+              backgroundPosition: "center",
+              backgroundSize: "contain",
+            }}
+          />
+        </div>
+        <span className="text-center">
+          총 장바구니 갯수 <span className="text-primary"> {totalCount}</span>{" "}
+          개
+        </span>
       </div>
       <div className="w-full h-2.5 bg-[#f2f2f2] " />
       <div className="w-full">
@@ -196,6 +208,10 @@ export default function Page() {
                 handleClickDelete={handleClickDelete}
                 checkedItems={checkedItems}
                 handleCheckboxChange={handleCheckboxChange}
+                setIsOptionChangeModalOpen={setIsOptionChangeModalOpen}
+                setChangeProductId={setChangeProductId}
+                setChangeOptionId={setChangeOptionId}
+                setChangeQuantity={setChangeQuantity}
               />
             </div>
           ))}
@@ -217,7 +233,7 @@ export default function Page() {
                 {Math.round(
                   ((totalOriginPrice - totalDiscountPrice) / totalOriginPrice) *
                     100
-                )}
+                ) || 0}
                 % SALE
               </span>
               <span>

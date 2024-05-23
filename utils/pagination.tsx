@@ -67,21 +67,24 @@ export default function Pagination({
       >
         <span>&lt;</span>
       </button>
-      <div className="flex mr-2">
-        {pagination?.map((number: number, index: number) => {
-          return (
-            <button
-              key={index}
-              className={`w-[30px] h-[30px] ${
-                page === number ? "bg-primary" : ""
-              }`}
-              onClick={handleClick(number)}
-            >
-              {number}
-            </button>
-          );
-        })}
-      </div>
+      {page ? (
+        <div className="flex mr-2">
+          {pagination?.map((number: number, index: number) => {
+            return (
+              <button
+                key={index}
+                className={`w-[30px] h-[30px] ${
+                  page === number ? "bg-primary" : ""
+                }`}
+                onClick={handleClick(number)}
+              >
+                {number}
+              </button>
+            );
+          })}
+        </div>
+      ) : null}
+
       <button
         className="w-[30px] h-[30px]"
         onClick={handleClick(page + 1)}

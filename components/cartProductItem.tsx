@@ -10,6 +10,10 @@ interface Props {
   handleClickDelete: (productId: number, optionId: number) => void;
   checkedItems: string[];
   handleCheckboxChange: (index: string) => void;
+  setIsOptionChangeModalOpen: (value: boolean) => void;
+  setChangeProductId: (number: number) => void;
+  setChangeOptionId: (number: number) => void;
+  setChangeQuantity: (number: number) => void;
 }
 
 interface PropsItems {
@@ -38,9 +42,20 @@ export default function CartProductItem({
   handleClickDelete,
   checkedItems,
   handleCheckboxChange,
+  setIsOptionChangeModalOpen,
+  setChangeProductId,
+  setChangeOptionId,
+  setChangeQuantity,
 }: Props) {
-  function handleClickChangeCartItem(productId: number, optionId: number) {
-    console.log(productId, optionId);
+  function handleClickChangeCartItem(
+    productId: number,
+    optionId: number,
+    quantity: number
+  ) {
+    setChangeProductId(productId);
+    setChangeOptionId(optionId);
+    setChangeQuantity(quantity);
+    setIsOptionChangeModalOpen(true);
   }
 
   return (
@@ -91,7 +106,7 @@ export default function CartProductItem({
         </div>
         <div className="flex justify-between text-xs text-[#6e6e6e]">
           <span>
-            수량 {item?.quantity} | {item?.size_attribute?.size?.name}
+            수량 {item?.quantity} 개 | {item?.size_attribute?.size?.name}
           </span>
           <span className="line-through">
             {item?.product?.OriginPrice?.toLocaleString()}원
@@ -103,7 +118,8 @@ export default function CartProductItem({
             onClick={() =>
               handleClickChangeCartItem(
                 item?.product?.id,
-                item?.size_attribute?.id
+                item?.size_attribute?.id,
+                item?.quantity
               )
             }
           >

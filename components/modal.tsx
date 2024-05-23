@@ -2,12 +2,12 @@ import React, { useEffect, useRef } from "react";
 
 interface Props {
   isOpen: boolean;
-  onClose: (value?: boolean) => void;
+  onClose: () => void;
   children: React.ReactNode;
 }
 
 export default function Modal({ isOpen, onClose, children }: Props) {
-  const modalRef = useRef(null);
+  const backdropRef = useRef(null);
 
   useEffect(() => {
     if (isOpen) {
@@ -20,8 +20,8 @@ export default function Modal({ isOpen, onClose, children }: Props) {
   const handleClickBackdrop = (
     event: React.MouseEvent<HTMLDivElement, MouseEvent>
   ) => {
-    if (modalRef.current !== event.target) {
-      onClose(false);
+    if (backdropRef.current === event.target) {
+      onClose();
     }
   };
 
@@ -29,12 +29,11 @@ export default function Modal({ isOpen, onClose, children }: Props) {
     <>
       {isOpen ? (
         <div
-          className="w-full h-screen fixed top-0 left-0 bg-backDrop z-20"
+          className="w-full h-screen fixed top-0 left-0 bg-backDrop z-20 flex justify-center items-center"
           onClick={handleClickBackdrop}
+          ref={backdropRef}
         >
-          <div className="flex  justify-center items-center w-full h-full ">
-            {children}
-          </div>
+          {children}
         </div>
       ) : null}
     </>
