@@ -12,6 +12,8 @@ interface Props {
   previousProductId: number;
   previousOptionId: number;
   previousQuantiry: number;
+  setRefreshFlag: (value: boolean) => void;
+  refreshFlag: boolean;
 }
 
 interface Option {
@@ -32,6 +34,8 @@ export default function CartOptionChangeModal({
   previousProductId,
   previousOptionId,
   previousQuantiry,
+  setRefreshFlag,
+  refreshFlag,
 }: Props) {
   const { userId } = useUserIdStore();
 
@@ -78,15 +82,28 @@ export default function CartOptionChangeModal({
   );
 
   function handleChange(value: string) {
-    const changeOption = option?.filter(
+    const changeOption: SizeOption[] = option?.filter(
       (option: SizeOption) => option?.label === value
     );
     setCurrentOptionId(changeOption[0]?.id);
   }
 
   async function handleSubmit() {
-    console.log(payload);
-    const res = await commonFetch(``, "patch");
+    try {
+      const res = await commonFetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/cart`,
+        "PATCH",
+        payload
+      );
+      if (res.Message === "SUCCESS") {
+        onClose();
+        setRefreshFlag(!refreshFlag);
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        alert(error);
+      }
+    }
   }
 
   return (
@@ -109,6 +126,7 @@ export default function CartOptionChangeModal({
         <button
           className="w-5 h-5 bg-[#f2f2f2] "
           onClick={() => setCurrentQuantity(currentQuantity - 1)}
+          disabled={currentQuantity === 1}
         >
           -
         </button>

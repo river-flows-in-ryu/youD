@@ -35,6 +35,7 @@ export default function CartDeleteModal({
         payload
       );
       if (res.message === "SUCCESS") {
+        onClose();
         await fetchCartItemCount(userId);
         setRefreshFlag(!refreshFlag);
       }

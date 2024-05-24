@@ -83,13 +83,26 @@ export default function MainLayout() {
   const router = useRouter();
   const [, , removeCookie] = useCookies(["access_token"]);
 
+  async function logout() {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/logout`, {
+      method: "post",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    });
+    if (res.status === 200) {
+      sessionStorage.removeItem("selectedProducts");
+      router.refresh();
+      router.push("/login");
+    }
+  }
+
   async function handleLogout() {
     setUserId(0);
     useUserIdStore?.persist?.clearStorage();
     removeCookie("access_token");
-    sessionStorage.removeItem("selectedProducts");
-    router.refresh();
-    router.push("/login");
+    await logout();
   }
   const primaryColor = "#77C497";
   const PCLayout = () => (
@@ -187,11 +200,17 @@ w-[150px] h-[450px] bg-primary absolute top-20
               </button>
             </Link>
             <Link href="/cart">
-              <Badge count={itemCount} color={primaryColor}>
+              {userId ? (
+                <Badge count={itemCount} color={primaryColor}>
+                  <button className="sm:hidden">
+                    <Image src={cart} alt="cart" />
+                  </button>
+                </Badge>
+              ) : (
                 <button className="sm:hidden">
                   <Image src={cart} alt="cart" />
                 </button>
-              </Badge>
+              )}
             </Link>
           </div>
         </div>
@@ -215,11 +234,17 @@ w-[150px] h-[450px] bg-primary absolute top-20
             <Image src={hamburger} alt="hamburgerImage" priority />
           </button>
           <Link href={"/cart"}>
-            <Badge count={itemCount} color={primaryColor}>
+            {userId ? (
+              <Badge count={itemCount} color={primaryColor}>
+                <button className="sm:hidden">
+                  <Image src={cart} alt="cart" />
+                </button>
+              </Badge>
+            ) : (
               <button className="sm:hidden">
-                <Image src={cart} alt="searchImage" />
+                <Image src={cart} alt="cart" />
               </button>
-            </Badge>
+            )}
           </Link>
         </div>
       </div>

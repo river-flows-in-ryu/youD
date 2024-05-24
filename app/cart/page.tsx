@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useMemo, useState } from "react";
 
-import { useCartCountStore, useUserIdStore } from "@/app/store";
+import { useUserIdStore } from "@/app/store";
 import { commonFetch } from "@/utils/commonFetch";
 
 import Modal from "@/components/modal";
@@ -175,6 +175,8 @@ export default function Page() {
           previousProductId={changeProductId}
           previousOptionId={changeOptionId}
           previousQuantiry={changeQuantity}
+          setRefreshFlag={setRefreshFlag}
+          refreshFlag={refreshFlag}
         />
       </Modal>
       <div className="w-full h-2.5 bg-[#f2f2f2] " />
@@ -201,20 +203,27 @@ export default function Page() {
       <div className="w-full h-2.5 bg-[#f2f2f2] " />
       <div className="w-full">
         <div className="w-full h-full px-[15px] pt-6 pb-5">
-          {cartItems.map((item: Products) => (
-            <div key={`${item?.product?.id + item?.size_attribute?.id}`}>
-              <CartProductItem
-                item={item}
-                handleClickDelete={handleClickDelete}
-                checkedItems={checkedItems}
-                handleCheckboxChange={handleCheckboxChange}
-                setIsOptionChangeModalOpen={setIsOptionChangeModalOpen}
-                setChangeProductId={setChangeProductId}
-                setChangeOptionId={setChangeOptionId}
-                setChangeQuantity={setChangeQuantity}
-              />
-            </div>
-          ))}
+          {cartItems?.length === 0 ? (
+            //todo
+            <div className=""></div>
+          ) : (
+            <>
+              {cartItems.map((item: Products) => (
+                <div key={`${item?.product?.id + item?.size_attribute?.id}`}>
+                  <CartProductItem
+                    item={item}
+                    handleClickDelete={handleClickDelete}
+                    checkedItems={checkedItems}
+                    handleCheckboxChange={handleCheckboxChange}
+                    setIsOptionChangeModalOpen={setIsOptionChangeModalOpen}
+                    setChangeProductId={setChangeProductId}
+                    setChangeOptionId={setChangeOptionId}
+                    setChangeQuantity={setChangeQuantity}
+                  />
+                </div>
+              ))}
+            </>
+          )}
         </div>
         <div className="w-full h-2.5 bg-[#f2f2f2] " />
         <div className="py-[30px] w-full px-4">
@@ -261,6 +270,7 @@ export default function Page() {
             </span>
           </button>
         </div>
+        <div className="w-full h-2.5 bg-[#f2f2f2] " />
       </div>
     </div>
   );

@@ -12,7 +12,7 @@ import Pagination from "@/utils/pagination";
 
 export default function Page() {
   const [searchText, setSearchText] = useState("");
-  const [currentPage, setCurrentPage] = useState<number | null>(null);
+  const [currentPage, setCurrentPage] = useState<number>(1);
 
   const handlePageChange = (page: number) => {
     if (page !== null) {
