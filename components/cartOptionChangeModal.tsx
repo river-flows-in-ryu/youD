@@ -111,35 +111,47 @@ export default function CartOptionChangeModal({
       <div className="flex justify-end">
         <Image src={close} alt="closeButton" onClick={onClose} />
       </div>
-      <p className="mt-6 mb-11">옵션 변경페이지</p>
+      <p className="mt-6 mb-5 text-xl font-bold">옵션 변경페이지</p>
+      <div className="mb-4">
+        {initialValue[0]?.label ? (
+          <Select
+            options={option}
+            defaultValue={initialValue[0]?.label || ""}
+            className="w-full h-[50px]"
+            onChange={handleChange}
+          />
+        ) : null}
+      </div>
 
-      {initialValue[0]?.label ? (
-        <Select
-          options={option}
-          defaultValue={initialValue[0]?.label || ""}
-          className="w-full h-[50px]"
-          onChange={handleChange}
-        />
-      ) : null}
-
-      <div className="flex w-full justify-center">
+      <div className="flex w-full justify-center mb-5">
         <button
-          className="w-5 h-5 bg-[#f2f2f2] "
+          className="w-[25px] h-[25px] bg-[#f2f2f2] "
           onClick={() => setCurrentQuantity(currentQuantity - 1)}
           disabled={currentQuantity === 1}
         >
           -
         </button>
-        <div>{currentQuantity}</div>
+        <div className="w-10 h-[25px]">{currentQuantity}</div>
         <button
-          className="w-5 h-5 bg-[#f2f2f2]"
+          className="w-[25px] h-[25px] bg-[#f2f2f2]"
           onClick={() => setCurrentQuantity(currentQuantity + 1)}
         >
           +
         </button>
       </div>
-      <div>
-        <button onClick={handleSubmit}>변경</button>
+      <div className="flex w-full justify-center gap-3">
+        <button
+          onClick={onClose}
+          className="w-[135px] h-10 border border-[#f2f2f2] rounded bg-[#f2f2f2]"
+        >
+          취소
+        </button>
+        <button
+          onClick={handleSubmit}
+          className="w-[135px] h-10 border border-primary rounded bg-primary text-white"
+        >
+          변경
+        </button>
       </div>
     </div>
   );

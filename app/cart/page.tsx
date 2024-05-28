@@ -232,20 +232,22 @@ export default function Page() {
             <span className="text-[#666]"> 총 {checkedItems?.length}개</span>
           </h1>
           <div className="flex justify-between">
-            <span className="">상품 금액</span>
-            <span>{totalOriginPrice?.toLocaleString()}원</span>
+            <span className="text-sm">상품 금액</span>
+            <span className="text-sm">
+              {totalOriginPrice?.toLocaleString()}원
+            </span>
           </div>
-          <div className="flex justify-between">
-            <span className="">할인 된 금액</span>
+          <div className="flex justify-between my-3">
+            <span className="text-sm">할인 된 금액</span>
             <div className="flex">
-              <span className="text-red-500 mr-[10px]">
+              <span className="text-red-500 mr-[10px] text-sm	">
                 {Math.round(
                   ((totalOriginPrice - totalDiscountPrice) / totalOriginPrice) *
                     100
                 ) || 0}
                 % SALE
               </span>
-              <span>
+              <span className="text-blue-500 text-sm">
                 -
                 {(totalOriginPrice - totalDiscountPrice || 0)?.toLocaleString()}
                 원
@@ -253,20 +255,22 @@ export default function Page() {
             </div>
           </div>
           <div className="flex justify-between">
-            <span className="">결제 금액</span>
-            <span>{totalDiscountPrice?.toLocaleString()}원</span>
+            <span className="font-bold">결제 금액</span>
+            <span className="font-bold text-lg">
+              {totalDiscountPrice?.toLocaleString()}원
+            </span>
           </div>
         </div>
         <div className="fixed bottom-0 w-full border z-10 bg-white px-3 py-2">
           <button
-            className="w-full h-[50px] bg-primary text-center leading-10 rounded"
+            className="w-full h-[50px] bg-primary text-center leading-[50px] rounded flex justify-center"
             onClick={handleClickSubmit}
           >
-            <span className="text-white">
+            <span className="text-white mr-5">
               총 {checkedItems?.length} 개
-              <span className="font-bold">
-                {totalDiscountPrice?.toLocaleString()}원 결제하기
-              </span>
+            </span>
+            <span className="font-bold text-white">
+              {totalDiscountPrice?.toLocaleString()}원 결제하기
             </span>
           </button>
         </div>

@@ -57,7 +57,6 @@ export default function CartProductItem({
     setChangeQuantity(quantity);
     setIsOptionChangeModalOpen(true);
   }
-
   return (
     <div className="flex mb-5 ">
       <input
@@ -72,17 +71,17 @@ export default function CartProductItem({
           backgroundSize: "contain",
         }}
       />
-      <div className="w-[70px] ">
+      <div className="w-[60px] ">
         <Link href={`/goods/${item?.product?.id}`}>
           <Image
             src={item?.product?.image_url}
             alt={item?.product?.productName}
-            width={70}
-            height={70}
+            width={60}
+            height={60}
           />
         </Link>
       </div>
-      <div className="ml-2.5 w-[calc(100%-110px)]">
+      <div className="ml-5 w-[calc(100%-110px)]">
         <div className="flex justify-between">
           <div className="flex flex-col leading-[18px]  w-[calc(100%-20px)]">
             {/* todo */}
@@ -109,7 +108,7 @@ export default function CartProductItem({
             수량 {item?.quantity} 개 | {item?.size_attribute?.size?.name}
           </span>
           <span className="line-through">
-            {item?.product?.OriginPrice?.toLocaleString()}원
+            {(item?.product?.OriginPrice * item?.quantity).toLocaleString()}원
           </span>
         </div>
         <div className="flex justify-between mt-1 ">
@@ -126,7 +125,7 @@ export default function CartProductItem({
             옵션/수량
           </button>
           <span className="text-bold text-black">
-            {item?.product?.discountPrice?.toLocaleString()}원
+            {(item?.product?.discountPrice * item?.quantity).toLocaleString()}원
           </span>
         </div>
       </div>
