@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import Link from "next/link";
 
@@ -19,6 +19,12 @@ export default function Page() {
   const [err, setErr] = useState("");
 
   const { userId, setUserId } = useUserIdStore();
+
+  useEffect(() => {
+    if (userId) {
+      router.back();
+    }
+  }, [userId, router]);
 
   const payload = {
     username: userID,
