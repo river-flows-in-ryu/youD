@@ -34,13 +34,11 @@ export default async function Page({ params }: { params: { slug: string } }) {
 
   const productData = await getProductData(params?.slug);
   const reviewData = await getReviewData(params?.slug);
-
-  console.log(reviewData);
   return (
     <GoodsClientPage
       productData={productData}
       slug={params?.slug}
-      reviewData={reviewData?.count}
+      reviewData={reviewData}
     />
   );
 }

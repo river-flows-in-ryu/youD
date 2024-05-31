@@ -3,18 +3,24 @@
 import React, { Suspense, useEffect, useState } from "react";
 import Image from "next/image";
 
-import Loading from "@/app/loading";
-
-import { useUserIdStore } from "@/app/store";
+import dynamic from "next/dynamic";
+import { notFound } from "next/navigation";
 
 import GoodsDetailTabBar from "@/components/goodsDetailTabBar";
 import GoodsOptionTabBar from "@/components/goodsOptionTabBar";
 import CartSuccessAddModal from "@/components/cartSuccessAddModal";
-import dynamic from "next/dynamic";
+
+import { useUserIdStore } from "@/app/store";
+import ReviewListDetail from "./reviewListDetail";
 
 interface Props {
-  data: Products;
+  productData: Products;
   slug: string;
+  reviewData: {
+    reviewTotalCount: number;
+    imageReviewCount: number;
+    nomalReviewCount: number;
+  };
 }
 
 interface Option {
@@ -72,23 +78,31 @@ const initialProductDetailData: Products = {
   },
 };
 
-export default function GoodsClientPage({ data, slug }: Props) {
+export default function GoodsClientPage({
+  productData,
+  slug,
+  reviewData,
+}: Props) {
   const Modal = dynamic(() => import("@/components/modal"));
   const { userId } = useUserIdStore();
   const [isOptionChoiceSection, setIsOptionChoiceSection] = useState(false);
   const [optionArray, setOptionArray] = useState<Option[]>([]);
   const [totalQuantity, setTotalQuantity] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState("info");
+  const [reviewCount, setReviewCount] = useState(0);
 
   const [productDetailData, setProductDetailData] = useState<Products>(
     initialProductDetailData
   );
   const [options, setOptions] = useState<SelectedOption[]>([]);
 
+  const { reviewTotalCount, imageReviewCount, nomalReviewCount } = reviewData;
+
   useEffect(() => {
-    if (data) {
-      setProductDetailData(data);
-      const optionData = data?.product?.size_attributes?.map(
+    if (productData) {
+      setProductDetailData(productData);
+      const optionData = productData?.product?.size_attributes?.map(
         (option: SizeAttributes) => ({
           id: option.id,
           value: option?.size?.name,
@@ -97,7 +111,7 @@ export default function GoodsClientPage({ data, slug }: Props) {
       );
       setOptions(optionData);
     }
-  }, [data]);
+  }, [productData]);
 
   useEffect(() => {
     setTotalQuantity(
@@ -182,7 +196,8 @@ export default function GoodsClientPage({ data, slug }: Props) {
     }
   };
 
-  // if (!data) return <Loading />;
+  if (productData === undefined) notFound();
+  // if (!productData) return <Loading />;
   return (
     <div className="sm:mx-auto w-full">
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
@@ -236,20 +251,43 @@ export default function GoodsClientPage({ data, slug }: Props) {
           >
             1
           </button> */}
-          <p>하단은 정보</p>
-          <div className="w-full h-[30px] bg-[#b5b5b5] flex justify-around ">
-            <div>정보</div>
-            <div>리뷰</div>
-          </div>
-          <Suspense>
-            <div
-              className="w-full "
-              dangerouslySetInnerHTML={{
-                __html: productDetailData?.product?.info,
-              }}
-            />
-          </Suspense>
         </div>
+        <div className="w-full h-[50px] flex justify-center">
+          <div
+            className={`${
+              activeTab === "info" ? "border-primary" : "border-[#f2f2f2]"
+            } border-b-2 grow text-center leading-[50px]`}
+            onClick={() => setActiveTab("info")}
+          >
+            <button className="	">상품정보</button>
+          </div>
+          <div
+            className={`${
+              activeTab === "review" ? "border-primary" : "border-[#f2f2f2]"
+            } border-b-2 grow text-center leading-[50px]`}
+            onClick={() => setActiveTab("review")}
+          >
+            <button className="grow	">리뷰 {reviewTotalCount || 0}</button>
+          </div>
+        </div>
+
+        {activeTab !== "info" ? (
+          <div
+            className="w-full px-[15px] "
+            dangerouslySetInnerHTML={{
+              __html: productDetailData?.product?.info,
+            }}
+          />
+        ) : (
+          <>
+            <ReviewListDetail
+              slug={slug}
+              imageReviewCount={imageReviewCount}
+              nomalReviewCount={nomalReviewCount}
+              productImageUrl={productDetailData?.product?.image_url}
+            />
+          </>
+        )}
 
         {!isOptionChoiceSection ? (
           <GoodsDetailTabBar
