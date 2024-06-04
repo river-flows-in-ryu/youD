@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import Image from "next/image";
 
@@ -6,7 +6,10 @@ import { Rate } from "antd";
 
 import { commonFetch } from "@/utils/commonFetch";
 
+import Pagination from "@/utils/pagination";
+
 import changeDateType from "@/utils/changeDateType";
+import { useSearchParams } from "next/navigation";
 
 interface Props {
   slug: string;
@@ -37,14 +40,46 @@ export default function ReviewListDetail({
   nomalReviewCount,
   productImageUrl,
 }: Props) {
-  const [reviewType, setReviewType] = useState("image");
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  const params = useSearchParams();
+
+  const urlReivewType = params.get("type");
+  const urlReviewPage = Number(params.get("page"));
+
+  const [reviewType, setReviewType] = useState(urlReivewType || "image");
   const [reviewArray, setReivewArray] = useState([]);
+
+  const [page, setPage] = useState(1);
+
+  const totalPage =
+    reviewType === "image" ? imageReviewCount : nomalReviewCount;
+
+  useEffect(() => {
+    setPage(1);
+  }, [reviewType]);
+
+  useEffect(() => {
+    if (urlReviewPage && !isNaN(urlReviewPage) && urlReviewPage >= 1) {
+      setPage(urlReviewPage);
+    }
+  }, [urlReviewPage]);
+
+  useEffect(() => {
+    if (scrollRef.current && urlReivewType) {
+      scrollRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [page, setPage, urlReivewType]);
 
   useEffect(() => {
     async function fecthReviewData() {
       try {
         const res = await commonFetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/reviews/${slug}/?type=${reviewType}&offset=0&limit=10`,
+          `${
+            process.env.NEXT_PUBLIC_API_URL
+          }/reviews/${slug}/?type=${reviewType}&offset=${
+            (page - 1) * 10
+          }&limit=10`,
           "get"
         );
         setReivewArray(res.reviews);
@@ -55,12 +90,12 @@ export default function ReviewListDetail({
       }
     }
     fecthReviewData();
-  }, [reviewType, slug]);
-  console.log(reviewArray);
+  }, [reviewType, slug, page]);
+
   return (
     <div>
-      <div className="px-[15px] mt-5 ">
-        <div className="w-full h-10 flex  bg-white z-10 ">
+      <div className="px-[15px] mt-5 pb-5">
+        <div className="w-full h-10 flex  bg-white z-10 " ref={scrollRef}>
           <button
             className={`grow  border  border-[#f2f2f2] rounded ${
               reviewType === "image" ? "" : "bg-[#f2f2f2]"
@@ -79,18 +114,18 @@ export default function ReviewListDetail({
             일반 <span className="text-primary">{nomalReviewCount || 0}</span>
           </button>
         </div>
-        <div className="pt-5">
+        <div className="py-5">
           <div className="w-full">
             {reviewArray?.map((review: ReviewItems) => {
               return (
                 <div key={review?.id}>
-                  <div className="flex justify-between">
+                  <div className="flex justify-between mb-3">
                     <div className="font-bold">{review?.user_name}</div>
-                    <div className="text-xs text-[#cecece]">
+                    <div className="text-xs text-[#aaa]">
                       {changeDateType(review?.created_at)}
                     </div>
                   </div>
-                  <div className="flex gap-2.5 pl-10">
+                  <div className="flex gap-2.5 pl-10 mb-3">
                     <Image
                       src={productImageUrl}
                       alt={productImageUrl}
@@ -108,7 +143,7 @@ export default function ReviewListDetail({
                       />
                     </div>
                   </div>
-                  <div className="pl-10 max-h-auto overflow-hidden	">
+                  <div className="pl-10 max-h-auto overflow-hidden mb-5">
                     {review?.comment}
                   </div>
                   <div className="pl-10">
@@ -139,6 +174,13 @@ export default function ReviewListDetail({
             })}
           </div>
         </div>
+        <Pagination
+          page={page}
+          totalCount={totalPage}
+          pageSize={10}
+          onChange={setPage}
+          reviewType={reviewType}
+        />
       </div>
     </div>
   );

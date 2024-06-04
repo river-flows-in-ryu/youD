@@ -7,15 +7,17 @@ export default function Pagination({
   totalCount,
   pageSize,
   onChange,
+  reviewType,
 }: {
   page: number;
   totalCount: number;
   pageSize: number;
   onChange: (page: number) => void;
+  reviewType?: string;
 }) {
   const router = useRouter();
   const params = usePathname();
-  const urlPage = useSearchParams().get("page");
+
   const pagination = useMemo(() => {
     const size = pageSize;
     const block = 5;
@@ -35,14 +37,6 @@ export default function Pagination({
   }, [page, totalCount, pageSize]);
 
   useEffect(() => {
-    if (urlPage) {
-      onChange(Number(urlPage));
-    } else {
-      onChange(1);
-    }
-  }, [urlPage]);
-
-  useEffect(() => {
     if (totalCount > 0 && page > totalCount) onChange(totalCount);
   }, [page, totalCount, onChange]);
 
@@ -55,7 +49,11 @@ export default function Pagination({
         param !== page
       ) {
         onChange(param);
-        router?.push(`${params}?page=${param}`);
+        const queryParams = new URLSearchParams();
+        queryParams.set("type", reviewType as string);
+        queryParams.set("page", param.toString());
+        const newUrl = `${window.location.pathname}?${queryParams.toString()}`;
+        window.history.pushState({ path: newUrl }, "", newUrl);
       }
     };
   return (
@@ -74,7 +72,7 @@ export default function Pagination({
               <button
                 key={index}
                 className={`w-[30px] h-[30px] ${
-                  page === number ? "bg-primary" : ""
+                  page === number ? "font-bold text-primary" : "text-[#aaa]"
                 }`}
                 onClick={handleClick(number)}
               >
