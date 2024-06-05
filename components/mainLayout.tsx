@@ -184,9 +184,11 @@ w-[150px] h-[450px] bg-primary absolute top-20
                 priority={true}
               />
             </button>
-            <button onClick={setToggle}>
-              <Image src={hamburger} alt="hamburgerImage" />
-            </button>
+            <Link href="/overview">
+              <button>
+                <Image src={hamburger} alt="hamburgerImage" />
+              </button>
+            </Link>
           </div>
           <div>
             <Link href={"/"}>
@@ -230,9 +232,11 @@ w-[150px] h-[450px] bg-primary absolute top-20
     <div className="">
       <div className="w-full h-[64px] px-5 py-3 fixed  border-[#dedede] border-b  bg-white z-10">
         <div className="flex justify-between px-5 pt-2">
-          <button onClick={setToggle}>
-            <Image src={hamburger} alt="hamburgerImage" priority />
-          </button>
+          <Link href="/overview">
+            <button>
+              <Image src={hamburger} alt="hamburgerImage" priority />
+            </button>
+          </Link>
           <Link href={"/cart"}>
             {userId ? (
               <Badge count={itemCount} color={primaryColor}>

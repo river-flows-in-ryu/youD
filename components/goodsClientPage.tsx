@@ -90,7 +90,6 @@ export default function GoodsClientPage({
   const [totalQuantity, setTotalQuantity] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("info");
-  const [reviewCount, setReviewCount] = useState(0);
 
   const [productDetailData, setProductDetailData] = useState<Products>(
     initialProductDetailData
@@ -203,44 +202,46 @@ export default function GoodsClientPage({
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
         <CartSuccessAddModal onClose={() => setIsModalOpen(false)} />
       </Modal>
-      <div className="sm:w-[1050px] sm:mt-[30px] sm:mx-auto sm:flex justify-between h-full">
-        <div className="w-full h-[560px] relative">
-          {productDetailData?.product?.image_url && (
-            <Image
-              src={productDetailData?.product?.image_url}
-              alt={productDetailData?.product?.productName}
-              fill
-              style={{ objectFit: "contain" }}
-              loading="eager"
-              priority={true}
-              sizes=""
-            />
-          )}
-        </div>
-        <div className="px-4 py-5 text-xl	">
-          <div className="flex flex-col mb-3">
-            <span className="text-sm">
-              {productDetailData?.product?.user?.username}
-            </span>
-            <h2 className="font-extrabold overflow-hidden text-ellipsis ">
-              {productDetailData?.product?.productName}
-            </h2>
-            <p className="text-sm	text-[#b5b5b5]">
-              {productDetailData?.product?.productShortName}
-            </p>
+      <div className="sm:w-full xl:w-[1050px] sm:mt-[30px] sm:mx-auto justify-between ">
+        <div className="sm:flex sm:w-full">
+          <div className="w-full sm:w-[450px] h-[560px] relative">
+            {productDetailData?.product?.image_url && (
+              <Image
+                src={productDetailData?.product?.image_url}
+                alt={productDetailData?.product?.productName}
+                fill
+                style={{ objectFit: "contain" }}
+                loading="eager"
+                priority={true}
+                sizes=""
+              />
+            )}
           </div>
-          <div className="flex ">
-            <span className="text-primary font-medium mr-2">
-              {productDetailData?.product?.discountRate}%
-            </span>
-            <span className="font-medium mr-2">
-              {productDetailData?.product?.discountPrice.toLocaleString()}원
-            </span>
-            <span className="line-through	text-base leading-7 text-[#b5b5b5]	">
-              {productDetailData?.product?.OriginPrice.toLocaleString()}원
-            </span>
-          </div>
-          {/* <button className="w-10 h-10" onClick={handleLikeClick}>
+          <div className="px-4 py-5 text-xl	">
+            <div className="flex flex-col mb-3">
+              <span className="text-sm">
+                {productDetailData?.product?.user?.username}
+              </span>
+              <h2 className="font-extrabold overflow-hidden text-ellipsis ">
+                {productDetailData?.product?.productName}
+              </h2>
+              <p className="text-sm	text-[#b5b5b5]">
+                {productDetailData?.product?.productShortName}
+              </p>
+            </div>
+            <div className="flex ">
+              <span className="text-primary font-medium mr-2">
+                {productDetailData?.product?.discountRate}%
+              </span>
+              <span className="font-medium mr-2">
+                {productDetailData?.product?.discountPrice.toLocaleString()}원
+              </span>
+              <span className="line-through	text-base leading-7 text-[#b5b5b5]	">
+                {productDetailData?.product?.OriginPrice.toLocaleString()}원
+              </span>
+            </div>
+
+            {/* <button className="w-10 h-10" onClick={handleLikeClick}>
             1
           </button>
           <button
@@ -251,6 +252,7 @@ export default function GoodsClientPage({
           >
             1
           </button> */}
+          </div>
         </div>
         <div className="w-full h-[50px] flex justify-center">
           <div
@@ -271,9 +273,9 @@ export default function GoodsClientPage({
           </div>
         </div>
 
-        {activeTab !== "info" ? (
+        {activeTab === "info" ? (
           <div
-            className="w-full px-[15px] "
+            className="w-full sm:w-[600px] px-[15px] mx-auto "
             dangerouslySetInnerHTML={{
               __html: productDetailData?.product?.info,
             }}

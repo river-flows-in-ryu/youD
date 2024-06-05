@@ -7,8 +7,9 @@ import { CookiesProvider } from "react-cookie";
 import Container from "@/components/container";
 
 import Loding from "./loading";
+import { mainCarouelList } from "@/utils/mainCarouselList";
 
-import testBanner from "../public/testBanner.jpeg";
+import { commonFetch } from "@/utils/commonFetch";
 interface Product {
   id: number;
   image_url: string;
@@ -34,15 +35,20 @@ export default function Home() {
   }, []);
 
   async function fetchProductData() {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/product_list`);
-    const jsonRes = await res.json();
-    setProductData(jsonRes);
+    const res = await commonFetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/product_list`,
+      "get"
+    );
+    console.log(res);
+    setProductData(res);
   }
 
   async function fetchBannerData() {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/banner`);
-    const jsonRes = await res.json();
-    setBannerData(jsonRes);
+    const res = await commonFetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/banner`,
+      "get"
+    );
+    setBannerData(res);
   }
 
   if (!productData) {
@@ -57,6 +63,25 @@ export default function Home() {
             {/* <Image src={testBanner} alt="image" className="w-full h-full" /> */}
             <div className="w-full h-full bg-black"></div>
           </div>
+
+          <div className=" flex overflow-x-auto scrollbar-hide gap-2.5 my-[10px] px-3">
+            {mainCarouelList?.map((item) => (
+              <Link href={item?.link} key={item?.id}>
+                <div>
+                  <button className="bg-[#F2F4F6] rounded-[50%] w-16 h-16 flex justify-center items-center ">
+                    <Image
+                      src={item?.image}
+                      alt={`Flaticon_image_${item?.title}`}
+                      width={45}
+                      height={45}
+                    />
+                  </button>
+                  <span className="flex justify-center">{item?.title}</span>
+                </div>
+              </Link>
+            ))}
+          </div>
+
           <div className="my-5 px-[10px]">MD pick!</div>
           <div className="flex  gap-[10px] overflow-x-auto scrollbar-hide px-[10px] sm:w-[1280px] sm:mx-auto">
             {productData?.map((product: Product) => (

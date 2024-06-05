@@ -2,11 +2,11 @@
 import React, { useState, useEffect, useMemo } from "react";
 
 import Image from "next/image";
+import Link from "next/link";
 
 import search from "../public/search.png";
 import home from "../public/home.png";
 import person from "../public/person.png";
-import Link from "next/link";
 
 import { usePathname } from "next/navigation";
 
