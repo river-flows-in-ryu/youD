@@ -64,7 +64,7 @@ export default function Page() {
           <label className="mt-10 ">ID</label>
           <input
             className="w-[70%] sm:w-[50%] lg:w-[350px] border m-auto rounded border-[#cecece] px-[10px] sm:px-[20px]
-          h-10 sm:h-[55px] mt-2 "
+          h-10 sm:h-[55px] mt-2 text-center"
             placeholder="ID를 입력해주세요"
             type="text"
             value={id}
@@ -73,7 +73,7 @@ export default function Page() {
           <label className="mt-5">Email</label>
           <input
             className="w-[70%] sm:w-[50%] lg:w-[350px] border m-auto rounded border-[#cecece] px-[10px]  sm:px-[20px]
-          h-10 sm:h-[55px] mt-2 "
+          h-10 sm:h-[55px] mt-2  text-center"
             placeholder="Email를 입력해주세요"
             type="text"
             value={eamil}

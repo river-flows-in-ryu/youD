@@ -20,11 +20,11 @@ export default function Page() {
 
   const { userId, setUserId } = useUserIdStore();
 
-  useEffect(() => {
-    if (userId) {
-      router.back();
-    }
-  }, [userId, router]);
+  // useEffect(() => {
+  //   if (userId) {
+  //     router.back();
+  //   }
+  // }, [userId, router]);
 
   const payload = {
     username: userID,
@@ -73,7 +73,7 @@ export default function Page() {
                   value={userID}
                   onChange={(event) => setUserID(event.target.value)}
                   placeholder="사용자 이름"
-                  className="w-[100%] h-[45px] sm:w-[460px] sm:h-[50px] bg-[#dedede] sm:bg-[#dedede] pl-[20px] 
+                  className="w-[100%] h-[45px] sm:w-[460px] sm:h-[50px] bg-[#dedede] sm:bg-[#dedede] pl-[20px]  
             "
                 />
               </div>

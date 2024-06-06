@@ -64,7 +64,7 @@ export default function Page() {
           <label className="mt-10">변경 비밀번호</label>
           <input
             className="w-[70%] border m-auto rounded border-[#cecece] px-[10px]
-        h-10 mt-2"
+        h-10 mt-2 text-center"
             placeholder="비밀번호를 입력해주세요"
             type="password"
             value={password}
@@ -73,7 +73,7 @@ export default function Page() {
           <label className="mt-5">비밀번호 확인</label>
           <input
             className="w-[70%] border m-auto rounded border-[#cecece] px-[10px]
-        h-10 mt-2"
+        h-10 mt-2 text-center"
             placeholder="Email를 입력해주세요"
             type="password"
             value={checkPassword}

@@ -1,14 +1,19 @@
+import { NextRequest } from "next/server";
+
 export const commonFetch = async (
   url: string,
   method: string,
-  payload?: any
+  payload?: any,
+  request?: NextRequest
 ): Promise<any> => {
   try {
+    let accessCookie = request?.cookies.get("access_token")?.value;
     const options = {
       method: method,
       headers: {
         "Content-Type": "application/json",
         withcredentials: "include",
+        Authorization: `Bearer ${accessCookie}`,
       },
       body: JSON.stringify(payload),
     };

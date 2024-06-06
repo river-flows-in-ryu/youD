@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from "react";
 
-import { useRouter, usePathname, useSearchParams } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 
 export default function Pagination({
   page,

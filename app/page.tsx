@@ -1,12 +1,9 @@
-"use client";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import { CookiesProvider } from "react-cookie";
 
 import Container from "@/components/container";
+import CookiesWrapper from "@/components/cookiesProvider";
 
-import Loding from "./loading";
 import { mainCarouelList } from "@/utils/mainCarouselList";
 
 import { commonFetch } from "@/utils/commonFetch";
@@ -22,41 +19,40 @@ interface Product {
   discountPrice: number;
 }
 
-export default function Home() {
-  const [productData, setProductData] = useState([]);
-  const [bannerData, setBannerData] = useState([]);
-
-  useEffect(() => {
-    async function fetch() {
-      await fetchProductData();
-      await fetchBannerData();
+export default async function Home() {
+  async function getProductData() {
+    try {
+      const res = await commonFetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/product_list`,
+        "get"
+      );
+      return res;
+    } catch (error) {
+      if (error instanceof Error) {
+        alert(error?.message);
+      }
     }
-    fetch();
-  }, []);
-
-  async function fetchProductData() {
-    const res = await commonFetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/product_list`,
-      "get"
-    );
-    console.log(res);
-    setProductData(res);
   }
 
-  async function fetchBannerData() {
-    const res = await commonFetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/banner`,
-      "get"
-    );
-    setBannerData(res);
+  async function getBannertData() {
+    try {
+      const res = await commonFetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/banner`,
+        "get"
+      );
+      return res;
+    } catch (error) {
+      if (error instanceof Error) {
+        alert(error?.message);
+      }
+    }
   }
 
-  if (!productData) {
-    return <Loding />;
-  }
-  console.log(productData);
+  const productData = await getProductData();
+  const bannerData = await getBannertData();
+
   return (
-    <CookiesProvider>
+    <CookiesWrapper>
       <Container>
         <main className="flex flex-1 f-full flex-col w-screen">
           <div className="w-full h-[300px]">
@@ -64,16 +60,17 @@ export default function Home() {
             <div className="w-full h-full bg-black"></div>
           </div>
 
-          <div className=" flex overflow-x-auto scrollbar-hide gap-2.5 my-[10px] px-3">
+          <div className=" flex overflow-x-auto scrollbar-hide gap-2.5 my-5 px-3 sm:mx-auto sm:w-full  sm:justify-center">
             {mainCarouelList?.map((item) => (
               <Link href={item?.link} key={item?.id}>
                 <div>
-                  <button className="bg-[#F2F4F6] rounded-[50%] w-16 h-16 flex justify-center items-center ">
+                  <button className="bg-[#F2F4F6] rounded-[50%] w-16 h-16 flex justify-center items-center">
                     <Image
                       src={item?.image}
                       alt={`Flaticon_image_${item?.title}`}
                       width={45}
                       height={45}
+                      className=""
                     />
                   </button>
                   <span className="flex justify-center">{item?.title}</span>
@@ -82,8 +79,10 @@ export default function Home() {
             ))}
           </div>
 
-          <div className="my-5 px-[10px]">MD pick!</div>
-          <div className="flex  gap-[10px] overflow-x-auto scrollbar-hide px-[10px] sm:w-[1280px] sm:mx-auto">
+          <div className="my-5 px-[10px] w-[1050px] mx-auto  flex  justify-start">
+            <span className="font-bold text-xl">MD pick!</span>
+          </div>
+          <div className="flex  gap-[10px] overflow-x-auto scrollbar-hide px-[10px]   xl:mx-auto">
             {productData?.map((product: Product) => (
               <Link href={`/goods/${product?.id}`} key={product?.id}>
                 <div className="w-[150px] h-[180px] rounded sm:w-[250px] sm:h-[300px]">
@@ -117,6 +116,6 @@ export default function Home() {
           </div>
         </main>
       </Container>
-    </CookiesProvider>
+    </CookiesWrapper>
   );
 }
