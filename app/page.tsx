@@ -4,9 +4,9 @@ import Link from "next/link";
 import Container from "@/components/container";
 import CookiesWrapper from "@/components/cookiesProvider";
 
-import { mainCarouelList } from "@/utils/mainCarouselList";
-
 import { commonFetch } from "@/utils/commonFetch";
+
+import carouselCategory from "../public/carouselCategory.png";
 interface Product {
   id: number;
   image_url: string;
@@ -17,6 +17,18 @@ interface Product {
   OriginPrice: number;
   discountRate: number;
   discountPrice: number;
+}
+
+interface Category {
+  id: number;
+  name: string;
+  image: string;
+  children: CategoryChildren[];
+}
+interface CategoryChildren {
+  id: number;
+  name: string;
+  image: string;
 }
 
 export default async function Home() {
@@ -48,8 +60,32 @@ export default async function Home() {
     }
   }
 
+  async function getCategoriesData() {
+    try {
+      const res = await commonFetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/top-categories`,
+        "get"
+      );
+      return res;
+    } catch (error) {
+      if (error instanceof Error) {
+        alert(error?.message);
+      }
+    }
+  }
+
   const productData = await getProductData();
   const bannerData = await getBannertData();
+  const categoriesData = await getCategoriesData();
+
+  const allCategory = {
+    id: 0,
+    name: "카테고리",
+    image: carouselCategory,
+  };
+
+  if (categoriesData.results)
+    categoriesData.results = [allCategory, ...categoriesData.results];
 
   return (
     <CookiesWrapper>
@@ -61,28 +97,35 @@ export default async function Home() {
           </div>
 
           <div className=" flex overflow-x-auto scrollbar-hide gap-2.5 my-5 px-3 sm:mx-auto sm:w-full  sm:justify-center">
-            {mainCarouelList?.map((item) => (
-              <Link href={item?.link} key={item?.id}>
+            {categoriesData?.results?.map((category: Category) => (
+              <Link
+                href={
+                  category?.id !== 0
+                    ? `/categories?mainCategory=${category?.name}`
+                    : "/overview"
+                }
+                key={category?.id}
+              >
                 <div>
                   <button className="bg-[#F2F4F6] rounded-[50%] w-16 h-16 flex justify-center items-center">
                     <Image
-                      src={item?.image}
-                      alt={`Flaticon_image_${item?.title}`}
+                      src={category?.image}
+                      alt={`Flaticon_image_${category?.name}`}
                       width={45}
                       height={45}
                       className=""
                     />
                   </button>
-                  <span className="flex justify-center">{item?.title}</span>
+                  <span className="flex justify-center">{category?.name}</span>
                 </div>
               </Link>
             ))}
           </div>
 
-          <div className="my-5 px-[10px] w-[1050px] mx-auto  flex  justify-start">
+          <div className="my-5 px-[10px] w-full xl:w-[1050px] xl:mx-auto">
             <span className="font-bold text-xl">MD pick!</span>
           </div>
-          <div className="flex  gap-[10px] overflow-x-auto scrollbar-hide px-[10px]   xl:mx-auto">
+          <div className="flex  gap-[10px] overflow-x-auto scrollbar-hide px-[10px] xl:mx-auto">
             {productData?.map((product: Product) => (
               <Link href={`/goods/${product?.id}`} key={product?.id}>
                 <div className="w-[150px] h-[180px] rounded sm:w-[250px] sm:h-[300px]">
