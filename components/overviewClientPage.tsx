@@ -43,7 +43,7 @@ export default function OverviewClientpage({ categoriesData }: Props) {
   return (
     <Container>
       <div className="flex h-[calc(-109px+100vh)] ">
-        <div className="w-[115px] bg-[#f2f2f2] overflow-y-scroll">
+        <div className="w-[100px] sm:w-[300px] bg-[#f2f2f2] overflow-y-scroll xl:hidden">
           <ul>
             {categoriesData.map((category, index) => (
               <li key={category.id} className="h-16">
@@ -61,11 +61,11 @@ export default function OverviewClientpage({ categoriesData }: Props) {
             ))}
           </ul>
         </div>
-        <div className="flex-1 overflow-y-scroll 	">
+        <div className="flex-1 overflow-y-scroll sm:pt-10	">
           {categoriesData?.map((category: Category) => (
             <div
               key={category.id}
-              className="pl-5 pr-3 pb-5 pt-5"
+              className="pl-5 pr-3 pb-5 pt-5 xl:w-[750px] xl:mx-auto"
               ref={(el) => (subCategoryRefs.current[category.id] = el)}
             >
               <Link href={`/categories?mainCategory=${category?.name}`}>
@@ -77,17 +77,21 @@ export default function OverviewClientpage({ categoriesData }: Props) {
               {category.children && category.children.length > 0 && (
                 <div className="flex flex-wrap">
                   {category.children.map((child) => (
-                    <div key={child.id} className="w-[50%] py-2">
+                    <div key={child.id} className="w-[50%] py-2 xl:w-[25%]">
                       {child?.image && (
-                        <div className="flex flex-col items-center gap-2">
-                          <Image
-                            src={child?.image}
-                            alt={`Flaticon_image_${child?.name}`}
-                            width={50}
-                            height={50}
-                          />
-                          <span className="text-sm">{child?.name}</span>
-                        </div>
+                        <Link
+                          href={`/categories?mainCategory=${category?.name}&subCategory=${child?.id}`}
+                        >
+                          <div className="flex flex-col items-center gap-2 ">
+                            <Image
+                              src={child?.image}
+                              alt={`Flaticon_image_${child?.name}`}
+                              width={50}
+                              height={50}
+                            />
+                            <span className="text-sm">{child?.name}</span>
+                          </div>
+                        </Link>
                       )}
                     </div>
                   ))}

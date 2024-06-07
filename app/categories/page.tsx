@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 import Container from "@/components/container";
 
@@ -21,15 +22,42 @@ interface CategoryChildren {
   name: string;
 }
 
+type Parmas =
+  | "전체"
+  | "상의"
+  | "아우터"
+  | "바지"
+  | "원피스"
+  | "스커트"
+  | "가방"
+  | "모자";
+
 export default function Page() {
   const [categoryList, setCategoryList] = useState<Category[]>([]);
-  const [mainCategory, setMainCategory] = useState("");
+  const [mainCategory, setMainCategory] = useState<Parmas>("전체");
   const [isOpen, setIsOpen] = useState(false);
   const parmas = useSearchParams();
 
+  const router = useRouter();
+
   useEffect(() => {
-    setMainCategory(parmas?.get("mainCategory") as string);
-  }, [parmas]);
+    setMainCategory(parmas?.get("mainCategory") as Parmas);
+    if (
+      ![
+        "전체",
+        "상의",
+        "아우터",
+        "바지",
+        "원피스",
+        "스커트",
+        "가방",
+        "모자",
+      ].includes(mainCategory)
+    ) {
+      alert("잘못된 접근입니다.");
+      router?.push("/");
+    }
+  }, [mainCategory, parmas, router]);
 
   useEffect(() => {
     async function fetchData() {
