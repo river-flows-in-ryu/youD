@@ -1,6 +1,8 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
+import { useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
 
 import { serverFetch } from "@/components/serverFetch";
 
@@ -8,47 +10,90 @@ import search from "../../public/search.png";
 import cancel from "../../public/cancel.png";
 
 import Container from "@/components/container";
-import Pagination from "@/utils/pagination";
+import { commonFetch } from "@/utils/commonFetch";
+
+interface Product {
+  id: number;
+  OriginPrice: number;
+  discountPrice: number;
+  discountRate: number;
+  image_url: string;
+  productName: string;
+  user: {
+    id: number;
+    username: string;
+  };
+}
 
 export default function Page() {
-  const [searchText, setSearchText] = useState("");
-  const [currentPage, setCurrentPage] = useState<number>(1);
+  const params = useSearchParams();
+  const router = useRouter();
 
-  const handlePageChange = (page: number) => {
-    if (page !== null) {
-      setCurrentPage(page);
+  const keyword = params?.get("keyword");
+
+  const [searchText, setSearchText] = useState(keyword || "");
+
+  const [searchProductResults, setSearchProductResults] = useState([]);
+  const [searchUserResults, setSearchUserResults] = useState([]);
+
+  useEffect(() => {
+    setSearchText(keyword ?? "");
+  }, [keyword]);
+
+  useEffect(() => {
+    if (searchText === "") return;
+    if (searchText !== "") {
+      const fetchData = async () => {
+        try {
+          const searchData = await commonFetch(
+            `${
+              process.env.NEXT_PUBLIC_API_URL
+            }/search?keyword=${encodeURIComponent(searchText?.trim())}`,
+            "get"
+          );
+          console.log(searchData);
+          setSearchProductResults(searchData?.products);
+          setSearchUserResults(searchData?.users);
+        } catch (error) {
+          if (error instanceof Error) {
+            alert(error?.message);
+          }
+        }
+      };
+      fetchData();
     }
-  };
-  const payload = {
-    keyword: searchText,
-  };
+  }, [keyword]);
+
+  function handleKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
+    event.stopPropagation();
+    if (event.key === "Enter") {
+      event.preventDefault();
+      handleSubmit();
+    }
+  }
 
   async function handleSubmit() {
-    const res = await serverFetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/search?keyword=${encodeURIComponent(
-        searchText
-      )}`,
-      "get"
-    );
-    console.log(res);
+    router?.push(`/search?keyword=${searchText}`);
   }
 
   return (
     <Container>
-      <div className="w-full min-h-full flex flex-col justify-center items-center sm:hidden ">
-        <div className="relative ">
-          <input
-            className="w-[250px] h-[40px] border border-[#dadce0] relative px-[35px] rounded-2xl bg-[#f4f4f4]"
-            value={searchText}
-            onChange={(e) => setSearchText(e.target.value)}
-          />
+      <div className="flex justify-center">
+        <div className=" relative w-[250px] h-10 border border-[#dadce0] rounded-2xl mt-[30px]">
           <Image
             src={search}
             alt="search"
-            className=" top-0 left-0 z-10 absolute mt-[10px] ml-2"
+            className="absolute top-0 left-0 mt-[10px] ml-2 z-10 cursor-pointer"
             width={20}
             height={20}
             onClick={handleSubmit}
+          />
+          <input
+            className="w-full h-full pl-10 rounded-2xl bg-[#f4f4f4]"
+            value={searchText || ""}
+            placeholder="검색어를 입력해주세요"
+            onChange={(event) => setSearchText(event.target?.value)}
+            onKeyDown={handleKeyDown}
           />
           {(searchText !== "" && (
             <Image
@@ -63,12 +108,34 @@ export default function Page() {
             null}
         </div>
       </div>
-      <Pagination
-        page={currentPage}
-        totalCount={61}
-        pageSize={5}
-        onChange={handlePageChange}
-      />
+      {searchProductResults?.length === 0 ? null : (
+        <div>
+          <p> 상품</p>
+          <div className="flex flex-1 f-full flex-col w-screen">
+            <div className=" flex overflow-x-auto ">
+              {searchProductResults?.map((product: Product) => (
+                <div key={product?.id} className="">
+                  <Link href={`/goods/${product?.id}`}>
+                    <Image
+                      src={product?.image_url}
+                      width={125}
+                      height={125}
+                      alt={product?.productName}
+                    />
+                    <p>{product?.user?.username}</p>
+                    <p>{product?.productName}</p>
+                    <div className="flex">
+                      <>{(product?.OriginPrice).toLocaleString()}원</>
+                      <>{product?.discountRate}%</>
+                    </div>
+                  </Link>
+                </div>
+              ))}
+            </div>
+            <button className=""> 상품 전체보기</button>
+          </div>
+        </div>
+      )}
     </Container>
   );
 }

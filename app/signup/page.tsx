@@ -310,7 +310,7 @@ export default function Page() {
 
   return (
     <Container>
-      <div className="w-full h-full px-5 pb-primary">
+      <div className="w-full h-full px-5 pb-primary sm:w-[450px] sm:mx-auto xl:w-[650px]">
         <h2 className="text-center font-bold py-5 text-lg	">회원가입</h2>
         <InputArea
           text="아이디"

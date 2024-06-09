@@ -4,14 +4,14 @@ import React, { useRef, useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
-import { useCookies } from "react-cookie";
 import { Badge } from "antd";
 
 import Drawer from "./drawer";
-import HamburgerDropdown from "./hamburgerDropdown";
 
 import { useCartCountStore, useMainHamburgerToggleStore } from "@/app/store";
 import { useUserIdStore } from "@/app/store";
+
+import PcLayout from "./pcLayout";
 
 import cart from "../public/cart.png";
 import hamburger from "../public/hamburger.png";
@@ -30,6 +30,9 @@ export default function MainLayout() {
   const { fetchCartItemCount, itemCount } = useCartCountStore();
 
   const pathname = usePathname();
+
+  const primaryColor = "#77C497";
+
   useEffect(() => {
     setIsNumericPath(
       pathname.startsWith("/goods/") &&
@@ -81,94 +84,6 @@ export default function MainLayout() {
   }, [dropdownRef, setToggle, toggle, slidedownRef]);
 
   const router = useRouter();
-  const [, , removeCookie] = useCookies(["access_token"]);
-
-  async function logout() {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/logout`, {
-      method: "post",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-    });
-    if (res.status === 200) {
-      sessionStorage.removeItem("selectedProducts");
-      router.refresh();
-      router.push("/login");
-    }
-  }
-
-  async function handleLogout() {
-    setUserId(0);
-    useUserIdStore?.persist?.clearStorage();
-    removeCookie("access_token");
-    await logout();
-  }
-  const primaryColor = "#77C497";
-  const PCLayout = () => (
-    <div className="">
-      <div className="fixed w-full py-5 h-[130px] border-[#dedede] border-b bg-white z-10">
-        <div className="flex flex-col  m-auto">
-          <div className="flex justify-between px-5 sm:w-full xl:w-[1280px] m-auto ">
-            <button onClick={setToggle} className="relative">
-              <Image src={hamburger} alt="hamburgerImage" />
-            </button>
-            <div className="">
-              <input
-                className="mr-[15px] rounded-md px-3 py-[9px] placeholder:text-base h-10 border "
-                placeholder="검색어를 입력해주세요"
-              ></input>
-              <button className="rounded-md border px-4 py-2">검색하기</button>
-            </div>
-          </div>
-          <div
-            className={`
-${toggle ? "block" : "hidden"}
-w-[150px] h-[450px] bg-primary absolute top-20
-`}
-            ref={dropdownRef}
-          >
-            <HamburgerDropdown />
-          </div>
-          <div className="block mt-2">
-            <div className="w-full flex justify-center">
-              <div className="w-[1280px] flex justify-end pr-5 gap-9">
-                {!userId ? (
-                  <>
-                    <Link href="/">
-                      <span className="text-primary">회원가입</span>
-                    </Link>
-                    <Link href="/login">
-                      <span>로그인</span>
-                    </Link>
-                  </>
-                ) : (
-                  <>
-                    <Link href="/mypage">
-                      <span>마이페이지</span>
-                    </Link>
-                    <button onClick={handleLogout}>
-                      <span>로그아웃</span>
-                    </button>
-                  </>
-                )}
-                <Link href="/cart">
-                  <span className="mr-[3px]">장바구니</span>
-                  {userId ? (
-                    <Badge
-                      count={itemCount}
-                      color={primaryColor}
-                      styles={{ root: { margin: "0 0 3px 0" } }}
-                    ></Badge>
-                  ) : null}
-                </Link>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
 
   const GoodsDetailLayout = () => (
     <div className="">
@@ -266,7 +181,7 @@ w-[150px] h-[450px] bg-primary absolute top-20
   return (
     <header className="h-[64px] sm:h-[130px] ">
       <div className="hidden sm:block">
-        <PCLayout />
+        <PcLayout />
       </div>
       <div className="block sm:hidden">
         {isNumericPath ? <GoodsDetailLayout /> : <MobileBasicLayout />}
