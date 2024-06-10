@@ -5,8 +5,8 @@ import Select from "react-select";
 interface Props {
   universityOptions: { id: number; value: string; label: string }[];
   majorOptions: { id: number; value: string; label: string }[];
-  university: number;
-  major: number;
+  university: number | null;
+  major: number | null;
   setUniversity: (university: number) => void;
   setMajor: (major: number) => void;
 }

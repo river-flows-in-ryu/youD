@@ -75,7 +75,7 @@ export default function PcLayout() {
   }
   return (
     <div className="">
-      <div className="fixed w-full py-5 h-[130px] border-[#dedede] border-b bg-white z-10">
+      <div className="fixed w-full py-5 h-[130px] border-[#dedede] border-b bg-white z-50">
         <div className="flex flex-col  m-auto">
           <div className="flex justify-between px-5 sm:w-full xl:w-[1280px] m-auto ">
             <button onClick={setToggle} className="relative">

@@ -10,7 +10,7 @@ export default async function Page() {
           <div className="w-[200px] h-[200px] rounded-[50%] bg-[#dedede]"></div>
         </div>
         <div className="mt-[30px] mb-[60px]">
-          <span className="font-bold">유가람님</span>
+          <span className="font-bold">000님</span>
         </div>
         <div className="flex justify-center">
           <div className="w-[280px] h-[280px] bg-[#dedede] rounded-2xl ">

@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 
 import CartProductItem from "@/components/cartProductItem";
 import CartOptionChangeModal from "@/components/cartOptionChangeModal";
+import HorizontalLine from "@/components/horizontalLine";
 
 interface Products {
   quantity: number;
@@ -179,7 +180,7 @@ export default function Page() {
           refreshFlag={refreshFlag}
         />
       </Modal>
-      <div className="w-full h-2.5 bg-[#f2f2f2] " />
+      <HorizontalLine />
       <div className=" w-full h-[50px]  bg-white text-center leading-[50px] flex px-[15px] justify-center">
         <div className="pt-1">
           <input
@@ -200,7 +201,7 @@ export default function Page() {
           개
         </span>
       </div>
-      <div className="w-full h-2.5 bg-[#f2f2f2] " />
+      <HorizontalLine />
       <div className="w-full">
         <div className="w-full h-full px-[15px] pt-6 pb-5">
           {cartItems?.length === 0 ? (
@@ -225,7 +226,7 @@ export default function Page() {
             </>
           )}
         </div>
-        <div className="w-full h-2.5 bg-[#f2f2f2] " />
+        <HorizontalLine />{" "}
         <div className="py-[30px] w-full px-4">
           <h1 className="text-lg font-bold mb-5">
             결제할 상품
@@ -274,7 +275,7 @@ export default function Page() {
             </span>
           </button>
         </div>
-        <div className="w-full h-2.5 bg-[#f2f2f2] " />
+        <HorizontalLine />
       </div>
     </div>
   );

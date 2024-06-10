@@ -86,8 +86,8 @@ export default function MainLayout() {
   const router = useRouter();
 
   const GoodsDetailLayout = () => (
-    <div className="">
-      <div className="w-full h-[64px] px-5 py-3 fixed  border-[#dedede] border-b  bg-white z-10 ">
+    <div className="	">
+      <div className="w-full h-[64px] px-5 py-3 fixed  border-[#dedede] border-b  bg-white z-50 ">
         <div className="flex justify-between px-5 pt-2 ">
           <div>
             <button onClick={() => router.back()} className="mr-[15px]">
@@ -144,8 +144,8 @@ export default function MainLayout() {
   );
 
   const MobileBasicLayout = () => (
-    <div className="">
-      <div className="w-full h-[64px] px-5 py-3 fixed  border-[#dedede] border-b  bg-white z-10">
+    <div className="	">
+      <div className="w-full h-[64px] px-5 py-3 fixed  border-[#dedede] border-b  bg-white z-50">
         <div className="flex justify-between px-5 pt-2">
           <Link href="/overview">
             <button>

@@ -50,6 +50,7 @@ interface Products {
     OriginPrice: number;
     user: {
       username: string;
+      brandName: string;
     };
     size_attributes: SizeAttributes[];
   };
@@ -73,6 +74,7 @@ const initialProductDetailData: Products = {
     OriginPrice: 0,
     user: {
       username: "",
+      brandName: "",
     },
     size_attributes: [],
   },
@@ -220,7 +222,7 @@ export default function GoodsClientPage({
           <div className="px-4 py-5 text-xl	">
             <div className="flex flex-col mb-3">
               <span className="text-sm">
-                {productDetailData?.product?.user?.username}
+                {productDetailData?.product?.user?.brandName || ""}
               </span>
               <h2 className="font-extrabold overflow-hidden text-ellipsis ">
                 {productDetailData?.product?.productName}

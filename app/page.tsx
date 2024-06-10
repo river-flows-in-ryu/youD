@@ -12,6 +12,7 @@ interface Product {
   image_url: string;
   user: {
     username: string;
+    brandName: string;
   };
   productName: string;
   OriginPrice: number;
@@ -96,7 +97,7 @@ export default async function Home() {
             <div className="w-full h-full bg-black"></div>
           </div>
 
-          <div className=" flex overflow-x-auto scrollbar-hide gap-2.5 my-5 px-3 sm:mx-auto sm:w-full  sm:justify-center">
+          <div className=" flex overflow-x-auto no-scrollbar gap-2.5 my-5 px-3 sm:mx-auto sm:w-full  sm:justify-center">
             {categoriesData?.results?.map((category: Category) => (
               <Link
                 href={
@@ -125,7 +126,7 @@ export default async function Home() {
           <div className="my-5 px-[10px] w-full xl:w-[1050px] xl:mx-auto">
             <span className="font-bold text-xl">MD pick!</span>
           </div>
-          <div className="flex  gap-[10px] overflow-x-auto scrollbar-hide px-[10px] xl:mx-auto">
+          <div className="flex  gap-[10px] overflow-x-auto no-scrollbar px-[10px] xl:mx-auto">
             {productData?.map((product: Product) => (
               <Link href={`/goods/${product?.id}`} key={product?.id}>
                 <div className="w-[150px] h-[180px] rounded sm:w-[250px] sm:h-[300px]">
@@ -138,10 +139,12 @@ export default async function Home() {
                   />
                 </div>
                 <div className="w-[150px]  flex flex-col mt-2">
-                  <span>{product?.user?.username}</span>
+                  <span className="line-clamp-1 break-all	">
+                    {product?.user?.brandName}
+                  </span>
                 </div>
-                <div className="leading-[1.3] overflow-hidden text-ellipsis line-clamp-2 ">
-                  <span>{product?.productName}</span>
+                <div className="leading-[1.3] overflow-hidden text-ellipsis line-clamp-2 break-all">
+                  <span>{product?.productName} </span>
                 </div>
                 <span className="line-through	text-xs text-secondary">
                   {(product?.OriginPrice || 0).toLocaleString()}원

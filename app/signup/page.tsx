@@ -1,6 +1,8 @@
 "use client";
 import React, { useEffect, useState } from "react";
 
+import { useRouter } from "next/navigation";
+
 import InputArea from "@/components/inputArea";
 import SignupSexArea from "@/components/\bsignupSexArea";
 import SignupUniversityArea from "@/components/\bsignupUniversityArea";
@@ -25,8 +27,8 @@ export default function Page() {
   const [address, setAddress] = useState("");
   const [addressDetail, setAddressDetail] = useState("");
   const [selectedSexOption, setSelectedSexOption] = useState("");
-  const [university, setUniversity] = useState(0);
-  const [major, setMajor] = useState(0);
+  const [university, setUniversity] = useState<number | null>(null);
+  const [major, setMajor] = useState<number | null>(null);
 
   const [isNotIdDuplicated, setIsNotIdDuplicated] = useState(false);
   const [isNotEmailDuplicated, setIsNotEmailDuplicated] = useState(false);
@@ -46,6 +48,8 @@ export default function Page() {
 
   const [universityOptions, setUniversityOptions] = useState([]);
   const [majorOptions, setMajorOptions] = useState([]);
+
+  const router = useRouter();
 
   useEffect(() => {
     async function optionFetch() {
@@ -249,7 +253,7 @@ export default function Page() {
     });
     const data = await res.json();
     if (data.message === "SUCCESS") {
-      console.log("SUCCESS");
+      router.push("/login");
     }
   }
 
