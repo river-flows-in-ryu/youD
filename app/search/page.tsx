@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -26,6 +26,8 @@ export default function Page() {
   const [searchProductResultsCount, setSearchProductResultsCount] = useState(0);
   const [searchUserResults, setSearchUserResults] = useState([]);
   const [searchUserResultsCount, setSearchUserResultsCount] = useState(0);
+
+  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     setSearchText(keyword ?? "");
@@ -73,6 +75,13 @@ export default function Page() {
     router?.push(`/search?keyword=${searchText}`);
   }
 
+  function handleSearchInputClear() {
+    setSearchText("");
+    if (inputRef?.current) {
+      inputRef?.current?.focus();
+    }
+  }
+
   return (
     <Container>
       <div className="pb-10 w-screen sm:w-[650px] sm:mx-auto">
@@ -93,6 +102,7 @@ export default function Page() {
                 placeholder="검색어를 입력해주세요"
                 onChange={(event) => setSearchText(event.target?.value)}
                 onKeyDown={handleKeyDown}
+                ref={inputRef}
               />
               {(searchText !== "" && (
                 <Image
@@ -101,7 +111,7 @@ export default function Page() {
                   width={20}
                   height={20}
                   className="top-0 right-0 z-10 absolute mt-[10px] mr-2"
-                  onClick={() => setSearchText("")}
+                  onClick={handleSearchInputClear}
                 />
               )) ||
                 null}
