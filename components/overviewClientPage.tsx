@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 
 import Image from "next/image";
 import Link from "next/link";
@@ -27,31 +27,60 @@ interface CategoryChildren {
 }
 
 export default function OverviewClientpage({ categoriesData }: Props) {
-  const subCategoryRefs = useRef<(HTMLElement | null)[]>([]);
-
+  const subCategoryRefs = useRef<(HTMLDivElement | null)[]>([]);
   const [currentTargetNumber, setCurrentTargetNumber] = useState(1);
 
-  // 대분류 클릭 시 소분류로 스크롤하는 함수
   const scrollToCategory = (categoryId: number) => {
-    setCurrentTargetNumber(categoryId);
-    const subCategoryRef = subCategoryRefs.current[categoryId];
-    if (subCategoryRef) {
-      subCategoryRef.scrollIntoView({ behavior: "smooth", block: "start" });
+    const categoryElement = subCategoryRefs.current[categoryId];
+    if (categoryElement) {
+      categoryElement.scrollIntoView();
+      setCurrentTargetNumber(categoryId);
     }
   };
+
+  const handleScroll = () => {
+    let closestCategory = null;
+    let closestOffset = Number.MAX_SAFE_INTEGER;
+
+    subCategoryRefs.current.forEach((categoryElement, index) => {
+      if (categoryElement) {
+        const offset = Math.abs(categoryElement.getBoundingClientRect().top);
+        if (offset < closestOffset) {
+          closestOffset = offset;
+          closestCategory = index;
+        }
+      }
+    });
+
+    if (closestCategory !== null) {
+      setCurrentTargetNumber(closestCategory);
+    }
+  };
+
+  useEffect(() => {
+    const container = document.querySelector(".right-panel");
+    if (container) {
+      container.addEventListener("scroll", handleScroll);
+    }
+    return () => {
+      if (container) {
+        container.removeEventListener("scroll", handleScroll);
+      }
+    };
+  }, []);
 
   return (
     <Container>
       <div className="flex h-[calc(-109px+100vh)] ">
         <div className="w-[100px] sm:w-[300px] bg-[#f2f2f2] overflow-y-scroll xl:hidden">
           <ul>
-            {categoriesData.map((category, index) => (
+            {categoriesData.map((category) => (
               <li key={category.id} className="h-16">
                 <button
                   className={`w-full h-full ${
                     currentTargetNumber === category?.id
-                      ? "font-bold"
-                      : "text-[#aaa]"
+                      ? "bg-white font-bold"
+                      : ""
                   }`}
                   onClick={() => scrollToCategory(category.id)}
                 >
@@ -61,12 +90,18 @@ export default function OverviewClientpage({ categoriesData }: Props) {
             ))}
           </ul>
         </div>
-        <div className="flex-1 overflow-y-scroll sm:pt-10	">
+        <div className="flex-1 overflow-y-scroll sm:pt-10 right-panel	">
           {categoriesData?.map((category: Category) => (
             <div
               key={category.id}
               className="pl-5 pr-3 pb-5 pt-5 xl:w-[750px] xl:mx-auto"
-              ref={(el) => (subCategoryRefs.current[category.id] = el)}
+              ref={(el) => {
+                if (el) {
+                  subCategoryRefs.current[category.id] = el;
+                } else {
+                  subCategoryRefs.current[category.id] = null;
+                }
+              }}
             >
               <Link href={`/categories?mainCategory=${category?.name}`}>
                 <div className="h-12 text-xl font-bold flex justify-between">
