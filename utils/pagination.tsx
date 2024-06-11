@@ -58,38 +58,44 @@ export default function Pagination({
     };
   return (
     <div className="w-full h-[30px] flex justify-center ">
-      <button
-        className="w-[30px] h-[30px]"
-        onClick={handleClick(page - 1)}
-        disabled={page === 1}
-      >
-        <span>&lt;</span>
-      </button>
-      {page ? (
-        <div className="flex mr-2">
-          {pagination?.map((number: number, index: number) => {
-            return (
-              <button
-                key={index}
-                className={`w-[30px] h-[30px] ${
-                  page === number ? "font-bold text-primary" : "text-[#aaa]"
-                }`}
-                onClick={handleClick(number)}
-              >
-                {number}
-              </button>
-            );
-          })}
-        </div>
-      ) : null}
+      {totalCount === 0 ? null : (
+        <>
+          {page ? (
+            <button
+              className="w-[30px] h-[30px]"
+              onClick={handleClick(page - 1)}
+              disabled={page === 1}
+            >
+              <span>&lt;</span>
+            </button>
+          ) : null}
+          {page ? (
+            <div className="flex mr-2">
+              {pagination?.map((number: number, index: number) => {
+                return (
+                  <button
+                    key={index}
+                    className={`w-[30px] h-[30px] ${
+                      page === number ? "font-bold text-primary" : "text-[#aaa]"
+                    }`}
+                    onClick={handleClick(number)}
+                  >
+                    {number}
+                  </button>
+                );
+              })}
+            </div>
+          ) : null}
 
-      <button
-        className="w-[30px] h-[30px]"
-        onClick={handleClick(page + 1)}
-        disabled={page === Math.ceil(totalCount / pageSize)}
-      >
-        <span>&gt;</span>
-      </button>
+          <button
+            className="w-[30px] h-[30px]"
+            onClick={handleClick(page + 1)}
+            disabled={page === Math.ceil(totalCount / pageSize)}
+          >
+            <span>&gt;</span>
+          </button>
+        </>
+      )}
     </div>
   );
 }
