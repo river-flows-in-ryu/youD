@@ -1,16 +1,20 @@
 "use client";
 import React, { useEffect, useMemo, useState } from "react";
 
-import { useUserIdStore } from "@/app/store";
-import { commonFetch } from "@/utils/commonFetch";
+import Image from "next/image";
 
 import Modal from "@/components/modal";
 import CartDeleteModal from "@/components/cartDeleteModal";
 import { useRouter } from "next/navigation";
 
+import { useUserIdStore } from "@/app/store";
+import { commonFetch } from "@/utils/commonFetch";
+
 import CartProductItem from "@/components/cartProductItem";
 import CartOptionChangeModal from "@/components/cartOptionChangeModal";
 import HorizontalLine from "@/components/horizontalLine";
+
+import emptyCart from "../../public/emptyCart.png";
 
 interface Products {
   quantity: number;
@@ -205,8 +209,15 @@ export default function Page() {
       <div className="w-full">
         <div className="w-full h-full px-[15px] pt-6 pb-5">
           {cartItems?.length === 0 ? (
-            //todo
-            <div className=""></div>
+            <div className="flex flex-col items-center text-center gap-5">
+              <Image
+                src={emptyCart}
+                alt="Flaticon_image"
+                width={150}
+                height={150}
+              />
+              <span>장바구니에 담긴 상품이 없습니다. </span>
+            </div>
           ) : (
             <>
               {cartItems.map((item: Products) => (
