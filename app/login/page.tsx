@@ -52,7 +52,7 @@ export default function Page() {
     event.preventDefault();
     const userData = await userDataFetch();
     if (userData.message === "SUCCESS") {
-      router.push("/");
+      window.location.href = "/";
     } else {
       setErr(userData?.message);
     }
