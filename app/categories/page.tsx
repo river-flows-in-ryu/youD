@@ -142,6 +142,14 @@ export default function Page() {
     }
   }, [categoryList, mainCategory, subCategory, page]);
 
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "visible";
+    }
+  }, [isOpen]);
+
   function handleClickBackdrop(
     event: React.MouseEvent<HTMLDivElement, MouseEvent>
   ) {
@@ -160,94 +168,116 @@ export default function Page() {
 
   return (
     <Container>
-      <div className="w-full flex flex-col h-full">
+      <div className="w-full flex flex-col h-full sm:w-[650px] mx-auto">
         <div
-          className="flex py-2.5 justify-center z-10 bg-white"
+          className="flex py-2.5 justify-center  bg-white"
           onClick={() => setIsOpen(true)}
         >
           <span className="font-bold">{mainCategory || "전체"}</span>
           <Image src={arrowDown} alt="arrow_down" width={20} height={20} />
         </div>
-
-        {!isOpen ? (
-          <div className="w-full h-full">
-            <ul className="flex w-full flex-wrap ">
-              {subCategoryList?.map((item) => (
-                <div
-                  key={item?.id}
-                  className="w-[33.3%] h-10 border border-[#f5f6f8]"
-                >
-                  <Link
-                    href={`/categories?mainCategory=${mainCategory}&subCategory=${item?.id}`}
-                  >
-                    <li
-                      className={`text-sm text-center leading-10 cursor-pointer ${
-                        (subCategory === null && item?.id === null) ||
-                        subCategory === item?.id
-                          ? "font-bold"
-                          : ""
-                      }`}
-                    >
-                      {item?.name}
-                    </li>
-                  </Link>
-                </div>
-              ))}
-            </ul>
-            <HorizontalLine />
-            <div className="flex flex-wrap px-[10px] justify-between ">
-              {categoryProductData?.map((product: Product) => (
-                <div key={product?.id} className="w-[49%] h-full flex-shrink-0">
-                  <Link href={`goods/${product?.id}`}>
-                    <Image
-                      src={product?.image_url}
-                      alt={product?.productName}
-                      width={150}
-                      height={150}
-                      className="w-full h-[200px]"
-                    />
-                    <div className="mt-5 px-4">
-                      <p className="text-xs line-clamp-1 break-all ">
-                        {product?.user?.brandName}
-                      </p>
-                      <p className="text-sm	line-clamp-2 break-all font-bold">
-                        {product?.productName}
-                      </p>
-                      {product?.OriginPrice === product?.discountPrice ||
-                      product?.discountRate === 0 ? (
-                        <span className="line-through text-[#b5b5b5]	mb-5">
-                          {(product?.OriginPrice).toLocaleString()}원
-                        </span>
-                      ) : (
-                        <div className="flex justify-between text-xs mt-1 mb-5">
-                          <div className="flex flex-col">
-                            <span className="text-base font-medium">
-                              {(product?.discountPrice).toLocaleString()}원
-                            </span>
-                            <span className="line-through text-[#b5b5b5]	">
-                              {(product?.OriginPrice).toLocaleString()}원
-                            </span>
-                          </div>
-                          <strong className="text-red-400 text-base	">
-                            {product?.discountRate}%
-                          </strong>
-                        </div>
-                      )}
-                    </div>
-                  </Link>
-                </div>
-              ))}
-            </div>
-            <Pagination
-              page={page}
-              totalCount={categoryProductTotalCount}
-              pageSize={10}
-              onChange={setPage}
+        {isOpen && (
+          <>
+            <div
+              className="w-full h-full fixed top-0 left-0 bg-backDrop flex z-9"
+              onClick={handleClickBackdrop}
+              ref={backdropRef}
             />
-          </div>
-        ) : (
-          <></>
+            <div className=" fixed w-full h-[370px]  left-0  z-10 bg-white p-5 ">
+              <div className="flex flex-col gap-5">
+                {categoryList?.map((category) => (
+                  <button
+                    className={`${
+                      category?.name === mainCategory
+                        ? "font-bold"
+                        : "text-[#aaa]"
+                    }`}
+                    key={category?.id}
+                    onClick={() => handleCategoryClick(category?.name)}
+                  >
+                    {category.name}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </>
         )}
+
+        <div className="w-full h-full">
+          <ul className="flex w-full flex-wrap ">
+            {subCategoryList?.map((item) => (
+              <div
+                key={item?.id}
+                className="w-[33.3%] h-10 border border-[#f5f6f8]"
+              >
+                <Link
+                  href={`/categories?mainCategory=${mainCategory}&subCategory=${item?.id}`}
+                >
+                  <li
+                    className={`text-sm text-center leading-10 cursor-pointer ${
+                      (subCategory === null && item?.id === null) ||
+                      subCategory === item?.id
+                        ? "font-bold"
+                        : ""
+                    }`}
+                  >
+                    {item?.name}
+                  </li>
+                </Link>
+              </div>
+            ))}
+          </ul>
+          <HorizontalLine />
+          <div className="flex flex-wrap px-[10px] justify-between ">
+            {categoryProductData?.map((product: Product) => (
+              <div key={product?.id} className="w-[49%] h-full flex-shrink-0">
+                <Link href={`goods/${product?.id}`}>
+                  <Image
+                    src={product?.image_url}
+                    alt={product?.productName}
+                    width={150}
+                    height={150}
+                    className="w-full h-[250px] sm:h-[350px]"
+                  />
+                  <div className="mt-5 px-4">
+                    <p className="text-xs line-clamp-1 break-all ">
+                      {product?.user?.brandName}
+                    </p>
+                    <p className="text-sm	line-clamp-2 break-all font-bold">
+                      {product?.productName}
+                    </p>
+                    {product?.OriginPrice === product?.discountPrice ||
+                    product?.discountRate === 0 ? (
+                      <span className="line-through text-[#b5b5b5]	mb-5">
+                        {(product?.OriginPrice).toLocaleString()}원
+                      </span>
+                    ) : (
+                      <div className="flex justify-between text-xs mt-1 mb-5">
+                        <div className="flex flex-col">
+                          <span className="text-base font-medium">
+                            {(product?.discountPrice).toLocaleString()}원
+                          </span>
+                          <span className="line-through text-[#b5b5b5]	">
+                            {(product?.OriginPrice).toLocaleString()}원
+                          </span>
+                        </div>
+                        <strong className="text-red-400 text-base	">
+                          {product?.discountRate}%
+                        </strong>
+                      </div>
+                    )}
+                  </div>
+                </Link>
+              </div>
+            ))}
+          </div>
+          <Pagination
+            page={page}
+            totalCount={categoryProductTotalCount}
+            pageSize={10}
+            onChange={setPage}
+          />
+        </div>
       </div>
     </Container>
   );
