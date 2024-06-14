@@ -4,6 +4,7 @@ import React, { Suspense, useEffect, useState } from "react";
 import Image from "next/image";
 
 import dynamic from "next/dynamic";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import GoodsDetailTabBar from "@/components/goodsDetailTabBar";
@@ -12,6 +13,8 @@ import CartSuccessAddModal from "@/components/cartSuccessAddModal";
 
 import { useUserIdStore } from "@/app/store";
 import ReviewListDetail from "./reviewListDetail";
+
+import arrowFoward from "../public/arrow_forward_balck.png";
 
 interface Props {
   productData: Products;
@@ -49,6 +52,7 @@ interface Products {
     info: string;
     OriginPrice: number;
     user: {
+      id: number;
       username: string;
       brandName: string;
     };
@@ -73,6 +77,7 @@ const initialProductDetailData: Products = {
     info: "",
     OriginPrice: 0,
     user: {
+      id: 0,
       username: "",
       brandName: "",
     },
@@ -221,9 +226,22 @@ export default function GoodsClientPage({
           </div>
           <div className="px-4 py-5 text-xl	">
             <div className="flex flex-col mb-3">
-              <span className="text-sm">
-                {productDetailData?.product?.user?.brandName || ""}
-              </span>
+              <Link href={`/brands/${productDetailData?.product?.user?.id}`}>
+                <div className="flex gap-[10px]">
+                  <span className="text-sm">
+                    {productDetailData?.product?.user?.brandName || ""}
+                  </span>
+                  <div className="my-auto">
+                    <Image
+                      src={arrowFoward}
+                      alt="arrowFoward"
+                      width={15}
+                      height={15}
+                      className="w-3 h-3 "
+                    />
+                  </div>
+                </div>
+              </Link>
               <h2 className="font-extrabold overflow-hidden text-ellipsis ">
                 {productDetailData?.product?.productName}
               </h2>
