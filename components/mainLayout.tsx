@@ -60,28 +60,6 @@ export default function MainLayout() {
   }, [toggle]);
 
   const [isNumericPath, setIsNumericPath] = useState(false);
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      const isInsideDropdown = dropdownRef?.current?.contains(
-        event.target as Node
-      );
-      const isInsideSlide = slidedownRef?.current?.contains(
-        event.target as Node
-      );
-      if (toggle) {
-        if (
-          !isInsideDropdown &&
-          dropdownRef &&
-          slidedownRef &&
-          !isInsideSlide
-        ) {
-          setToggle();
-        }
-      }
-    }
-    document.addEventListener("click", handleClickOutside);
-    return () => document.removeEventListener("click", handleClickOutside);
-  }, [dropdownRef, setToggle, toggle, slidedownRef]);
 
   const router = useRouter();
 
@@ -89,19 +67,21 @@ export default function MainLayout() {
     <div className="	">
       <div className="w-full h-[64px] px-5 py-3 fixed  border-[#dedede] border-b  bg-white z-50 ">
         <div className="flex justify-between px-5 pt-2 ">
-          <div>
-            <button onClick={() => router.back()} className="mr-[15px]">
-              <Image
-                src={arrowBack}
-                alt="arrowBack"
-                width={20}
-                height={20}
-                priority={true}
-              />
-            </button>
+          <div className="flex">
+            <Link href="/overview">
+              <button onClick={() => router.back()} className="mr-2 mt-0.5">
+                <Image
+                  src={arrowBack}
+                  alt="arrowBack"
+                  priority
+                  width={20}
+                  height={20}
+                />
+              </button>
+            </Link>
             <Link href="/overview">
               <button>
-                <Image src={hamburger} alt="hamburgerImage" />
+                <Image src={hamburger} alt="hamburgerImage" priority />
               </button>
             </Link>
           </div>
@@ -147,11 +127,24 @@ export default function MainLayout() {
     <div className="	">
       <div className="w-full h-[64px] px-5 py-3 fixed  border-[#dedede] border-b  bg-white z-50">
         <div className="flex justify-between px-5 pt-2">
-          <Link href="/overview">
-            <button>
-              <Image src={hamburger} alt="hamburgerImage" priority />
-            </button>
-          </Link>
+          <div className="flex">
+            <Link href="/overview">
+              <button onClick={() => router.back()} className="mr-2 mt-0.5">
+                <Image
+                  src={arrowBack}
+                  alt="arrowBack"
+                  priority
+                  width={20}
+                  height={20}
+                />
+              </button>
+            </Link>
+            <Link href="/overview">
+              <button>
+                <Image src={hamburger} alt="hamburgerImage" priority />
+              </button>
+            </Link>
+          </div>
           <Link href={"/cart"}>
             {userId ? (
               <Badge count={itemCount} color={primaryColor}>

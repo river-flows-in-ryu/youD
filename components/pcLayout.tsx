@@ -73,6 +73,32 @@ export default function PcLayout() {
       router.refresh();
     }
   }
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      const isInsideDropdoown = dropdownRef?.current?.contains(
+        event?.target as Node
+      );
+      if (toggle) {
+        if (!isInsideDropdoown) {
+          setToggle();
+        }
+      }
+    }
+    document.addEventListener("click", handleClickOutside);
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, [setToggle, toggle]);
+
+  function handleClickDropdown(
+    event: React.MouseEvent<HTMLDivElement, MouseEvent>
+  ) {
+    if (dropdownRef.current && dropdownRef.current !== event?.currentTarget) {
+      setToggle();
+    }
+  }
+
   return (
     <div className="">
       <div className="fixed w-full py-5 h-[130px] border-[#dedede] border-b bg-white z-50">
@@ -81,6 +107,18 @@ export default function PcLayout() {
             <button onClick={setToggle} className="relative">
               <Image src={hamburger} alt="hamburgerImage" />
             </button>
+            <div
+              className={`
+${toggle ? "block" : "hidden"}
+w-[150px] h-[450px]  absolute top-20 bg-secondary 
+`}
+              ref={dropdownRef}
+            >
+              <HamburgerDropdown />
+            </div>
+            <div className="ml-[275px] leading-[42px]">
+              <button onClick={() => router?.push("/")}>🏠로고 자리</button>
+            </div>
             <div className="">
               <input
                 className="mr-[15px] rounded-md px-3 py-[9px] placeholder:text-base h-10 border "
@@ -97,15 +135,7 @@ export default function PcLayout() {
               </button>
             </div>
           </div>
-          <div
-            className={`
-${toggle ? "block" : "hidden"}
-w-[150px] h-[450px] bg-primary absolute top-20
-`}
-            ref={dropdownRef}
-          >
-            <HamburgerDropdown />
-          </div>
+
           <div className="block mt-2">
             <div className="w-full flex justify-center">
               <div className="w-[1280px] flex justify-end pr-5 gap-9">
