@@ -6,8 +6,8 @@ import BrandsClientPage from "@/components/brandsClientPage";
 export default async function Page({ params }: { params: { slug: string } }) {
   async function getUsertData(slug: number) {
     try {
-      const res = commonFetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/users/${slug}`,
+      const res = await commonFetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/brand_info/${slug}`,
         "get"
       );
       return res;
@@ -17,7 +17,9 @@ export default async function Page({ params }: { params: { slug: string } }) {
       }
     }
   }
+
   const userData = await getUsertData(parseInt(params?.slug));
+  console.log(userData);
 
   return <BrandsClientPage userData={userData} slug={params?.slug} />;
 }

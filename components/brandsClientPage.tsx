@@ -61,7 +61,7 @@ export default function BrandsClientPage({ userData, slug }: Props) {
           <div className="flex flex-col items-center">
             <div className="w-20 h-20 bg-black rounded-full"></div>
             <h2 className="mt-3 text-xl	text-white font-bold">
-              {userData?.brandName}
+              {userData?.brandName || "브랜드 네임"}
             </h2>
             <span className="text-white text-sm mt-2">간략한 설명글</span>
           </div>
