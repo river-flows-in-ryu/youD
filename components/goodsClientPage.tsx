@@ -6,15 +6,19 @@ import Image from "next/image";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Select } from "antd";
+import { useRouter } from "next/navigation";
 
 import GoodsDetailTabBar from "@/components/goodsDetailTabBar";
 import GoodsOptionTabBar from "@/components/goodsOptionTabBar";
 import CartSuccessAddModal from "@/components/cartSuccessAddModal";
 
-import { useUserIdStore } from "@/app/store";
+import { useCartCountStore, useUserIdStore } from "@/app/store";
 import ReviewListDetail from "./reviewListDetail";
+import { commonFetch } from "@/utils/commonFetch";
 
 import arrowFoward from "../public/arrow_forward_balck.png";
+import ProductDetailOption from "./productDetailOption";
 
 interface Props {
   productData: Products;
@@ -105,6 +109,10 @@ export default function GoodsClientPage({
 
   const { reviewTotalCount, imageReviewCount, nomalReviewCount } = reviewData;
 
+  const { fetchCartItemCount } = useCartCountStore();
+
+  const router = useRouter();
+
   useEffect(() => {
     if (productData) {
       setProductDetailData(productData);
@@ -125,10 +133,10 @@ export default function GoodsClientPage({
     );
   }, [optionArray]);
 
-  const payload = {
-    user_id: userId,
-    product_id: slug,
-  };
+  // const payload = {
+  //   user_id: userId,
+  //   product_id: slug,
+  // };
 
   // async function fetchLikeData() {
   //   const res = await serverFetch(
@@ -148,12 +156,53 @@ export default function GoodsClientPage({
   //   // console.log(res);
   // };
 
+  const cartPayload = {
+    userId: userId,
+    optionArray: optionArray,
+  };
+  async function handleClickSubmit() {
+    if (userId === 0) {
+      alert("로그인해주세요");
+      router.push("/login");
+      return;
+    }
+
+    if (optionArray.length === 0) {
+      alert("옵션를 선택하십시오.");
+      return;
+    }
+    try {
+      const res = await commonFetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/cart`,
+        "post",
+        cartPayload
+      );
+      if (res) {
+        await fetchCartItemCount(userId);
+        setIsModalOpen(true);
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        alert(error?.message);
+      }
+    }
+  }
+
   const handleChange = (value: string) => {
     const optionIndex = optionArray.findIndex((option: Option) => {
-      option.value === value;
+      return option.value === value;
     });
     if (optionIndex !== -1) {
-      alert("이미 선택한 옵션입니다.");
+      const newOptionArray = optionArray.map((option) => {
+        if (option.value === value) {
+          return {
+            ...option,
+            quantity: option.quantity + 1,
+          };
+        }
+        return option;
+      });
+      setOptionArray(newOptionArray);
     } else {
       const selectedOption: any = options.find(
         (option: SelectedOption) => option.value === value
@@ -209,9 +258,9 @@ export default function GoodsClientPage({
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
         <CartSuccessAddModal onClose={() => setIsModalOpen(false)} />
       </Modal>
-      <div className="sm:w-full xl:w-[1050px] sm:mt-[30px] sm:mx-auto justify-between ">
+      <div className="sm:w-full xl:w-[1050px] sm:mt-2.5 sm:mx-auto justify-between ">
         <div className="sm:flex sm:w-full">
-          <div className="w-full sm:w-[450px] h-[560px] relative">
+          <div className="w-full sm:w-[600px] h-[600px] relative flex-shrink-0">
             {productDetailData?.product?.image_url && (
               <Image
                 src={productDetailData?.product?.image_url}
@@ -224,7 +273,7 @@ export default function GoodsClientPage({
               />
             )}
           </div>
-          <div className="px-4 py-5 text-xl	">
+          <div className="w-full px-4 py-5 text-xl	">
             <div className="flex flex-col mb-3">
               <Link href={`/brands/${productDetailData?.product?.user?.id}`}>
                 <div className="flex gap-[10px]">
@@ -259,6 +308,56 @@ export default function GoodsClientPage({
               <span className="line-through	text-base leading-7 text-[#b5b5b5]	">
                 {productDetailData?.product?.OriginPrice.toLocaleString()}원
               </span>
+            </div>
+            <div className="hidden sm:block w-[400px] mt-[50px]">
+              <div className="w-full">
+                <Select
+                  onChange={handleChange}
+                  defaultValue="옵션 선택"
+                  className="h-[50px] mb-5 w-full"
+                  options={options}
+                />
+              </div>
+              {optionArray?.length !== 0 && (
+                <div className="bg-[#dedede] sm:bg-white min-h-[55px] mb-5 max-h-[200px] overflow-auto p-[10px]	">
+                  <div className="flex flex-col">
+                    {optionArray
+                      ?.slice()
+                      ?.reverse()
+                      .map((option: Option, index) => {
+                        return (
+                          <ProductDetailOption
+                            option={option}
+                            onDelete={onDelete}
+                            onAdd={onAdd}
+                            onMinus={onMinus}
+                            price={productDetailData?.product?.discountPrice}
+                            key={index}
+                          />
+                        );
+                      })}
+                  </div>
+                </div>
+              )}
+              <div className="flex justify-between pl-5 mb-5">
+                <span className="text-base leading-8">총 금액</span>
+                <span className="text-2xl	font-bold">
+                  {(
+                    productDetailData?.product?.discountPrice * totalQuantity
+                  ).toLocaleString() || 0}
+                  원
+                </span>
+              </div>
+              <div className="flex justify-end">
+                <div className="flex flex-col">
+                  <button
+                    className="w-[175px] h-[60px] bg-primary text-white rounded"
+                    onClick={handleClickSubmit}
+                  >
+                    장바구니 담기
+                  </button>
+                </div>
+              </div>
             </div>
 
             {/* <button className="w-10 h-10" onClick={handleLikeClick}>
