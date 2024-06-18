@@ -25,8 +25,14 @@ interface Product {
 }
 
 interface UserData {
-  id: number;
-  brandName: string;
+  brand_info: {
+    id: number;
+    name: string;
+    description: string;
+    image: string;
+    bg_image: string;
+  };
+  is_exist: boolean;
 }
 
 interface Props {
@@ -39,6 +45,10 @@ export default function BrandsClientPage({ userData, slug }: Props) {
 
   const [page, setPage] = useState(1);
   const [brandProductTotalCount, setBrandProductTotalCount] = useState(0);
+
+  const { name, description, image, bg_image } = userData?.brand_info;
+
+  console.log(name);
 
   useEffect(() => {
     async function brandsProductData() {
@@ -57,13 +67,35 @@ export default function BrandsClientPage({ userData, slug }: Props) {
   return (
     <Container>
       <div className="w-full h-full sm:w-[650px] sm:mx-auto">
-        <div className="w-full h-[250px] bg-primary flex justify-center items-center text-center mb-[10px]">
+        <div
+          className="w-full h-[250px] bg-primary flex justify-center items-center text-center mb-[10px]"
+          style={{
+            backgroundImage: `${bg_image ? `url(${bg_image})` : "none"} `,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+          }}
+        >
           <div className="flex flex-col items-center">
-            <div className="w-20 h-20 bg-black rounded-full"></div>
+            <div
+              className={`w-20 h-20 rounded-[50%] relative ${
+                image ? "" : "bg-black"
+              }`}
+            >
+              {image && (
+                <Image
+                  src={image}
+                  alt="유저 이미지"
+                  fill
+                  style={{ objectFit: "contain", borderRadius: "50%" }}
+                />
+              )}
+            </div>
             <h2 className="mt-3 text-xl	text-white font-bold">
-              {userData?.brandName || "브랜드 네임"}
+              {name || "브랜드 네임"}
             </h2>
-            <span className="text-white text-sm mt-2">간략한 설명글</span>
+            <span className="text-white text-sm mt-2">
+              {description || "간략한 설명글"}
+            </span>
           </div>
         </div>
 

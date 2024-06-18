@@ -84,16 +84,17 @@ export default function Page() {
         }
         formData.append("name", brandName);
         formData.append("description", brandDescription);
+
         if (brandImageFile instanceof File || brandImageFile === null) {
           formData.append("image", brandImageFile ?? "");
         } else {
-          formData.append("image", brandImageFile);
+          formData.append("image", brandImage);
         }
 
         if (brandBGImageFile instanceof File || brandBGImageFile === null) {
           formData.append("bg_image", brandBGImageFile ?? "");
         } else {
-          formData.append("bg_image", brandBGImageFile);
+          formData.append("bg_image", brandBGImage);
         }
 
         const res = await fetch(url, {
@@ -106,8 +107,6 @@ export default function Page() {
             router?.push("/mypage");
           }
         }
-
-        // const res = await commonFetch(url, method, payload);
       } catch (error) {
         if (error instanceof Error) {
           alert(error?.message);

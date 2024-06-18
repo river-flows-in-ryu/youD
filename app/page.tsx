@@ -11,9 +11,9 @@ interface Product {
   id: number;
   image_url: string;
   user: {
-    username: string;
     brandName: string;
   };
+  brandName: string;
   productName: string;
   OriginPrice: number;
   discountRate: number;
@@ -140,7 +140,7 @@ export default async function Home() {
                 </div>
                 <div className="w-[150px]  flex flex-col mt-2">
                   <span className="line-clamp-1 break-all	">
-                    {product?.user?.brandName}
+                    {product?.brandName || ""}
                   </span>
                 </div>
                 <div className="leading-[1.3] overflow-hidden text-ellipsis line-clamp-2 break-all">

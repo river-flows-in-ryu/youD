@@ -32,9 +32,9 @@ interface Product {
   discountRate: number;
   image_url: string;
   productName: string;
+  brandName: string;
   user: {
     id: number;
-    brandName: string;
   };
 }
 
@@ -135,6 +135,7 @@ export default function Page() {
           `${process.env.NEXT_PUBLIC_API_URL}/${url}`,
           "get"
         );
+        console.log(res);
         setCategoryProductData(res.results);
         setCategoryProductTotalCount(res.totalCount);
       };
@@ -170,7 +171,7 @@ export default function Page() {
     <Container>
       <div className="w-full flex flex-col h-full sm:w-[650px] mx-auto">
         <div
-          className="flex py-2.5 justify-center  bg-white"
+          className="flex py-2.5 justify-center bg-white cursor-pointer"
           onClick={() => setIsOpen(true)}
         >
           <span className="font-bold">{mainCategory || "전체"}</span>
@@ -241,7 +242,7 @@ export default function Page() {
                   />
                   <div className="mt-5 px-4">
                     <p className="text-xs line-clamp-1 break-all ">
-                      {product?.user?.brandName}
+                      {product?.brandName || ""}
                     </p>
                     <p className="text-sm	line-clamp-2 break-all font-bold">
                       {product?.productName}

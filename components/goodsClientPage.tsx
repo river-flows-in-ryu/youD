@@ -55,10 +55,10 @@ interface Products {
     discountPrice: number;
     info: string;
     OriginPrice: number;
+    brandName: string;
     user: {
       id: number;
       username: string;
-      brandName: string;
     };
     size_attributes: SizeAttributes[];
   };
@@ -80,10 +80,10 @@ const initialProductDetailData: Products = {
     discountPrice: 0,
     info: "",
     OriginPrice: 0,
+    brandName: "",
     user: {
       id: 0,
       username: "",
-      brandName: "",
     },
     size_attributes: [],
   },
@@ -278,7 +278,7 @@ export default function GoodsClientPage({
               <Link href={`/brands/${productDetailData?.product?.user?.id}`}>
                 <div className="flex gap-[10px]">
                   <span className="text-sm">
-                    {productDetailData?.product?.user?.brandName || ""}
+                    {productDetailData?.product?.brandName || ""}
                   </span>
                   <div className="my-auto">
                     <Image
