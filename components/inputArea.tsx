@@ -6,8 +6,8 @@ interface Props {
   isButton?: boolean;
   type: string;
   placeholder: string;
-  state: string;
-  setState: (state: string) => void;
+  state: any;
+  setState: (state: any) => void;
   buttonId?: string;
   onClick?: (buttonId: string) => void;
   errorMessage?: string;
@@ -36,7 +36,13 @@ export default function InputArea({
         <input
           type={type}
           value={state}
-          onChange={(e) => setState(e.target.value)}
+          onChange={(e) => {
+            if (type === "number") {
+              setState(parseInt(e.target.value));
+            } else {
+              setState(e.target.value);
+            }
+          }}
           className="h-[45px] w-full flex-1 border border-[#dedede] rounded px-4"
           placeholder={placeholder}
         ></input>

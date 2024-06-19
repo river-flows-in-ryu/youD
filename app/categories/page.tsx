@@ -4,16 +4,18 @@ import React, { useEffect, useRef, useState } from "react";
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 import Container from "@/components/container";
+import Pagination from "@/utils/pagination";
+import HorizontalLine from "@/components/horizontalLine";
 
 import { commonFetch } from "@/utils/commonFetch";
 import { useSearchParams } from "next/navigation";
 
 import arrowDown from "../../public/down.png";
-import HorizontalLine from "@/components/horizontalLine";
-import Link from "next/link";
-import Pagination from "@/utils/pagination";
+
+import { Product } from "@/types/product";
 
 interface Category {
   id: number;
@@ -23,19 +25,6 @@ interface Category {
 interface CategoryChildren {
   id: number;
   name: string;
-}
-
-interface Product {
-  id: number;
-  OriginPrice: number;
-  discountPrice: number;
-  discountRate: number;
-  image_url: string;
-  productName: string;
-  brandName: string;
-  user: {
-    id: number;
-  };
 }
 
 type Parmas =
@@ -75,8 +64,8 @@ export default function Page() {
       parmas?.get("subCategory") === "null"
         ? null
         : parmas?.get("subCategory") !== null
-        ? Number(parmas?.get("subCategory"))
-        : null;
+          ? Number(parmas?.get("subCategory"))
+          : null;
     console.log(typeof subCategoryParam);
     setSubCategory(subCategoryParam);
     if (
