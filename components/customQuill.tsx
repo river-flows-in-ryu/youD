@@ -12,17 +12,25 @@ interface ReactQuillType {
   };
 }
 
+interface FileInfo {
+  file: File;
+  url: string | undefined;
+}
+
 const ReactQuill = dynamic(
   async () => {
     const { default: RQ } = await import("react-quill");
 
-    return ({
+    const DynamicReactQuill = ({
       forwardedRef,
       ...props
     }: {
       forwardedRef: React.Ref<any>;
       [key: string]: any;
     }) => <RQ ref={forwardedRef} {...props} />;
+
+    DynamicReactQuill.displayName = "DynamicReactQuill";
+    return DynamicReactQuill;
   },
   {
     ssr: false,
@@ -66,15 +74,15 @@ const CustomQuill = memo(
       const invalidChars = /[^a-zA-Z0-9.]/;
 
       if (!["jpg", "jpeg", "png"].includes(fileExtension)) {
-        alert("파일 확장자는 JPEG(JPG) 또는 PNG 여야 합니다.");
+        alert("파일 확장자는 JPEG 또는 PNG 여야 합니다.");
         return false;
       }
-      if (fileSize > 1024 * 1024) {
+      if (fileSize > 2 * 1024 * 1024) {
         alert("파일 용량은 1MB 이하이어야 합니다.");
         return false;
       }
       if (invalidChars.test(fileName) || fileName.includes("_")) {
-        alert("파일 이름에 특수문자가 포함되면 안 됩니다.");
+        alert("파일 이름에 빈칸 및 영어/특수문자가 포함되면 안 됩니다.");
         return false;
       }
       const image = new Image();
@@ -100,7 +108,7 @@ const CustomQuill = memo(
       });
     };
 
-    const handleImageUpload = async (file: File) => {
+    const handlePresignedUrl = async (file: File) => {
       const isValid = await validateImageFile(file);
       if (!isValid) return;
 
@@ -122,6 +130,17 @@ const CustomQuill = memo(
       }
     };
 
+    const handleImageUpload = async (uploadeUrl: string, file: File) => {
+      const res = await fetch(uploadeUrl, {
+        method: "put",
+        body: file,
+        headers: {
+          "Content-Type": file.type,
+        },
+      });
+      return res?.url;
+    };
+
     const imageHandler = async () => {
       const input = document.createElement("input");
       input.setAttribute("type", "file");
@@ -129,16 +148,20 @@ const CustomQuill = memo(
       input.click();
 
       input.onchange = async () => {
-        const files = input.files; // files의 타입을 명시적으로 지정
+        const files = input.files;
         if (files && files.length > 0) {
           const file = files[0];
           if (file) {
             try {
-              const uploadeUrl = await handleImageUpload(file);
+              const uploadeUrl = await handlePresignedUrl(file);
+              if (!uploadeUrl) {
+                throw new Error("이미지 업로드 URL을 가져올 수 없습니다.");
+              }
+              const uploadedUrl = await handleImageUpload(uploadeUrl, file);
               const quill = quillRef?.current?.getEditor();
               if (quill) {
                 const range = quill.getSelection(true);
-                quill.insertEmbed(range.index, "image", uploadeUrl);
+                quill.insertEmbed(range.index, "image", uploadedUrl);
                 quill.setSelection(range.index + 1);
               }
             } catch (error) {
@@ -179,4 +202,6 @@ const CustomQuill = memo(
     );
   }
 );
+CustomQuill.displayName = "CustomQuill";
+
 export default CustomQuill;
