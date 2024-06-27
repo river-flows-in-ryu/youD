@@ -2,6 +2,9 @@ import React, { memo, useMemo, useRef } from "react";
 
 import dynamic from "next/dynamic";
 
+import { ImageActions } from "@xeger/quill-image-actions";
+import { ImageFormats } from "@xeger/quill-image-formats";
+
 import "react-quill/dist/quill.snow.css";
 
 interface ReactQuillType {
@@ -12,14 +15,12 @@ interface ReactQuillType {
   };
 }
 
-interface FileInfo {
-  file: File;
-  url: string | undefined;
-}
-
 const ReactQuill = dynamic(
   async () => {
     const { default: RQ } = await import("react-quill");
+
+    RQ.Quill.register("modules/imageActions", ImageActions);
+    RQ.Quill.register("modules/imageFormats", ImageFormats);
 
     const DynamicReactQuill = ({
       forwardedRef,
@@ -56,6 +57,8 @@ const formats = [
   "image",
   "video",
   "width",
+  "align",
+  "float",
 ];
 
 const CustomQuill = memo(
@@ -182,11 +185,15 @@ const CustomQuill = memo(
             ["bold", "italic", "underline", "strike"],
             ["blockquote"],
             [{ list: "ordered" }, { list: "bullet" }],
+            [{ align: [] }],
+            ["clean"],
           ],
           handlers: {
             image: imageHandler,
           },
         },
+        imageActions: {},
+        imageFormats: {},
       }),
       []
     );
@@ -197,7 +204,8 @@ const CustomQuill = memo(
         modules={modules}
         value={value}
         onChange={onChange}
-        style={{ height: "350px", maxHeight: "350px", margin: "0 0 50px 0" }}
+        className="h-[350px] max-h-[350px] sm:h-[550px] sm:max-h-[550px]"
+        placeholder="이미지는 꽉차게 맞춰주세요"
       />
     );
   }

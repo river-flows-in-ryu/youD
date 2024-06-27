@@ -1,6 +1,6 @@
 "use client";
 
-import React, { Suspense, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 
 import dynamic from "next/dynamic";
@@ -254,7 +254,7 @@ export default function GoodsClientPage({
   if (productData === undefined) notFound();
   // if (!productData) return <Loading />;
   return (
-    <div className="sm:mx-auto w-full">
+    <div className="sm:mx-auto w-full pb-[70px]">
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
         <CartSuccessAddModal onClose={() => setIsModalOpen(false)} />
       </Modal>
