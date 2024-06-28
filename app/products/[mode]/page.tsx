@@ -23,20 +23,14 @@ interface Category {
   parent: null | number;
 }
 
-interface RecordType {
-  key: string;
-  title: string;
-  description: string;
-}
-
 interface Option {
   id: number;
   name: string;
 }
 
-interface FileInfo {
-  file: File;
-  url: string | undefined;
+interface Options {
+  id: number;
+  size: Option;
 }
 
 export default function Page() {
@@ -64,9 +58,29 @@ export default function Page() {
   const [selectedChildCategoryArray, setSelectedChildCategoryArray] = useState(
     []
   );
-  const [selectedChildId, setSelcetedChildId] = useState<number>();
+
+  const [selectedParentId, setSelcetedParentId] = useState<number>();
+  const [selectedChildId, setSelcetedChildId] = useState<number | null>(null);
 
   const [quillValue, setQuillValue] = useState("");
+
+  const [targetKeys, setTargetKeys] = useState<TransferProps["targetKeys"]>([]);
+  const [selectedKeys, setSelectedKeys] = useState<TransferProps["targetKeys"]>(
+    []
+  );
+
+  const [productNameErrorMessage, setProductNameErrorMessage] = useState("");
+  const [productShortNameErrorMessage, setProductShortNameErrorMessage] =
+    useState("");
+  const [originPriceErrorMessage, setOriginPriceErrorMessage] = useState("");
+  const [discountPriceErrorMessage, setDiscountPriceErrorMessage] =
+    useState("");
+  const [productStockErrorMessage, setProductStockErrorMessage] = useState("");
+  const [thumbnailImageErrorMessage, setThumbnailImageErrorMessage] =
+    useState("");
+  const [quillValueErrorMessage, setQuillValueErrorMessage] = useState("");
+  const [categoryErrorMessage, setCategoryErrorMessage] = useState("");
+  const [optionErrorMessage, setOptionErrorMessage] = useState("");
 
   const method = params?.mode === "add" ? "post" : "put";
   const productId = searchParams?.get("productId");
@@ -137,7 +151,120 @@ export default function Page() {
     fetchCategoryData();
   }, []);
 
-  const handleChange = (value: number, type: string) => {
+  useEffect(() => {
+    if (productName === "") setProductNameErrorMessage("");
+    else {
+      const idRegx = /^[\w\dㄱ-힣!@#$%^&*()\-_=+[{\]}\\|;:\'",<.>/? ]{2,30}$/;
+      if (!idRegx.test(productName)) {
+        setProductNameErrorMessage("2자 이상 30자 이하의 영문 한글 숫자 조합");
+      } else {
+        setProductNameErrorMessage("");
+      }
+    }
+
+    if (productShortName === "") setProductShortNameErrorMessage("");
+    else {
+      const idRegx = /^[\w\dㄱ-힣!@#$%^&*()\-_=+[{\]}\\|;:\'",<.>/? ]{2,30}$/;
+      if (!idRegx.test(productShortName)) {
+        setProductShortNameErrorMessage(
+          "2자 이상 30자 이하의 영문 한글 숫자 조합"
+        );
+      } else {
+        setProductShortNameErrorMessage("");
+      }
+    }
+
+    if (OriginPrice === null || OriginPrice === undefined) {
+      setOriginPriceErrorMessage("");
+    } else {
+      const idRegx = /^\d{3,}$/;
+      const originPriceStr = OriginPrice.toString();
+      if (!idRegx.test(originPriceStr)) {
+        setOriginPriceErrorMessage(
+          "숫자로 이루어져 있으며, 최소 100원 이상이어야 합니다."
+        );
+      } else {
+        setOriginPriceErrorMessage("");
+      }
+    }
+
+    if (discountPrice === null || discountPrice === undefined) {
+      setDiscountPriceErrorMessage("");
+    } else {
+      const idRegx = /^\d{3,}$/;
+      const discountPriceStr = discountPrice.toString();
+      if (!idRegx.test(discountPriceStr)) {
+        setDiscountPriceErrorMessage(
+          "숫자로 이루어져 있으며, 최소 100원 이상이어야 합니다."
+        );
+      } else {
+        setDiscountPriceErrorMessage("");
+      }
+    }
+
+    if (productStock === null || productStock === undefined) {
+      setProductStockErrorMessage("");
+    } else {
+      const idRegx = /^[1-9]\d*$/;
+      const productStockStr = productStock.toString();
+      if (!idRegx.test(productStockStr)) {
+        setProductStockErrorMessage(
+          "숫자로 이루어져 있으며, 최소 1개 이상이어야 합니다."
+        );
+      } else {
+        setProductStockErrorMessage("");
+      }
+    }
+  }, [productName, productShortName, OriginPrice, discountPrice, productStock]);
+
+  useEffect(() => {
+    if (productId && childCategoryArray) {
+      const fetchData = async () => {
+        const res = await commonFetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/product_list/${productId}`,
+          "get"
+        );
+        const {
+          productName,
+          productShortName,
+          OriginPrice,
+          discountPrice,
+          stock,
+          image_url,
+          info,
+        } = res?.product;
+        const { id, parent } = res?.product?.category;
+        setProductName(productName);
+        setProductShortName(productShortName);
+        setOriginPrice(OriginPrice);
+        setDiscountPrice(discountPrice);
+        setProductStock(stock);
+        setThumbnailImage(image_url);
+        setQuillValue(info);
+        updateChildCategories(parent);
+        setSelcetedParentId(parent);
+        setSelcetedChildId(id);
+        changeSelectedOption(res?.product?.size_attributes);
+      };
+      fetchData();
+    }
+  }, [childCategoryArray]);
+
+  function changeSelectedOption(options: Options) {
+    if (Array.isArray(options)) {
+      const newTargetKeys = options?.map((option) => option?.size?.id);
+      setTargetKeys(newTargetKeys);
+    } else {
+      console.error("options is not an array");
+    }
+  }
+  const updateChildCategories = (parentId: number) => {
+    const childFilterArray = childCategoryArray?.filter(
+      (child: { parent: number }) => parentId == child?.parent
+    );
+    setSelectedChildCategoryArray(childFilterArray);
+  };
+  function handleChangeSelectCategory(value: number, type: string) {
     if (type === "parent") {
       const childFilterArray = childCategoryArray?.filter(
         (child: { parent: number }) => {
@@ -145,10 +272,12 @@ export default function Page() {
         }
       );
       setSelectedChildCategoryArray(childFilterArray);
+      setSelcetedParentId(value);
+      setSelcetedChildId(null);
     } else {
       setSelcetedChildId(value);
     }
-  };
+  }
 
   const initialOption = allOption?.map((option: Option) => ({
     key: option?.id,
@@ -160,11 +289,6 @@ export default function Page() {
   // const initialTargetKeys = mockData
   //   .filter((item) => Number(item.key) > 10)
   //   .map((item) => item.key);
-
-  const [targetKeys, setTargetKeys] = useState<TransferProps["targetKeys"]>();
-  const [selectedKeys, setSelectedKeys] = useState<TransferProps["targetKeys"]>(
-    []
-  );
 
   const onChange: TransferProps["onChange"] = (nextTargetKeys) => {
     setTargetKeys(nextTargetKeys);
@@ -188,7 +312,6 @@ export default function Page() {
       reader.readAsDataURL(img);
     }
   }
-
   async function handleSubmit() {
     try {
       const formData = new FormData();
@@ -222,11 +345,9 @@ export default function Page() {
 
       if (renamedFile) {
         formData.append("image_url", renamedFile);
-      } else {
-        console.error("Failed to rename file.");
       }
       formData.append("info", quillValue);
-      if (selectedChildId !== undefined) {
+      if (selectedChildId !== null) {
         formData.append("category", selectedChildId.toString());
       }
       formData.append("size", JSON.stringify(targetKeys));
@@ -234,11 +355,19 @@ export default function Page() {
         formData.append("user", userId.toString());
       }
 
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/`, {
-        method: "post",
+      const post_url = `${process.env.NEXT_PUBLIC_API_URL}/products/`;
+      const put_url = `${process.env.NEXT_PUBLIC_API_URL}/product_list/${productId}`;
+
+      let url = method === "put" ? put_url : post_url;
+
+      const res = await fetch(url, {
+        method: method,
         body: formData,
       });
-      console.log(res);
+      if (res.status === 200) {
+        alert("성공적으로 추가/변경되었습니다.");
+        router?.push("/");
+      }
     } catch (error) {
       if (error instanceof Error) {
         alert(error?.message);
@@ -257,7 +386,7 @@ export default function Page() {
           type="text"
           state={productName}
           setState={setProductName}
-          errorMessage="최소 2글자 이상, 30글자 이하이어야 합니다."
+          errorMessage={productNameErrorMessage}
         />
         <InputArea
           text="상품 짧은 이름"
@@ -266,7 +395,7 @@ export default function Page() {
           type="text"
           state={productShortName}
           setState={setProductShortName}
-          errorMessage="최소 2글자 이상, 30글자 이하이어야 합니다."
+          errorMessage={productShortNameErrorMessage}
         />
         <InputArea
           text="상품 원가"
@@ -275,7 +404,7 @@ export default function Page() {
           type="number"
           state={OriginPrice}
           setState={setOriginPrice}
-          errorMessage=" 1원 이상이여야합니다."
+          errorMessage={originPriceErrorMessage}
         />
         <InputArea
           text="상품 판매가"
@@ -284,7 +413,7 @@ export default function Page() {
           type="number"
           state={discountPrice}
           setState={setDiscountPrice}
-          errorMessage="1원 이상이여야합니다."
+          errorMessage={discountPriceErrorMessage}
         />
         <InputArea
           text="상품 재고"
@@ -293,12 +422,12 @@ export default function Page() {
           type="number"
           state={productStock}
           setState={setProductStock}
-          errorMessage=" 한개 이상이여야합니다."
+          errorMessage={productStockErrorMessage}
         />
         <div className="pt-4 pb-2">
           <label className="">썸네일 이미지</label>
         </div>
-        <div className="flex gap-10">
+        <div className="flex gap-10 pb-5">
           <div className="w-[125px] h-[125px] flex justify-center items-center border border-[#cecece] rounded">
             <label
               htmlFor="brandImage"
@@ -329,27 +458,40 @@ export default function Page() {
             <div className="w-[125px] h-[125px] bg-[#aaa] rounded" />
           )}
         </div>
+        <div className="py-2.5">
+          {thumbnailImageErrorMessage && (
+            <p className="text-red-500 text-sm">{thumbnailImageErrorMessage}</p>
+          )}
+        </div>
 
         <div className="pt-4 pb-2">
           <label className="">상세 페이지</label>
         </div>
-        <CustomQuill value={quillValue} onChange={setQuillValue} />
+        <div className="h-[450px] sm:h-[600px]">
+          <CustomQuill value={quillValue} onChange={setQuillValue} />
+        </div>
 
-        <div className="pt-10 pb-2">
+        <div className="pt-4 pb-2">
           <label className="">카테고리</label>
         </div>
-        <div className="flex justify-around">
+        <div className="flex justify-around pb-5">
           <Select
             placeholder="대분류"
             options={parentCategoryArray}
-            onChange={(selected) => handleChange(selected, "parent")}
+            onChange={(selected) =>
+              handleChangeSelectCategory(selected, "parent")
+            }
             className="w-[45%] h-[45px]"
+            value={selectedParentId}
           />
           <Select
             placeholder="소분류"
             options={selectedChildCategoryArray}
-            onChange={(selected) => handleChange(selected, "child")}
+            onChange={(selected) =>
+              handleChangeSelectCategory(selected, "child")
+            }
             className="w-[45%] h-[45px]"
+            value={selectedChildId}
           />
         </div>
 
@@ -371,7 +513,7 @@ export default function Page() {
             className="w-[150px] h-10 border border-primary bg-primary rounded text-white"
             onClick={handleSubmit}
           >
-            제출하기
+            {TITLE}
           </button>
         </div>
       </div>

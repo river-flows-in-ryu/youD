@@ -1,6 +1,9 @@
+"use client";
+
 import React from "react";
 
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 import HorizontalLine from "./horizontalLine";
 
@@ -11,6 +14,12 @@ interface Props {
 }
 
 export default function MypageSaleList({ product }: Props) {
+  const router = useRouter();
+
+  const handleMovePage = (productId: number) => {
+    router?.push(`/products/change?productId=${productId}`);
+  };
+
   return (
     <>
       <div className="flex px-5 mt-5">
@@ -37,7 +46,10 @@ export default function MypageSaleList({ product }: Props) {
         </div>
       </div>
       <div className="px-5 flex justify-end py-[10px] mb-[10px]">
-        <button className="w-[60px] h-[30px] text-sm mr-[10px] border border-secondary">
+        <button
+          className="w-[60px] h-[30px] text-sm mr-[10px] border border-secondary"
+          onClick={() => handleMovePage(product?.id)}
+        >
           수정하기
         </button>
         <button className="w-[60px] h-[30px] text-sm border border-secondary text-red-500">
