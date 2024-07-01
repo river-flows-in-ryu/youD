@@ -117,7 +117,7 @@ export default function Page() {
 
   return (
     <Container>
-      <div className="sm:w-[650px] sm:mx-auto">
+      <div className="sm:w-[650px] sm:mx-auto pb-5">
         <h2 className="text-center font-bold py-5 text-lg	">브랜드 정보 변경</h2>
         <div className="px-5">
           <InputArea
@@ -136,22 +136,27 @@ export default function Page() {
             setState={setBrandDescription}
             state={brandDescription}
           />
+          <div className="pt-4 pb-2">
+            <label className="">썸네일 이미지</label>
+          </div>
           <div className="flex  justify-between mb-10">
-            <label htmlFor="brandImage" className="cursor-pointer">
-              <div className="btn-upload ">
-                <div className="w-5 h-5">
-                  <Image src={image} alt="add" />
+            <div className="w-[100px] h-[100px] flex justify-center items-center border border-[#cecece] rounded">
+              <label htmlFor="brandImage" className="cursor-pointer">
+                <div className="btn-upload ">
+                  <div className="w-5 h-5">
+                    <Image src={image} alt="add" />
+                  </div>
                 </div>
-              </div>
-              <input
-                type="file"
-                id="brandImage"
-                className="hidden"
-                ref={brandImageRef}
-                onChange={() => handleChangeImage(brandImageRef)}
-              />
-            </label>
-            <div className="w-[200px] h-[200px] rounded-[50%] relative">
+                <input
+                  type="file"
+                  id="brandImage"
+                  className="hidden"
+                  ref={brandImageRef}
+                  onChange={() => handleChangeImage(brandImageRef)}
+                />
+              </label>
+            </div>
+            <div className="w-[100px] h-[100px] rounded-[50%] relative">
               {brandImage && (
                 <Image
                   src={brandImage}
@@ -162,22 +167,27 @@ export default function Page() {
               )}
             </div>
           </div>
+          <div className="pt-4 pb-2">
+            <label className="">배경 이미지</label>
+          </div>
           <div className="flex justify-between mb-10">
-            <label htmlFor="brandBGImage" className="cursor-pointer">
-              <div className="btn-upload ">
-                <div className="w-5 h-5">
-                  <Image src={image} alt="add" />
+            <div className="w-[100px] h-[100px] flex justify-center items-center border border-[#cecece] rounded">
+              <label htmlFor="brandBGImage" className="cursor-pointer">
+                <div className="btn-upload ">
+                  <div className="w-5 h-5">
+                    <Image src={image} alt="add" />
+                  </div>
                 </div>
-              </div>
-              <input
-                type="file"
-                id="brandBGImage"
-                className="hidden"
-                ref={brandBGImageRef}
-                onChange={() => handleChangeImage(brandBGImageRef)}
-              />
-            </label>
-            <div className="w-[250px] h-[65px] relative">
+                <input
+                  type="file"
+                  id="brandBGImage"
+                  className="hidden"
+                  ref={brandBGImageRef}
+                  onChange={() => handleChangeImage(brandBGImageRef)}
+                />
+              </label>
+            </div>
+            <div className="w-[250px] h-[65px] relative ">
               {brandBGImage && (
                 <Image
                   src={brandBGImage}
@@ -191,7 +201,7 @@ export default function Page() {
         </div>
         <div className="flex justify-center">
           <button
-            className="bg-primary text-white w-[150px] h-[60px] rounded"
+            className="bg-primary text-white w-[150px] h-[50px] rounded"
             onClick={handleSubmit}
           >
             등록하기

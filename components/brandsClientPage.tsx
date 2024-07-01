@@ -48,8 +48,6 @@ export default function BrandsClientPage({ userData, slug }: Props) {
 
   const { name, description, image, bg_image } = userData?.brand_info;
 
-  console.log(name);
-
   useEffect(() => {
     async function brandsProductData() {
       const res = await commonFetch(
@@ -68,7 +66,7 @@ export default function BrandsClientPage({ userData, slug }: Props) {
     <Container>
       <div className="w-full h-full sm:w-[650px] sm:mx-auto">
         <div
-          className="w-full h-[250px] bg-primary flex justify-center items-center text-center mb-[10px]"
+          className="w-full h-[250px] bg-white flex justify-center items-center text-center mb-[10px]"
           style={{
             backgroundImage: `${bg_image ? `url(${bg_image})` : "none"} `,
             backgroundSize: "cover",
@@ -90,10 +88,10 @@ export default function BrandsClientPage({ userData, slug }: Props) {
                 />
               )}
             </div>
-            <h2 className="mt-3 text-xl	text-white font-bold">
+            <h2 className="mt-3 text-xl	text-black font-bold">
               {name || "브랜드 네임"}
             </h2>
-            <span className="text-white text-sm mt-2">
+            <span className="text-black text-sm mt-2">
               {description || "간략한 설명글"}
             </span>
           </div>
