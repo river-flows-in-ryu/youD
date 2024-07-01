@@ -2,13 +2,13 @@
 import React, { useState, useEffect, useMemo } from "react";
 
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import Link from "next/link";
 
 import search from "../public/search.png";
 import home from "../public/home.png";
 import person from "../public/person.png";
-
-import { usePathname } from "next/navigation";
+import plus from "../public/plus.png";
 
 export default function TabBar() {
   const pathname = usePathname();
@@ -32,6 +32,12 @@ export default function TabBar() {
           </Link>
           <Link href="/" className="flex-1 items-center justify-center flex ">
             <Image src={home} alt="home" />
+          </Link>
+          <Link
+            href="/products/add"
+            className="flex-1 items-center justify-center flex "
+          >
+            <Image src={plus} alt="plus" className="w-5 h-5" />
           </Link>
           <Link
             href="/mypage"
