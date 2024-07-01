@@ -102,6 +102,8 @@ export default function GoodsClientPage({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("info");
 
+  const [isLike, setIsLike] = useState<boolean>(false);
+
   const [productDetailData, setProductDetailData] = useState<Products>(
     initialProductDetailData
   );
@@ -133,28 +135,33 @@ export default function GoodsClientPage({
     );
   }, [optionArray]);
 
-  // const payload = {
-  //   user_id: userId,
-  //   product_id: slug,
-  // };
+  const payload = {
+    user_id: userId,
+    product_id: slug,
+  };
 
-  // async function fetchLikeData() {
-  //   const res = await serverFetch(
-  //     `${process.env.NEXT_PUBLIC_API_URL}/product/is_like`,
-  //     "post",
-  //     payload
-  //   );
-  //   return res;
-  // }
+  useEffect(() => {
+    async function fetchLikeData() {
+      if (userId) {
+        const res = await commonFetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/product/is_like`,
+          "post",
+          payload
+        );
+        setIsLike(res?.liked);
+      }
+    }
+    fetchLikeData();
+  }, [userId]);
 
-  // const handleLikeClick = async () => {
-  //   const res = await serverFetch(
-  //     `${process.env.NEXT_PUBLIC_API_URL}/product/like`,
-  //     "post",
-  //     payload
-  //   );
-  //   // console.log(res);
-  // };
+  const handleLikeClick = async () => {
+    const res = await commonFetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/product/like`,
+      "post",
+      payload
+    );
+    setIsLike(res?.liked);
+  };
 
   const cartPayload = {
     userId: userId,
@@ -237,7 +244,6 @@ export default function GoodsClientPage({
 
   const onMinus = (id: number) => {
     const selectedOption = optionArray.find((option) => option.optionId === id);
-    // console.log(selectedOption);
     if (selectedOption && selectedOption.quantity > 1) {
       setOptionArray(
         optionArray.map((option) =>
@@ -252,7 +258,6 @@ export default function GoodsClientPage({
   };
 
   if (productData === undefined) notFound();
-  // if (!productData) return <Loading />;
   return (
     <div className="sm:mx-auto w-full pb-[70px]">
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
@@ -359,18 +364,6 @@ export default function GoodsClientPage({
                 </div>
               </div>
             </div>
-
-            {/* <button className="w-10 h-10" onClick={handleLikeClick}>
-            1
-          </button>
-          <button
-            className="w-10 h-10"
-            onClick={() => {
-              setIsModalOpen(!isModalOpen);
-            }}
-          >
-            1
-          </button> */}
           </div>
         </div>
         <div className="w-full h-[50px] flex justify-center">
@@ -413,6 +406,8 @@ export default function GoodsClientPage({
         {!isOptionChoiceSection ? (
           <GoodsDetailTabBar
             setIsOptionChoiceSection={setIsOptionChoiceSection}
+            handleLikeClick={handleLikeClick}
+            isLike={isLike}
           />
         ) : (
           <GoodsOptionTabBar
