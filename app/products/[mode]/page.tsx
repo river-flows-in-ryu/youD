@@ -108,6 +108,20 @@ export default function Page() {
   }, []);
 
   useEffect(() => {
+    const fetchData = async () => {
+      const res = await commonFetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/check-brand?userId=${userId}`,
+        "get"
+      );
+      if (!res?.results) {
+        alert("브랜드가 등록되지 않아 브랜드 등록 페이지로 이동합니다.");
+        router?.push("/mypage/brand");
+      }
+    };
+    fetchData();
+  }, [userId]);
+
+  useEffect(() => {
     if (OriginPrice != null && discountPrice != null && OriginPrice !== 0) {
       const calculatedRate =
         ((OriginPrice - discountPrice) / OriginPrice) * 100;

@@ -10,7 +10,7 @@ interface UserInfo {
   university_name: string;
   id: number;
   name: string;
-  brandName: string;
+  image: string;
 }
 interface Props {
   searchUserResultsCount: number;
@@ -57,11 +57,20 @@ export default function SearchUserResultList({
                 <Link href={`/brands/${user?.id}`}>
                   <div className="flex px-3 w-full ">
                     {/* 이미지 */}
-                    <div className="w-[45px] h-[45px] rounded-[50%] bg-black mr-5 flex-shrink-0">
-                      <div className=""></div>
+                    <div
+                      className={`w-[45px] h-[45px] rounded-[50%]
+                        ${user?.image ? "bg-white" : "bg-black"}
+                     mr-5 flex-shrink-0 relative`}
+                    >
+                      <Image
+                        src={user?.image}
+                        alt="유저 이미지"
+                        fill
+                        className="object-contain"
+                      />
                     </div>
                     <div className="flex flex-col w-full">
-                      <span className="font-bold">{user?.brandName}</span>
+                      <span className="font-bold">{user?.name}</span>
                       <span className="text-sm">{user?.university_name}</span>
                     </div>
                   </div>
