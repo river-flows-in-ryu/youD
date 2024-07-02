@@ -1,4 +1,5 @@
 export interface Product {
+  total_likes: number;
   id: number;
   OriginPrice: number;
   discountPrice: number;
