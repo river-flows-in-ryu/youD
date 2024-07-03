@@ -33,18 +33,18 @@ export default function SearchProductResultList({
   const router = useRouter();
 
   function handleClickAllProductList() {
-    router?.push(`search/goods?keyword=${keyword}`);
+    router?.push(`/search?type=products&keyword=${keyword}`);
   }
   return (
     <div className="">
-      <div className="w-full flex justify-between my-[30px] px-3">
+      <div className="w-full flex justify-between mb-[30px] px-3">
         <div className=" flex">
           <h2 className="font-bold mr-1">상품</h2>
           <span className="">{searchProductResultsCount}</span>
         </div>
 
         {searchProductResultsCount === 0 ? null : (
-          <Link href={`/search/goods?keyword=${keyword}`}>
+          <Link href={`/search?type=products&keyword=${keyword}`}>
             <Image src={arrowBlack} alt="전체보기" width={20} height={20} />
           </Link>
         )}

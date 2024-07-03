@@ -3,10 +3,12 @@ import React, { useEffect, useState, useRef } from "react";
 
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
+import { Tabs } from "antd";
 
 import Container from "@/components/container";
 import SearchProductResultList from "@/components/searchProductResultList";
 import HorizontalLine from "@/components/horizontalLine";
+import dynamic from "next/dynamic";
 
 import { commonFetch } from "@/utils/commonFetch";
 
@@ -14,13 +16,24 @@ import search from "../../public/search.png";
 import cancel from "../../public/cancel.png";
 import SearchUserResultList from "@/components/searchUserResultList";
 
+import type { TabsProps } from "antd";
+
+const SearchProductList = dynamic(
+  () => import("../../components/searchProductList")
+);
+const SearchBrandList = dynamic(
+  () => import("../../components/searchBrandList")
+);
+
 export default function Page() {
   const params = useSearchParams();
   const router = useRouter();
 
+  const tabYype = params?.get("type");
   const keyword = params?.get("keyword");
 
   const [searchText, setSearchText] = useState(keyword || "");
+  const [tabKey, setTabKey] = useState("");
 
   const [searchProductResults, setSearchProductResults] = useState([]);
   const [searchProductResultsCount, setSearchProductResultsCount] = useState(0);
@@ -28,6 +41,50 @@ export default function Page() {
   const [searchUserResultsCount, setSearchUserResultsCount] = useState(0);
 
   const inputRef = useRef<HTMLInputElement>(null);
+
+  const items: TabsProps["items"] = [
+    {
+      key: "1",
+      label: "통합",
+      children: (
+        <>
+          {keyword === null ? null : (
+            <>
+              <SearchProductResultList
+                searchProductResultsCount={searchProductResultsCount}
+                keyword={keyword}
+                searchProductResults={searchProductResults}
+              />
+              <HorizontalLine />
+
+              <SearchUserResultList
+                searchUserResultsCount={searchUserResultsCount}
+                keyword={keyword}
+                searchUserResults={searchUserResults}
+              />
+              <HorizontalLine />
+            </>
+          )}
+        </>
+      ),
+    },
+    {
+      key: "2",
+      label: "상품",
+      children: <SearchProductList />,
+    },
+    {
+      key: "3",
+      label: "브랜드",
+      children: <SearchBrandList />,
+    },
+  ];
+
+  useEffect(() => {
+    if (tabYype === "integration") setTabKey("1");
+    if (tabYype === "products") setTabKey("2");
+    if (tabYype === "brands") setTabKey("3");
+  }, [tabYype]);
 
   useEffect(() => {
     setSearchText(keyword ?? "");
@@ -44,7 +101,6 @@ export default function Page() {
             }/search?keyword=${encodeURIComponent(searchText?.trim())}`,
             "get"
           );
-          console.log(searchData);
           setSearchProductResults(searchData?.products);
           setSearchProductResultsCount(searchData?.productsCount);
 
@@ -72,7 +128,7 @@ export default function Page() {
       alert("검색어를 입력해주세요");
       return;
     }
-    router?.push(`/search?keyword=${searchText}`);
+    router?.push(`/search?type=integration&keyword=${searchText}`);
   }
 
   function handleSearchInputClear() {
@@ -82,12 +138,20 @@ export default function Page() {
     }
   }
 
+  const handleChageTab = (key: string) => {
+    if (key === "1")
+      router?.push(`/search?type=integration&keyword=${searchText}`);
+    if (key === "2")
+      router?.push(`/search?type=products&keyword=${searchText}`);
+    if (key === "3") router?.push(`/search?type=brands&keyword=${searchText}`);
+  };
+
   return (
     <Container>
       <div className="pb-10 w-screen sm:w-[650px] sm:mx-auto">
         <div className="flex flex-col">
-          <div className="flex justify-center ">
-            <div className="sticky top-[150px] z-20 w-[250px] h-10 border border-[#dadce0] rounded mt-[50px]">
+          <div className="flex justify-center mb-5">
+            <div className="sticky top-[150px] z-20 w-[250px] h-10 border border-[#dadce0] rounded mt-5">
               <Image
                 src={search}
                 alt="search"
@@ -117,21 +181,16 @@ export default function Page() {
                 null}
             </div>
           </div>
-          {keyword === null ? null : (
+          {keyword && (
             <>
-              <SearchProductResultList
-                searchProductResultsCount={searchProductResultsCount}
-                keyword={keyword}
-                searchProductResults={searchProductResults}
-              />
               <HorizontalLine />
-
-              <SearchUserResultList
-                searchUserResultsCount={searchUserResultsCount}
-                keyword={keyword}
-                searchUserResults={searchUserResults}
+              <Tabs
+                defaultActiveKey="1"
+                items={items}
+                tabBarStyle={{ paddingLeft: "10px" }}
+                onChange={handleChageTab}
+                activeKey={tabKey}
               />
-              <HorizontalLine />
             </>
           )}
         </div>

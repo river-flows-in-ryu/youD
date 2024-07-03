@@ -26,7 +26,7 @@ export default function SearchUserResultList({
   const router = useRouter();
 
   function handleClickAllUserList() {
-    router?.push(`/search/user?keyword=${keyword}`);
+    router?.push(`/search?type=brands&keyword=${keyword}`);
   }
 
   return (
@@ -37,7 +37,7 @@ export default function SearchUserResultList({
           <span className="">{searchUserResultsCount}</span>
         </div>
         {searchUserResultsCount === 0 ? null : (
-          <Link href={`/search/user?keyword=${keyword}`}>
+          <Link href={`/search?type=brands&keyword=${keyword}`}>
             <Image src={arrowBlack} alt="전체보기" width={20} height={20} />
           </Link>
         )}
