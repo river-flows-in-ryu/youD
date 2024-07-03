@@ -37,6 +37,7 @@
 
 
 ## 기록한 기술 사항
+[presigned url react+drf](https://ryugaram.tistory.com/169)<br/>
 [zustand persist](https://github.com/river-flows-in-ryu/yourD/wiki/zustand%EB%A5%BC-%ED%99%9C%EC%9A%A9%ED%95%9C-%EC%83%88%EB%A1%9C%EA%B3%A0%EC%B9%A8%EC%8B%9C%EC%97%90%EB%8F%84-%EB%82%A8%EC%95%84%EC%9E%88%EB%8A%94-%EC%A0%84%EC%97%AD%EC%83%81%ED%83%9C) 
 <br/>
 [zustand async action](https://github.com/river-flows-in-ryu/yourD/wiki/zustand%EB%A5%BC-%ED%99%9C%EC%9A%A9%ED%95%9C-Async-actions) <br/>
@@ -64,6 +65,28 @@ import { useCartCountStore, useUserIdStore } from "@/app/store"; 함수, 값 등
 ```
 
 ## 프론트 화면
+메인페이지<p/>
+<img width="250" alt="스크린샷 2024-07-03 오후 3 30 59" src="https://github.com/river-flows-in-ryu/yourD/assets/100814863/38c4114a-b2a8-4cda-97dd-2c0bcaf17475">
+<p/><br/><br/>
 
+상품 카테고리 페이지<p/>
+<img width="250" alt="스크린샷 2024-07-03 오후 3 37 29" src="https://github.com/river-flows-in-ryu/yourD/assets/100814863/71de8347-95a5-4f65-9e0a-5795a5e4827d">
+<img width="250" alt="스크린샷 2024-07-03 오후 3 45 21" src="https://github.com/river-flows-in-ryu/yourD/assets/100814863/578f11c9-d8b7-422e-a22a-c3d9fa6451ae">
+<p/><br/><br/>
+
+상품 상세 페이지 및 장바구니<p/>
 <img width="250" alt="스크린샷 2024-05-27 오후 2 00 31" src="https://github.com/river-flows-in-ryu/yourD/assets/100814863/11b3da4e-329f-40d2-8f5a-d9ed0b5784ee">  
 <img width="250" alt="스크린샷 2024-05-27 오후 1 56 16" src="https://github.com/river-flows-in-ryu/yourD/assets/100814863/c47afd23-b6c5-44e2-af05-375ebd14f226">
+<p/><br/><br/>
+
+마이페이지 (진행중)<p/>
+<img width="250" alt="스크린샷 2024-07-03 오후 3 39 52" src="https://github.com/river-flows-in-ryu/yourD/assets/100814863/2fa2f32d-c34e-42cf-b890-8f637141374e">
+<img width="250" alt="스크린샷 2024-07-03 오후 3 40 10" src="https://github.com/river-flows-in-ryu/yourD/assets/100814863/fec44935-8448-49b3-a544-48adb3e5018b">
+<img width="250" alt="스크린샷 2024-07-03 오후 3 40 24" src="https://github.com/river-flows-in-ryu/yourD/assets/100814863/e78cd7f8-a1c2-4dff-ba2d-9d45d7eb5b5f">
+<p/><br/><br/>
+
+상품 등록/수정 페이지 <p/>
+<img width="250" alt="스크린샷 2024-07-03 오후 3 40 40" src="https://github.com/river-flows-in-ryu/yourD/assets/100814863/596e9a40-d0ab-4a6a-8294-d20d42b0c31a">
+<img width="250" alt="스크린샷 2024-07-03 오후 3 40 55" src="https://github.com/river-flows-in-ryu/yourD/assets/100814863/ec86d06f-48fa-48d1-88bc-6570ed5da921">
+<p/><br/><br/>
+
