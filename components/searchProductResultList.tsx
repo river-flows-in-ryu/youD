@@ -13,9 +13,9 @@ interface Product {
   discountRate: number;
   image_url: string;
   productName: string;
+  brandName: string;
   user: {
     id: number;
-    brandName: string;
   };
 }
 
@@ -71,7 +71,7 @@ export default function SearchProductResultList({
                   />
                   <div className="pt-3 mx-2.5">
                     <p className="text-xs line-clamp-1 break-all ">
-                      {product?.user?.brandName}
+                      {product?.brandName}
                     </p>
                     <p className="text-sm	line-clamp-2 break-all font-bold">
                       {product?.productName}

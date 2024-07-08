@@ -71,12 +71,14 @@ export default function Page() {
     {
       key: "2",
       label: "상품",
-      children: <SearchProductList />,
+      children: <SearchProductList searchText={searchText} />,
+      disabled: searchProductResultsCount === 0,
     },
     {
       key: "3",
       label: "브랜드",
-      children: <SearchBrandList />,
+      children: <SearchBrandList searchText={searchText} />,
+      disabled: searchUserResultsCount === 0,
     },
   ];
 
@@ -98,14 +100,14 @@ export default function Page() {
           const searchData = await commonFetch(
             `${
               process.env.NEXT_PUBLIC_API_URL
-            }/search?keyword=${encodeURIComponent(searchText?.trim())}`,
+            }/search/integration?keyword=${encodeURIComponent(searchText?.trim())}&offset=0&limit=6`,
             "get"
           );
           setSearchProductResults(searchData?.products);
           setSearchProductResultsCount(searchData?.productsCount);
 
-          setSearchUserResults(searchData?.users);
-          setSearchUserResultsCount(searchData?.usersCount);
+          setSearchUserResults(searchData?.brands);
+          setSearchUserResultsCount(searchData?.brandsCount);
         } catch (error) {
           if (error instanceof Error) {
             alert(error?.message);

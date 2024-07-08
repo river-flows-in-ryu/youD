@@ -11,6 +11,7 @@ interface UserInfo {
   id: number;
   name: string;
   image: string;
+  userName: string;
 }
 interface Props {
   searchUserResultsCount: number;
@@ -29,6 +30,8 @@ export default function SearchUserResultList({
     router?.push(`/search?type=brands&keyword=${keyword}`);
   }
 
+  console.log(searchUserResults);
+
   return (
     <div className="">
       <div className="w-full flex justify-between my-[30px] px-3">
@@ -45,7 +48,7 @@ export default function SearchUserResultList({
       {searchUserResultsCount === 0 ? (
         <div className="flex text-center justify-center ">
           <div className="flex flex-col text-[#919191] h-[150px]">
-            <span>해당 유저가 없습니다.</span>
+            <span>해당 브랜드가 없습니다.</span>
             <span>검색어를 정확히 입력해주세요</span>
           </div>
         </div>
@@ -53,7 +56,7 @@ export default function SearchUserResultList({
         <div>
           <div className="mb-10">
             {searchUserResults?.map((user: UserInfo) => (
-              <div key={user?.id}>
+              <div key={user?.id} className="mb-5">
                 <Link href={`/brands/${user?.id}`}>
                   <div className="flex px-3 w-full ">
                     {/* 이미지 */}
@@ -70,7 +73,10 @@ export default function SearchUserResultList({
                       />
                     </div>
                     <div className="flex flex-col w-full">
-                      <span className="font-bold">{user?.name}</span>
+                      <span className="font-bold">
+                        {user?.name}
+                        <span className="ml-0.5">({user?.userName})</span>
+                      </span>
                       <span className="text-sm">{user?.university_name}</span>
                     </div>
                   </div>
