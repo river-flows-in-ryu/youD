@@ -2,17 +2,16 @@ import React, { useEffect, useState } from "react";
 
 import Image from "next/image";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 
 import { commonFetch } from "@/utils/commonFetch";
 
 import { Product } from "@/types/product";
 import Pagination from "@/utils/pagination";
 
-export default function SearchProductList({
-  searchText,
-}: {
-  searchText: string;
-}) {
+export default function SearchProductList() {
+  const urlParams = useSearchParams();
+  const keyword = urlParams?.get("keyword")?.trim() || "";
   const [page, setPage] = useState(1);
   const [productData, setProductData] = useState([]);
   const [totalCount, setTotalCount] = useState(1);
@@ -21,10 +20,9 @@ export default function SearchProductList({
     const fetchData = async () => {
       try {
         const res = await commonFetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/search/products?keyword=${encodeURIComponent(searchText?.trim())}&offset=${(page - 1) * 10}&limit=30`,
+          `${process.env.NEXT_PUBLIC_API_URL}/search/products?keyword=${encodeURIComponent(keyword?.trim())}&offset=${(page - 1) * 10}&limit=30`,
           "get"
         );
-        console.log(res);
         setTotalCount(res?.productsCount);
         setProductData(res?.products);
       } catch (error) {
@@ -34,7 +32,7 @@ export default function SearchProductList({
       }
     };
     fetchData();
-  }, []);
+  }, [keyword]);
 
   return (
     <>

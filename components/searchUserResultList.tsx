@@ -30,8 +30,6 @@ export default function SearchUserResultList({
     router?.push(`/search?type=brands&keyword=${keyword}`);
   }
 
-  console.log(searchUserResults);
-
   return (
     <div className="">
       <div className="w-full flex justify-between my-[30px] px-3">

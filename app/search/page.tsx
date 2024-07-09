@@ -70,14 +70,14 @@ export default function Page() {
     },
     {
       key: "2",
-      label: "상품",
-      children: <SearchProductList searchText={searchText} />,
+      label: `상품 ${searchProductResultsCount}`,
+      children: <SearchProductList />,
       disabled: searchProductResultsCount === 0,
     },
     {
       key: "3",
-      label: "브랜드",
-      children: <SearchBrandList searchText={searchText} />,
+      label: `브랜드 ${searchUserResultsCount}`,
+      children: <SearchBrandList />,
       disabled: searchUserResultsCount === 0,
     },
   ];

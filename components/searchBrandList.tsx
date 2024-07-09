@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 
 import Link from "next/link";
 import Image from "next/image";
+import { useSearchParams } from "next/navigation";
 
 import { commonFetch } from "@/utils/commonFetch";
 import Pagination from "@/utils/pagination";
@@ -13,11 +14,10 @@ interface UserInfo {
   image: string;
   userName: string;
 }
-export default function SearchBrandList({
-  searchText,
-}: {
-  searchText: string;
-}) {
+export default function SearchBrandList() {
+  const urlParams = useSearchParams();
+  const keyword = urlParams?.get("keyword")?.trim() || "";
+
   const [page, setPage] = useState(1);
   const [brandData, setBrandData] = useState([]);
   const [totalCount, setTotalCount] = useState(1);
@@ -25,14 +25,14 @@ export default function SearchBrandList({
   useEffect(() => {
     const fetchData = async () => {
       const res = await commonFetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/search/brands?keyword=${encodeURIComponent(searchText?.trim())}&offset=${(page - 1) * 10}&limit=30`,
+        `${process.env.NEXT_PUBLIC_API_URL}/search/brands?keyword=${encodeURIComponent(keyword?.trim())}&offset=${(page - 1) * 10}&limit=30`,
         "get"
       );
       setBrandData(res?.brands);
       setTotalCount(res?.brandsCount);
     };
     fetchData();
-  }, []);
+  }, [keyword]);
 
   return (
     <div>
