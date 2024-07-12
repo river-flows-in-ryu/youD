@@ -3,7 +3,7 @@ import React from "react";
 import { cookies } from "next/headers";
 
 import Container from "@/components/container";
-import DeliveryAddressSlugClinetPage from "@/components/DeliveryAddressSlugClinetPage";
+import DeliveryAddressSlugClinetPage from "@/components/deliveryAddressSlugClinetPage";
 
 import decodingJwttsx from "@/utils/decodingJwt";
 import { commonFetch } from "@/utils/commonFetch";
@@ -26,7 +26,7 @@ export default async function Page(request: Request) {
   const addressId = Number(request?.searchParams?.addressId);
   async function fetchData() {
     try {
-      if (userId) {
+      if (userId && request?.params?.slug === "change") {
         const res = await commonFetch(
           `${process.env.NEXT_PUBLIC_API_URL}/user/address/${userId}/${addressId}`,
           "get"
@@ -42,7 +42,11 @@ export default async function Page(request: Request) {
   const userAddressDetailData = await fetchData();
   return (
     <Container>
-      <DeliveryAddressSlugClinetPage slug={request?.params?.slug} />
+      <DeliveryAddressSlugClinetPage
+        slug={request?.params?.slug}
+        data={userAddressDetailData?.data}
+        addressId={addressId}
+      />
     </Container>
   );
 }
