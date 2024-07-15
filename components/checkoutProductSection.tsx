@@ -6,6 +6,8 @@ import { Product } from "@/types/product";
 
 import HorizontalLine from "./horizontalLine";
 
+import UseHandleClickDrawer from "@/hooks/useHandleClickDrawer";
+
 import arrowUp from "../public/arrow_up.png";
 import arrowDown from "../public/arrow_down_bold.png";
 
@@ -23,14 +25,10 @@ interface Props {
   checkoutProduct: ProductInterface[];
 }
 
-export default function CheckoutProducts({ checkoutProduct }: Props) {
+export default function CheckoutProductSection({ checkoutProduct }: Props) {
   const POINT_RATE = 0.01;
 
-  const [productDrawer, setProductDrawer] = useState(false);
-
-  function handleClickProductDrawerChange() {
-    setProductDrawer(!productDrawer);
-  }
+  const { isOpen, handleClickDrawerChange } = UseHandleClickDrawer();
 
   function calculateTotalPrice() {
     let totalDiscountPrice = 0;
@@ -44,12 +42,15 @@ export default function CheckoutProducts({ checkoutProduct }: Props) {
 
   const { totalDiscountPrice, totalCount } = useMemo(() => {
     return calculateTotalPrice();
-  }, []);
+  }, [checkoutProduct]);
 
   return (
     <div className="w-full">
-      {productDrawer ? (
-        <div className="flex w-full px-5 justify-between">
+      {isOpen ? (
+        <div
+          className="flex w-full px-5 justify-between"
+          onClick={handleClickDrawerChange}
+        >
           <div className=" font-bold text-xl py-5 ">상품 정보</div>
           <div className="flex gap-5">
             <div className="leading-[68px] text-sm">
@@ -57,10 +58,7 @@ export default function CheckoutProducts({ checkoutProduct }: Props) {
                 {totalCount}건 | {totalDiscountPrice?.toLocaleString()}원
               </span>
             </div>
-            <div
-              className="relative w-5 h-5 mt-[25px] cursor-pointer"
-              onClick={handleClickProductDrawerChange}
-            >
+            <div className="relative w-5 h-5 mt-[25px] cursor-pointer">
               <Image
                 src={arrowDown}
                 alt="drawerOpen"
@@ -72,12 +70,12 @@ export default function CheckoutProducts({ checkoutProduct }: Props) {
         </div>
       ) : (
         <>
-          <div className="flex w-full px-5 justify-between">
+          <div
+            className="flex w-full px-5 justify-between"
+            onClick={handleClickDrawerChange}
+          >
             <div className=" font-bold text-xl py-5 ">상품 정보</div>
-            <div
-              className="relative w-5 h-5 mt-[25px] cursor-pointer"
-              onClick={handleClickProductDrawerChange}
-            >
+            <div className="relative w-5 h-5 mt-[25px] cursor-pointer">
               <Image
                 src={arrowUp}
                 alt="drawerClose"
@@ -88,7 +86,7 @@ export default function CheckoutProducts({ checkoutProduct }: Props) {
           </div>
           {checkoutProduct?.map((product: ProductInterface) => (
             <li
-              key={product?.product?.id}
+              key={`${product?.product?.id}${product?.size_attribute?.size?.name}`}
               className="list-none	pt-5  border-b-[1px] border-secondary-500 pb-5"
             >
               <div className="flex px-[15px] ">
