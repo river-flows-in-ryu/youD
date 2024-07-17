@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Checkbox } from "antd";
 
 import InputArea from "./inputArea";
@@ -42,6 +42,12 @@ export default function DeliveryAddressSlugClinetPage({
       router?.back();
     }
   }, []);
+
+  const searchParams = useSearchParams();
+
+  const redirectURL = searchParams?.get("redirectTo");
+
+  console.log(redirectURL);
 
   const SLUG_STSATUS = slug === "change" ? "주소 수정" : "주소 추가";
 
@@ -163,7 +169,11 @@ export default function DeliveryAddressSlugClinetPage({
           payload
         );
         if (res?.message === "SUCCESS") {
-          window.location.href = "/mypage/delivery_address";
+          if (redirectURL) {
+            window.location.href = `${redirectURL}`;
+          } else {
+            window.location.href = "/mypage/delivery_address";
+          }
         } else {
           alert("값을 다시 확인해주세요");
         }
@@ -179,7 +189,11 @@ export default function DeliveryAddressSlugClinetPage({
         payload
       );
       if (res?.message === "SUCCESS") {
-        // window.location.href = "/mypage/delivery_address";
+        if (redirectURL) {
+          window.location.href = `${redirectURL}`;
+        } else {
+          window.location.href = "/mypage/delivery_address";
+        }
       } else {
         alert("값을 다시 확인해주세요");
       }

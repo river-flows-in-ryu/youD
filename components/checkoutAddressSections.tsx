@@ -42,6 +42,8 @@ export default function CheckoutAddressSections() {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const [refreshFlag, setRefreshFlag] = useState(false);
+
   const { userId } = useUserIdStore();
 
   useEffect(() => {
@@ -55,7 +57,7 @@ export default function CheckoutAddressSections() {
       }
     };
     fetchData();
-  }, [userId]);
+  }, [userId, refreshFlag]);
 
   useEffect(() => {
     setDeliveryName(userAddressData[0]?.recipient_name);
@@ -108,6 +110,7 @@ export default function CheckoutAddressSections() {
           setDeliveryPhone={setDeliveryPhone}
           setDeliveryAddress={setDeliveryAddress}
           setDeliveryAddressDetail={setDeliveryAddressDetail}
+          setRefreshFlag={setRefreshFlag}
         />
       </Modal>
       {isOpen ? (
@@ -147,7 +150,7 @@ export default function CheckoutAddressSections() {
               />
             </div>
           </div>
-          <div className="px-5 flex flex-col mb-[10px]">
+          <div className="px-5 flex flex-col mb-[15px]">
             <div className="flex justify-end">
               <button
                 className="text-primary underline underline-offset-1 text-sm font-bold"
@@ -156,9 +159,9 @@ export default function CheckoutAddressSections() {
                 주소지 변경
               </button>
             </div>
-            <span>{deliveryName}</span>
-            <span>{deliveryPhone}</span>
-            <span>
+            <span className="font-bold mb-2">{deliveryName}</span>
+            <span className="text-sm	">{deliveryPhone}</span>
+            <span className="text-sm	">
               {deliveryAddress}
               {deliveryAddressDetail}
             </span>
