@@ -12,6 +12,7 @@ interface UserInfo {
   name: string;
   image: string;
   userName: string;
+  user: number;
 }
 interface Props {
   searchUserResultsCount: number;
@@ -29,6 +30,8 @@ export default function SearchUserResultList({
   function handleClickAllUserList() {
     router?.push(`/search?type=brands&keyword=${keyword}`);
   }
+
+  console.log(searchUserResults);
 
   return (
     <div className="">
@@ -55,7 +58,7 @@ export default function SearchUserResultList({
           <div className="mb-10">
             {searchUserResults?.map((user: UserInfo) => (
               <div key={user?.id} className="mb-5">
-                <Link href={`/brands/${user?.id}`}>
+                <Link href={`/brands/${user?.user}`}>
                   <div className="flex px-3 w-full ">
                     {/* 이미지 */}
                     <div

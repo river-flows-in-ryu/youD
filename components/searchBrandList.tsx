@@ -13,6 +13,7 @@ interface UserInfo {
   name: string;
   image: string;
   userName: string;
+  user: number;
 }
 export default function SearchBrandList() {
   const urlParams = useSearchParams();
@@ -39,7 +40,7 @@ export default function SearchBrandList() {
       <div className="mb-10">
         {brandData?.map((user: UserInfo) => (
           <div key={user?.id} className="mb-5">
-            <Link href={`/brands/${user?.id}`}>
+            <Link href={`/brands/${user?.user}`}>
               <div className="flex px-3 w-full ">
                 {/* 이미지 */}
                 <div
