@@ -50,7 +50,9 @@ export default function PcLayout() {
 
   function handleSearch() {
     if (searchText.trimEnd() === "") return alert("검색어를 입력해주세요");
-    router.push(`/search?keyword=${encodeURIComponent(searchText)}`);
+    router.push(
+      `/search?type=integration&keyword=${encodeURIComponent(searchText)}`
+    );
   }
 
   async function handleLogout() {
