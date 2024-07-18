@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo } from "react";
 
 import Image from "next/image";
 
@@ -23,26 +23,18 @@ interface ProductInterface {
 
 interface Props {
   checkoutProduct: ProductInterface[];
+  totalDiscountPrice: number;
+  totalCount: number;
 }
 
-export default function CheckoutProductSection({ checkoutProduct }: Props) {
+export default function CheckoutProductSection({
+  checkoutProduct,
+  totalDiscountPrice,
+  totalCount,
+}: Props) {
   const POINT_RATE = 0.01;
 
   const { isOpen, handleClickDrawerChange } = UseHandleClickDrawer();
-
-  function calculateTotalPrice() {
-    let totalDiscountPrice = 0;
-    let totalCount = 0;
-    checkoutProduct?.map((product) => {
-      totalDiscountPrice += product?.product?.discountPrice;
-      totalCount += product?.quantity;
-    });
-    return { totalDiscountPrice, totalCount };
-  }
-
-  const { totalDiscountPrice, totalCount } = useMemo(() => {
-    return calculateTotalPrice();
-  }, [checkoutProduct]);
 
   return (
     <div className="w-full">
