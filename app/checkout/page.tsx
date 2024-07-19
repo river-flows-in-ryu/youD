@@ -7,6 +7,7 @@ import CheckoutProductSection from "@/components/checkoutProductSection";
 import CheckoutAddressSections from "@/components/checkoutAddressSections";
 import HorizontalLine from "@/components/horizontalLine";
 import CheckoutTabBar from "@/components/checkoutTabBar";
+import CheckoutFinalPaymentSection from "@/components/checkoutFinalPaymentSections";
 
 import { Product } from "@/types/product";
 
@@ -44,14 +45,16 @@ export default function Page() {
   //총 금액 변경 useMemo
   function calculateTotalPrice() {
     let totalDiscountPrice = 0;
+    let totalOriginPrice = 0;
     let totalCount = 0;
     checkoutProduct?.map((product: ProductInfo) => {
       totalDiscountPrice += product?.product?.discountPrice * product?.quantity;
+      totalOriginPrice += product?.product?.OriginPrice * product?.quantity;
       totalCount += product?.quantity;
     });
-    return { totalDiscountPrice, totalCount };
+    return { totalDiscountPrice, totalCount, totalOriginPrice };
   }
-  const { totalDiscountPrice, totalCount } = useMemo(() => {
+  const { totalDiscountPrice, totalCount, totalOriginPrice } = useMemo(() => {
     return calculateTotalPrice();
   }, [checkoutProduct]);
 
@@ -67,6 +70,11 @@ export default function Page() {
             totalDiscountPrice={totalDiscountPrice}
             totalCount={totalCount}
           />
+          <CheckoutFinalPaymentSection
+            totalOriginPrice={totalOriginPrice}
+            totalDiscountPrice={totalDiscountPrice}
+          />
+          <HorizontalLine />
           <CheckoutTabBar totalDiscountPrice={totalDiscountPrice} />
         </div>
       </div>
