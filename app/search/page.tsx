@@ -70,13 +70,13 @@ export default function Page() {
     },
     {
       key: "2",
-      label: `상품 ${searchProductResultsCount}`,
+      label: `상품 ${searchProductResultsCount ? searchProductResultsCount : 0}`,
       children: <SearchProductList />,
       disabled: searchProductResultsCount === 0,
     },
     {
       key: "3",
-      label: `브랜드 ${searchUserResultsCount}`,
+      label: `브랜드 ${searchUserResultsCount ? searchUserResultsCount : 0}`,
       children: <SearchBrandList />,
       disabled: searchUserResultsCount === 0,
     },
