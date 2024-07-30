@@ -20,25 +20,26 @@ interface Address {
   recipient_name: string;
 }
 
+interface DeliveryDetails {
+  deliveryName: string;
+  deliveryPhone: string;
+  deliveryAddress: string;
+  deliveryAddressDetail: string;
+  deliveryMemoType: string;
+  deliveryMemo: string;
+}
+
 interface Props {
   onClose: () => void;
   userAddressData: Address[];
-  setDeliveryName: React.Dispatch<React.SetStateAction<string | undefined>>;
-  setDeliveryPhone: React.Dispatch<React.SetStateAction<string | undefined>>;
-  setDeliveryAddress: React.Dispatch<React.SetStateAction<string | undefined>>;
-  setDeliveryAddressDetail: React.Dispatch<
-    React.SetStateAction<string | undefined>
-  >;
+  setDeliveryDetails: React.Dispatch<React.SetStateAction<DeliveryDetails>>;
   setRefreshFlag: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export default function UserAddressChoiceModal({
   onClose,
   userAddressData,
-  setDeliveryName,
-  setDeliveryPhone,
-  setDeliveryAddress,
-  setDeliveryAddressDetail,
+  setDeliveryDetails,
   setRefreshFlag,
 }: Props) {
   function handleClickAddressChoice(
@@ -47,10 +48,13 @@ export default function UserAddressChoiceModal({
     address: string,
     addressDetail: string
   ) {
-    setDeliveryName(name);
-    setDeliveryPhone(phone);
-    setDeliveryAddress(address);
-    setDeliveryAddressDetail(addressDetail);
+    setDeliveryDetails((prev: any) => ({
+      ...prev,
+      deliveryName: name,
+      deliveryPhone: phone,
+      deliveryAddress: address,
+      deliveryAddressDetail: addressDetail,
+    }));
     onClose();
   }
 

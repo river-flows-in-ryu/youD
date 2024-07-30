@@ -9,18 +9,37 @@ import HorizontalLine from "@/components/horizontalLine";
 import CheckoutTabBar from "@/components/checkoutTabBar";
 import CheckoutFinalPaymentSection from "@/components/checkoutFinalPaymentSections";
 
+import { useUserIdStore } from "../store";
+
 import { Product } from "@/types/product";
+import { commonFetch } from "@/utils/commonFetch";
 
 interface ProductInfo {
   index: string;
   product: Product;
   quantity: number;
+  size_attribute: {
+    size: {
+      id: number;
+    };
+  };
 }
 
 export default function Page() {
   const router = useRouter();
 
+  const { userId } = useUserIdStore();
+
   const [checkoutProduct, setCheckoutProduct] = useState([]);
+
+  const [deliveryDetails, setDeliveryDetails] = useState({
+    deliveryName: "",
+    deliveryPhone: "",
+    deliveryAddress: "",
+    deliveryAddressDetail: "",
+    deliveryMemoType: "",
+    deliveryMemo: "",
+  });
 
   useEffect(() => {
     const userId = JSON.parse(localStorage?.getItem("userId") || "{}");
@@ -58,13 +77,47 @@ export default function Page() {
     return calculateTotalPrice();
   }, [checkoutProduct]);
 
+  async function handleSubmit() {
+    const productData = checkoutProduct?.map((productData: ProductInfo) => ({
+      productId: productData?.product?.id,
+      productName: productData?.product?.productName,
+      quantity: productData?.quantity,
+      price: productData?.product?.discountPrice,
+      size: productData?.size_attribute?.size?.id,
+    }));
+    const payload = {
+      userId: userId,
+      originPrice: totalOriginPrice,
+      discountPrice: totalDiscountPrice,
+      status: "PENDING",
+      paymentMethod: "CARD",
+      deliveryFee: 0,
+      deliveryName: deliveryDetails?.deliveryName,
+      deliveryAddress: `${deliveryDetails?.deliveryAddress} ${deliveryDetails?.deliveryAddressDetail}`,
+      deliveryPhone: deliveryDetails?.deliveryPhone,
+      deliveryMemo: deliveryDetails?.deliveryMemo
+        ? deliveryDetails?.deliveryMemo
+        : deliveryDetails?.deliveryMemoType,
+      orderDetails: productData,
+    };
+    const res = await commonFetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/test`,
+      "post",
+      payload
+    );
+    console.log(res);
+  }
+
   if (checkoutProduct)
     return (
       <div className="w-full pb-[70px] sm:pb-0">
         <div className="sm:w-[650px] sm:mx-auto">
-          <div className=" font-bold text-xl py-5 px-5 ">주문/결제</div>
+          <h2 className=" font-bold text-xl py-5 px-5 ">주문/결제</h2>
           <HorizontalLine />
-          <CheckoutAddressSections />
+          <CheckoutAddressSections
+            deliveryDetails={deliveryDetails}
+            setDeliveryDetails={setDeliveryDetails}
+          />
           <CheckoutProductSection
             checkoutProduct={checkoutProduct}
             totalDiscountPrice={totalDiscountPrice}
@@ -75,7 +128,10 @@ export default function Page() {
             totalDiscountPrice={totalDiscountPrice}
           />
           <HorizontalLine />
-          <CheckoutTabBar totalDiscountPrice={totalDiscountPrice} />
+          <CheckoutTabBar
+            totalDiscountPrice={totalDiscountPrice}
+            handleSubmit={handleSubmit}
+          />
         </div>
       </div>
     );
