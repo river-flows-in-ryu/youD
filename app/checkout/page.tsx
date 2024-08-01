@@ -9,7 +9,7 @@ import HorizontalLine from "@/components/horizontalLine";
 import CheckoutTabBar from "@/components/checkoutTabBar";
 import CheckoutFinalPaymentSection from "@/components/checkoutFinalPaymentSections";
 
-import { useUserIdStore } from "../store";
+import { useCartCountStore, useUserIdStore } from "../store";
 
 import { Product } from "@/types/product";
 import { commonFetch } from "@/utils/commonFetch";
@@ -32,6 +32,8 @@ export default function Page() {
 
   const [checkoutProduct, setCheckoutProduct] = useState([]);
 
+  const { fetchCartItemCount } = useCartCountStore();
+
   const [deliveryDetails, setDeliveryDetails] = useState({
     deliveryName: "",
     deliveryPhone: "",
@@ -40,6 +42,8 @@ export default function Page() {
     deliveryMemoType: "",
     deliveryMemo: "",
   });
+
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     const userId = JSON.parse(localStorage?.getItem("userId") || "{}");
@@ -78,6 +82,7 @@ export default function Page() {
   }, [checkoutProduct]);
 
   async function handleSubmit() {
+    setLoading(true);
     const productData = checkoutProduct?.map((productData: ProductInfo) => ({
       productId: productData?.product?.id,
       productName: productData?.product?.productName,
@@ -87,25 +92,32 @@ export default function Page() {
     }));
     const payload = {
       userId: userId,
-      originPrice: totalOriginPrice,
-      discountPrice: totalDiscountPrice,
+      origin_price: totalOriginPrice,
+      discount_price: totalDiscountPrice,
       status: "PENDING",
-      paymentMethod: "CARD",
-      deliveryFee: 0,
-      deliveryName: deliveryDetails?.deliveryName,
-      deliveryAddress: `${deliveryDetails?.deliveryAddress} ${deliveryDetails?.deliveryAddressDetail}`,
-      deliveryPhone: deliveryDetails?.deliveryPhone,
-      deliveryMemo: deliveryDetails?.deliveryMemo
+      payment_method: "CARD",
+      delivery_fee: 0,
+      receiver_name: deliveryDetails?.deliveryName,
+      receiver_address: `${deliveryDetails?.deliveryAddress} ${deliveryDetails?.deliveryAddressDetail}`,
+      receiver_phone: deliveryDetails?.deliveryPhone,
+      receiver_memo: deliveryDetails?.deliveryMemo
         ? deliveryDetails?.deliveryMemo
         : deliveryDetails?.deliveryMemoType,
       orderDetails: productData,
     };
-    const res = await commonFetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/test`,
-      "post",
-      payload
-    );
-    console.log(res);
+    try {
+      const res = await commonFetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/test`,
+        "post",
+        payload
+      );
+      if (res.message === "SUCCESS") {
+        await fetchCartItemCount(userId);
+        sessionStorage.removeItem("selectedProducts");
+      }
+    } finally {
+      setLoading(false);
+    }
   }
 
   if (checkoutProduct)
@@ -131,6 +143,7 @@ export default function Page() {
           <CheckoutTabBar
             totalDiscountPrice={totalDiscountPrice}
             handleSubmit={handleSubmit}
+            loading={loading}
           />
         </div>
       </div>
