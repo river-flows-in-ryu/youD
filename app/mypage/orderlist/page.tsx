@@ -16,7 +16,7 @@ export default async function Page() {
   async function getOrderCounts() {
     try {
       const res = await commonFetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/order-count/${user_id}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/orders/order-count/${user_id}`,
         "get"
       );
       return res;

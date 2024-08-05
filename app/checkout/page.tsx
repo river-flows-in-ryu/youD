@@ -107,7 +107,7 @@ export default function Page() {
     };
     try {
       const res = await commonFetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/test`,
+        `${process.env.NEXT_PUBLIC_API_URL}/orders/orders`,
         "post",
         payload
       );

@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 
 import Image from "next/image";
+import Link from "next/link";
 
 import HorizontalLine from "./horizontalLine";
 
@@ -37,6 +38,7 @@ interface OrderProductInfo {
 interface ProductData {
   date: string;
   products: OrderProductInfo[];
+  order_id: number;
 }
 
 type Type = "all" | "paid" | "shipped" | "delivered";
@@ -52,9 +54,10 @@ export default function OrderlistClientPage({ orderCounts }: Props) {
     async function fetchData() {
       if (userId) {
         const res = await commonFetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/test/${userId}?type=${deliveryType}`,
+          `${process.env.NEXT_PUBLIC_API_URL}/orders/orderlist/${userId}?type=${deliveryType}`,
           "get"
         );
+        console.log(res);
         setProductData(res);
       }
     }
@@ -121,13 +124,15 @@ export default function OrderlistClientPage({ orderCounts }: Props) {
       <HorizontalLine />
       <div>
         {productData?.map((product: ProductData) => (
-          <dl className="px-4 " key={product?.date}>
-            <dt className="flex justify-between px-4 py-5">
-              <span className="text-xl text-[#aaa] font-bold">
-                {product?.date}
-              </span>
-              <Image src={arrowImage} alt=">" className="w-5 h-5 mt-1" />
-            </dt>
+          <dl className="px-4 " key={`${product?.date}-${product?.order_id}`}>
+            <Link href={`/mypage/order/${product?.order_id}`}>
+              <dt className="flex justify-between px-4 py-5">
+                <span className="text-xl text-[#aaa] font-bold">
+                  {product?.date}
+                </span>
+                <Image src={arrowImage} alt=">" className="w-5 h-5 mt-1" />
+              </dt>
+            </Link>
             <hr className="h-[1px]" />
             <dd className="w-full">
               {product?.products?.map((productDetail) => (
