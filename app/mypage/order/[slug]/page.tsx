@@ -5,7 +5,11 @@ import { cookies } from "next/headers";
 import { commonFetch } from "@/utils/commonFetch";
 import decodingJwttsx from "@/utils/decodingJwt";
 
-export default function Page({ params }: { params: { slug: string } }) {
+import Container from "@/components/container";
+
+import MypageOrderClientPage from "@/components/mypageOrderClientPage";
+
+export default async function Page({ params }: { params: { slug: string } }) {
   const cookieStore = cookies();
   const access_token = cookieStore.get("access_token");
   const decodingJwt = decodingJwttsx(access_token?.value);
@@ -16,13 +20,14 @@ export default function Page({ params }: { params: { slug: string } }) {
       `${process.env.NEXT_PUBLIC_API_URL}/orders/order/${params?.slug}?userId=${userId}`,
       "get"
     );
-    console.log(res);
+    return res;
   }
 
-  const orderData = fetchData();
+  const orderData = await fetchData();
 
   return (
-    //
-    <div></div>
+    <Container>
+      <MypageOrderClientPage orderData={orderData} />
+    </Container>
   );
 }
