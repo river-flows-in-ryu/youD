@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 
-import masking from "@/utils/masking";
+import { nameMasking } from "@/utils/masking";
 import { commonFetch } from "@/utils/commonFetch";
 
 import close from "../public/close.png";
@@ -104,7 +104,7 @@ export default function UserAddressChoiceModal({
         {userAddressData?.map((address) => (
           <div key={address?.id} className=" py-[15px]">
             <div className="flex gap-1 font-bold mb-1.5">
-              <span>{masking(address?.recipient_name)}</span>
+              <span>{nameMasking(address?.recipient_name)}</span>
               <span>
                 {address?.address_label
                   ? address?.address_label

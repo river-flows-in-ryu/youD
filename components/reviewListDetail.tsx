@@ -8,7 +8,7 @@ import { commonFetch } from "@/utils/commonFetch";
 
 import Pagination from "@/utils/pagination";
 import changeDateType from "@/utils/changeDateType";
-import masking from "@/utils/masking";
+import { nameMasking } from "@/utils/masking";
 
 interface Props {
   slug: string;
@@ -120,7 +120,7 @@ export default function ReviewListDetail({
                 <div key={review?.id}>
                   <div className="flex justify-between mb-3">
                     <div className="font-bold">
-                      {masking(review?.user_name)}
+                      {nameMasking(review?.user_name)}
                     </div>
                     <div className="text-xs text-[#aaa]">
                       {changeDateType(review?.created_at)}

@@ -1,4 +1,4 @@
-export default function masking(text: string): string {
+export function nameMasking(text: string): string {
   if (text.length === 2) {
     return text[0] + "*";
   }
@@ -14,4 +14,13 @@ export default function masking(text: string): string {
     return masked;
   }
   return text;
+}
+
+export function phoneMasking(text: string): string {
+  const parts = text.split("-");
+
+  const [part1, part2, part3] = parts;
+
+  if (part2.length === 3) return `${part1}-***-${part3}`;
+  else return `${part1}-****-${part3}`;
 }

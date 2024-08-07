@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 
-import masking from "@/utils/masking";
+import { nameMasking } from "@/utils/masking";
 import Link from "next/link";
 
 import Modal from "./modal";
@@ -58,7 +58,7 @@ export default function MypageDeliveryAddressClientPage({
       {addressData?.map((address) => (
         <div key={address?.id} className="px-[25px] py-[15px]">
           <div className="flex gap-1 font-bold mb-1.5">
-            <span>{masking(address?.recipient_name)}</span>
+            <span>{nameMasking(address?.recipient_name)}</span>
             <span>
               {address?.address_label
                 ? address?.address_label
