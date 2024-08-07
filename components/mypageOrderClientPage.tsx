@@ -1,17 +1,29 @@
-import React from "react";
+"use client";
+
+import React, { useState } from "react";
 
 import Image from "next/image";
 import Link from "next/link";
 
 import HorizontalLine from "@/components/horizontalLine";
 
+import UseHandleClickDrawer from "@/hooks/useHandleClickDrawer";
+import { nameMasking, phoneMasking } from "@/utils/masking";
+
 import { Product } from "@/types/product";
+
+import arrowDown from "@/public/arrow_down.png";
+import arrowUp from "@/public/arrow_up.png";
 
 interface Props {
   orderData: {
     id: number;
     created_at: string;
     order_details: OrderProduct[];
+    receiver_name: string;
+    receiver_phone: string;
+    receiver_address: string;
+    receiver_memo: string;
   };
 }
 
@@ -28,6 +40,7 @@ interface OrderProduct {
   price: number;
   origin_price: number;
   size: {
+    id: number;
     name: string;
   };
   delivery_status: DeliveryStatus;
@@ -36,6 +49,10 @@ interface OrderProduct {
 }
 
 export default function MypageOrderClientPage({ orderData }: Props) {
+  const [indexArray, setIndexArray] = useState<number[]>([]);
+
+  const { isOpen, handleClickDrawerChange } = UseHandleClickDrawer();
+
   const deliveryStatusMap: deliveryStatusMap = {
     PENDING: "배송 준비중",
     SHIPPED: "배송 중",
@@ -45,6 +62,14 @@ export default function MypageOrderClientPage({ orderData }: Props) {
 
   function changeDateFormat(str: string) {
     return str?.slice(0, 19)?.replaceAll("T", " ");
+  }
+
+  function toggleDetails(id: number) {
+    setIndexArray((prev) => {
+      if (prev.includes(id)) {
+        return prev.filter((idx) => idx !== id);
+      } else return [...prev, id];
+    });
   }
 
   return (
@@ -57,6 +82,9 @@ export default function MypageOrderClientPage({ orderData }: Props) {
         </span>
       </div>
       <div className="px-5">
+        <span className="text-lg font-bold">
+          주문 상품 {orderData?.order_details?.length || 0}개
+        </span>
         {orderData?.order_details?.map((product: OrderProduct) => (
           <div
             className="pb-[30px] "
@@ -93,20 +121,43 @@ export default function MypageOrderClientPage({ orderData }: Props) {
             <div className=" pl-[85px] pr-5 pb-5">
               <div className="flex justify-between ">
                 <span className="text-sm">주문 금액 (상세)</span>
-                <span className="font-bold">
-                  {product?.price?.toLocaleString()}원
-                </span>
+                <div
+                  className="flex"
+                  onClick={() =>
+                    toggleDetails(
+                      Number(`${product?.product?.id}${product?.size?.id}`)
+                    )
+                  }
+                >
+                  <span className="font-bold">
+                    {product?.price?.toLocaleString()}원
+                  </span>
+                  <button className="w-5 h-5 mt-0.5">
+                    <Image src={arrowDown} alt="downImg" />
+                  </button>
+                </div>
               </div>
-              <div className="flex justify-between text-sm mt-2">
-                <span>상품 금액</span>
-                <span>{product?.origin_price?.toLocaleString()}원</span>
-              </div>
-              <div className="flex justify-between text-sm mt-2">
-                <span>상품 할인</span>
-                <span className="text-primary">
-                  -{(product?.origin_price - product?.price).toLocaleString()}원
-                </span>
-              </div>
+
+              {!indexArray?.includes(
+                Number(`${product?.product?.id}${product?.size?.id}`)
+              ) && (
+                <>
+                  <div className="flex justify-between text-sm mt-2">
+                    <span>상품 금액</span>
+                    <span>{product?.origin_price?.toLocaleString()}원</span>
+                  </div>
+                  <div className="flex justify-between text-sm mt-2">
+                    <span>상품 할인</span>
+                    <span className="text-primary">
+                      -
+                      {(
+                        product?.origin_price - product?.price
+                      ).toLocaleString()}
+                      원
+                    </span>
+                  </div>
+                </>
+              )}
             </div>
             <button className="w-full h-10 border-[1px] border-secondary">
               배송 조회
@@ -114,6 +165,73 @@ export default function MypageOrderClientPage({ orderData }: Props) {
           </div>
         ))}
       </div>
+      <HorizontalLine />
+      {isOpen ? (
+        <div className="pb-5">
+          <header
+            className="flex w-full px-5 justify-between "
+            onClick={handleClickDrawerChange}
+          >
+            <div className=" font-bold text-xl py-5 ">배송지 정보</div>
+            <div className="relative w-5 h-5 mt-[25px] cursor-pointer">
+              <Image
+                src={arrowUp}
+                alt="drawerClose"
+                fill
+                style={{ objectFit: "contain" }}
+              />
+            </div>
+          </header>
+          <div className="px-5 ">
+            <dl className="flex justify-between mb-2">
+              <dt className="text-[#aaa]">받으시는 분</dt>
+              <dd>{nameMasking(orderData?.receiver_name) || ""}</dd>
+            </dl>
+            <dl className="flex justify-between mb-2">
+              <dt className="text-[#aaa]">연락처</dt>
+              <dd>{phoneMasking(orderData?.receiver_phone) || ""}</dd>
+            </dl>
+            <dl className="flex justify-between mb-2">
+              <dt className="text-[#aaa]">배송지</dt>
+              <dd className="max-w-[250px] text-right">
+                {orderData?.receiver_address || ""}
+              </dd>
+            </dl>
+            <dl className="flex justify-between">
+              <dt className="text-[#aaa]">배송 메세지</dt>
+              <dd>{orderData?.receiver_memo || ""}</dd>
+            </dl>
+          </div>
+        </div>
+      ) : (
+        <>
+          <header
+            className="flex w-full px-5 justify-between"
+            onClick={handleClickDrawerChange}
+          >
+            <div className=" font-bold text-xl py-5 ">배송지 정보</div>
+            <div className="flex gap-5">
+              <div className="leading-[68px] text-sm">
+                <div className="flex gap-2.5">
+                  <span>{orderData?.receiver_name}</span>
+                  <span> | </span>
+                  <span className="w-[150px] truncate">
+                    {orderData?.receiver_address}
+                  </span>
+                </div>
+              </div>
+              <div className="relative w-5 h-5 mt-[25px] cursor-pointer">
+                <Image
+                  src={arrowDown}
+                  alt="drawerOpen"
+                  fill
+                  style={{ objectFit: "contain" }}
+                />
+              </div>
+            </div>
+          </header>
+        </>
+      )}
       <HorizontalLine />
     </section>
   );
