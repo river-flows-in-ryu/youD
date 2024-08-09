@@ -17,7 +17,7 @@ import { useCartCountStore, useUserIdStore } from "@/app/store";
 import ReviewListDetail from "@/components/reviewListDetail";
 import { commonFetch } from "@/utils/commonFetch";
 
-import arrowFoward from "../public/arrow_forward_balck.png";
+import arrowFoward from "@/public/arrow_forward_balck.png";
 import ProductDetailOption from "@/components/productDetailOption";
 
 interface Props {
