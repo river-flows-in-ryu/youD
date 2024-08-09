@@ -7,7 +7,7 @@ import Link from "next/link";
 
 import Container from "@/components/container";
 
-import arrowBlack from "../public/arrow_forward_balck.png";
+import arrowBlack from "@/public/arrow_forward_balck.png";
 
 interface Props {
   categoriesData: Category[];
@@ -26,7 +26,7 @@ interface CategoryChildren {
   image: string;
 }
 
-export default function OverviewClientpage({ categoriesData }: Props) {
+export default function Client({ categoriesData }: Props) {
   const subCategoryRefs = useRef<(HTMLDivElement | null)[]>([]);
   const [currentTargetNumber, setCurrentTargetNumber] = useState(1);
 

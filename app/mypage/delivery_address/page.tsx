@@ -3,7 +3,7 @@ import React from "react";
 import { cookies } from "next/headers";
 
 import Container from "@/components/container";
-import MypageDeliveryAddressClientPage from "@/components/mypageDeliveryAddressClientPage";
+import Client from "./client";
 
 import { commonFetch } from "@/utils/commonFetch";
 import decodingJwttsx from "@/utils/decodingJwt";
@@ -35,9 +35,7 @@ export default async function Page() {
   return (
     <Container>
       <div className="sm:w-[650px] sm:mx-auto">
-        <MypageDeliveryAddressClientPage
-          addressData={addressData?.userAddress}
-        />
+        <Client addressData={addressData?.userAddress} />
       </div>
     </Container>
   );

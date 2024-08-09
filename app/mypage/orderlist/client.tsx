@@ -5,7 +5,7 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
-import HorizontalLine from "./horizontalLine";
+import HorizontalLine from "@/components/horizontalLine";
 
 import { commonFetch } from "@/utils/commonFetch";
 
@@ -43,7 +43,7 @@ interface ProductData {
 
 type Type = "all" | "paid" | "shipped" | "delivered";
 
-export default function OrderlistClientPage({ orderCounts }: Props) {
+export default function Client({ orderCounts }: Props) {
   const { userId } = useUserIdStore();
 
   const [deliveryType, setDeliveryType] = useState<Type>("all");

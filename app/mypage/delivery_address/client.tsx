@@ -4,10 +4,10 @@ import React, { useState } from "react";
 import { nameMasking } from "@/utils/masking";
 import Link from "next/link";
 
-import Modal from "./modal";
+import Modal from "@/components/modal";
 
 import { useUserIdStore } from "@/app/store";
-import UserAddressDeleteModal from "./userAddressDeleteModal";
+import UserAddressDeleteModal from "@/components/userAddressDeleteModal";
 
 interface Props {
   addressData: DeliveryAddress[];
@@ -23,9 +23,7 @@ interface DeliveryAddress {
   is_default: boolean;
   user: number;
 }
-export default function MypageDeliveryAddressClientPage({
-  addressData,
-}: Props) {
+export default function Client({ addressData }: Props) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSelectedAddressId, setIsSelectedAddressId] = useState<number>(0);
 

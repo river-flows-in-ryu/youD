@@ -6,7 +6,7 @@ import Container from "@/components/container";
 
 import { commonFetch } from "@/utils/commonFetch";
 import decodingJwttsx from "@/utils/decodingJwt";
-import OrderlistClientPage from "@/components/orderlistClientPage";
+import Client from "./client";
 
 export default async function Page() {
   const cookieStore = cookies();
@@ -31,7 +31,7 @@ export default async function Page() {
 
   return (
     <Container>
-      <OrderlistClientPage orderCounts={orderCounts} />
+      <Client orderCounts={orderCounts} />
     </Container>
   );
 }

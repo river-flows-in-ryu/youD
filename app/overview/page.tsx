@@ -2,7 +2,7 @@ import React from "react";
 
 import { commonFetch } from "@/utils/commonFetch";
 
-import OverviewClientpage from "@/components/overviewClientPage";
+import Client from "./client";
 
 export default async function Page() {
   async function fetchData() {
@@ -13,5 +13,5 @@ export default async function Page() {
     return res;
   }
   const categoriesData = await fetchData();
-  return <OverviewClientpage categoriesData={categoriesData?.results} />;
+  return <Client categoriesData={categoriesData?.results} />;
 }
