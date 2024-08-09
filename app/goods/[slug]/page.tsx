@@ -2,7 +2,7 @@ import React from "react";
 
 import { commonFetch } from "@/utils/commonFetch";
 
-import GoodsClientPage from "@/components/goodsClientPage";
+import Client from "./client";
 
 export default async function Page({ params }: { params: { slug: string } }) {
   async function getProductData(slug: string) {
@@ -35,7 +35,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
   const productData = await getProductData(params?.slug);
   const reviewData = await getReviewData(params?.slug);
   return (
-    <GoodsClientPage
+    <Client
       productData={productData}
       slug={params?.slug}
       reviewData={reviewData}

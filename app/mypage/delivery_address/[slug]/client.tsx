@@ -5,9 +5,9 @@ import React, { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Checkbox } from "antd";
 
-import InputArea from "./inputArea";
-import SignupPhoneArea from "./signupPhoneArea";
-import SignupAddressArea from "./signupAddressArea";
+import InputArea from "@/components/inputArea";
+import SignupPhoneArea from "@/components/signupPhoneArea";
+import SignupAddressArea from "@/components/signupAddressArea";
 
 import { useUserIdStore } from "@/app/store";
 
@@ -24,7 +24,7 @@ interface UserAddress {
   user: number;
 }
 
-export default function DeliveryAddressSlugClinetPage({
+export default function Client({
   slug,
   data,
   addressId,

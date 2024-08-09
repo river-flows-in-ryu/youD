@@ -3,7 +3,7 @@ import React from "react";
 import { cookies } from "next/headers";
 
 import Container from "@/components/container";
-import DeliveryAddressSlugClinetPage from "@/components/deliveryAddressSlugClinetPage";
+import Client from "./client";
 
 import decodingJwttsx from "@/utils/decodingJwt";
 import { commonFetch } from "@/utils/commonFetch";
@@ -42,7 +42,7 @@ export default async function Page(request: Request) {
   const userAddressDetailData = await fetchData();
   return (
     <Container>
-      <DeliveryAddressSlugClinetPage
+      <Client
         slug={request?.params?.slug}
         data={userAddressDetailData?.data}
         addressId={addressId}

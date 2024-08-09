@@ -7,7 +7,7 @@ import decodingJwttsx from "@/utils/decodingJwt";
 
 import Container from "@/components/container";
 
-import MypageOrderClientPage from "@/components/mypageOrderClientPage";
+import Client from "./client";
 
 export default async function Page({ params }: { params: { slug: string } }) {
   const cookieStore = cookies();
@@ -27,7 +27,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
 
   return (
     <Container>
-      <MypageOrderClientPage orderData={orderData} />
+      <Client orderData={orderData} />
     </Container>
   );
 }

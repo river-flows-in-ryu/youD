@@ -48,7 +48,7 @@ interface OrderProduct {
   product: Product;
 }
 
-export default function MypageOrderClientPage({ orderData }: Props) {
+export default function Client({ orderData }: Props) {
   const [indexArray, setIndexArray] = useState<number[]>([]);
 
   const { isOpen, handleClickDrawerChange } = UseHandleClickDrawer();

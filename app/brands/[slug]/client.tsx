@@ -8,8 +8,9 @@ import Image from "next/image";
 import Pagination from "@/utils/pagination";
 
 import { commonFetch } from "@/utils/commonFetch";
-import HorizontalLine from "./horizontalLine";
-import Container from "./container";
+
+import HorizontalLine from "@/components/horizontalLine";
+import Container from "@/components/container";
 
 interface Product {
   id: number;
@@ -40,7 +41,7 @@ interface Props {
   slug: string;
 }
 
-export default function BrandsClientPage({ userData, slug }: Props) {
+export default function Client({ userData, slug }: Props) {
   const [brandProductList, setBrandProductList] = useState([]);
 
   const [page, setPage] = useState(1);

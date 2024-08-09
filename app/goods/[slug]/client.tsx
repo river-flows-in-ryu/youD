@@ -14,11 +14,11 @@ import GoodsOptionTabBar from "@/components/goodsOptionTabBar";
 import CartSuccessAddModal from "@/components/cartSuccessAddModal";
 
 import { useCartCountStore, useUserIdStore } from "@/app/store";
-import ReviewListDetail from "./reviewListDetail";
+import ReviewListDetail from "@/components/reviewListDetail";
 import { commonFetch } from "@/utils/commonFetch";
 
 import arrowFoward from "../public/arrow_forward_balck.png";
-import ProductDetailOption from "./productDetailOption";
+import ProductDetailOption from "@/components/productDetailOption";
 
 interface Props {
   productData: Products;
@@ -89,11 +89,7 @@ const initialProductDetailData: Products = {
   },
 };
 
-export default function GoodsClientPage({
-  productData,
-  slug,
-  reviewData,
-}: Props) {
+export default function Client({ productData, slug, reviewData }: Props) {
   const Modal = dynamic(() => import("@/components/modal"));
   const { userId } = useUserIdStore();
   const [isOptionChoiceSection, setIsOptionChoiceSection] = useState(false);
