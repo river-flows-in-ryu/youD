@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 
 import Image from "next/image";
 import Link from "next/link";
@@ -46,23 +46,72 @@ type Type = "all" | "paid" | "shipped" | "delivered";
 export default function Client({ orderCounts }: Props) {
   const { userId } = useUserIdStore();
 
+  const target = useRef(null);
+
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [loading, setLoading] = useState(false);
+
   const [deliveryType, setDeliveryType] = useState<Type>("all");
 
-  const [productData, setProductData] = useState([]);
+  const [productData, setProductData] = useState<ProductData[]>([]);
+
+  useEffect(() => {
+    setProductData([]);
+    setPage(1);
+    setHasMore(true);
+  }, [deliveryType]);
 
   useEffect(() => {
     async function fetchData() {
-      if (userId) {
+      console.log(deliveryType);
+      if (userId && hasMore) {
+        setLoading(true);
         const res = await commonFetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/orders/orderlist/${userId}?type=${deliveryType}`,
+          `${process.env.NEXT_PUBLIC_API_URL}/orders/orderlist/${userId}?type=${deliveryType}&offset=${(page - 1) * 10}&limit=10`,
           "get"
         );
-        console.log(res);
-        setProductData(res);
+        // console.log(res);
+
+        if (res && res.length > 0) {
+          setProductData((prevData) => [...prevData, ...res]);
+          if (res.length < 2) {
+            setHasMore(false);
+          }
+        } else {
+          setHasMore(false);
+        }
+        setLoading(false);
       }
     }
     fetchData();
-  }, [userId, deliveryType]);
+  }, [userId, deliveryType, page, hasMore]);
+
+  useEffect(() => {
+    if (typeof IntersectionObserver === "undefined") {
+      return;
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        if (loading) return;
+        if (!hasMore) return;
+
+        setPage((prevPage) => prevPage + 1);
+      });
+    });
+
+    if (target.current) {
+      observer.observe(target.current);
+    }
+
+    return () => {
+      if (target.current) {
+        observer.unobserve(target.current);
+      }
+    };
+  }, [loading]);
 
   console.log(productData);
 
@@ -123,8 +172,11 @@ export default function Client({ orderCounts }: Props) {
       </section>
       <HorizontalLine />
       <div>
-        {productData?.map((product: ProductData) => (
-          <dl className="px-4 " key={`${product?.date}-${product?.order_id}`}>
+        {productData?.map((product: ProductData, index) => (
+          <dl
+            className="px-4 "
+            key={`${product?.date}-${product?.order_id}-${index}`}
+          >
             <Link href={`/mypage/order/${product?.order_id}`}>
               <dt className="flex justify-between px-4 py-5">
                 <span className="text-xl text-[#aaa] font-bold">
@@ -169,6 +221,7 @@ export default function Client({ orderCounts }: Props) {
           </dl>
         ))}
       </div>
+      <div ref={target} className="h-[1px]" />
     </section>
   );
 }
