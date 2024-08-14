@@ -10,6 +10,9 @@ const nextConfig = {
       },
     ],
   },
+  experimental: {
+    forceSwcTransforms: true,
+  },
 };
 
 // const withBundleAnalyzer = require("@next/bundle-analyzer")();
