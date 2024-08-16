@@ -27,7 +27,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
 
   return (
     <Container>
-      <Client orderData={orderData} />
+      <Client orderData={orderData} orderId={params?.slug} />
     </Container>
   );
 }
