@@ -6,6 +6,8 @@ import { Steps } from "antd";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 
+import DeliveryStatusTimeline from "@/components/deliveryStatusTimeline";
+
 import trackingInfoFetch from "./dataFetch";
 
 import { deliveryCompanyList } from "@/utils/deliveryCompanyList";
@@ -104,11 +106,15 @@ export default function Client({ orderDetailData, orderData }: Props) {
     <section className="sm:w-[650px] sm:mx-auto w-full">
       <h2 className=" font-bold text-xl py-5 px-5">배송 조회</h2>
       <div className="px-5">
-        <span>
+        <span className="font-bold">
           {stepData[0]?.status === "DELIVERED"
             ? `${formatDate(stepData[0]?.time)} 배송 완료`
             : ""}
         </span>
+        <DeliveryStatusTimeline
+          arrayLength={stepData?.length}
+          status={stepData[0]?.status}
+        />
         <div className=" w-full flex py-5">
           <div className="w-[72px] h-[86px] relative">
             <Image
@@ -116,7 +122,7 @@ export default function Client({ orderDetailData, orderData }: Props) {
               alt={orderDetailData?.product?.productName}
               fill
               style={{ objectFit: "contain" }}
-              className="w-full h-full  "
+              className="w-full h-full "
             />
           </div>
           <div className="flex flex-col w-[calc(100%-70px)] pl-2.5">
@@ -136,14 +142,14 @@ export default function Client({ orderDetailData, orderData }: Props) {
             </span>
           </div>
         </div>
-        <dl className="flex justify-between">
+        <dl className="flex justify-between mt-5 text-sm	mb-2">
           <dt>택배사</dt>
           <dd>
             {deliveryCompanyList[orderDetailData?.shipping_company] ||
               "송장 미등록"}
           </dd>
         </dl>
-        <dl className="flex justify-between">
+        <dl className="flex justify-between mb-10 text-sm	">
           <dt>송장번호</dt>
           <dd>{orderDetailData?.tracking_number || "송장 미등록"}</dd>
         </dl>

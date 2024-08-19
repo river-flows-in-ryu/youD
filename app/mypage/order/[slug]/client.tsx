@@ -25,6 +25,7 @@ interface Props {
     receiver_address: string;
     receiver_memo: string;
   };
+  orderId: string;
 }
 
 type DeliveryStatus = "PENDING" | "SHIPPED" | "DELIVERED" | "CANCELLED";
@@ -45,10 +46,11 @@ interface OrderProduct {
   };
   delivery_status: DeliveryStatus;
   tracking_number: string;
+  shipping_company: string;
   product: Product;
 }
 
-export default function Client({ orderData }: Props) {
+export default function Client({ orderData, orderId }: Props) {
   const [indexArray, setIndexArray] = useState<number[]>([]);
 
   const { isOpen, handleClickDrawerChange } = UseHandleClickDrawer();
@@ -75,96 +77,6 @@ export default function Client({ orderData }: Props) {
   return (
     <section className="sm:w-[650px] sm:mx-auto w-full">
       <h2 className=" font-bold text-xl py-5 px-5">주문 상세내역</h2>
-      <div className="flex gap-2 p-5 justify-between">
-        <span>No. {orderData?.id}</span>
-        <span className="text-sm text-[#aaa]">
-          {changeDateFormat(orderData?.created_at)}
-        </span>
-      </div>
-      <div className="px-5">
-        <span className="text-lg font-bold">
-          주문 상품 {orderData?.order_details?.length || 0}개
-        </span>
-        {orderData?.order_details?.map((product: OrderProduct) => (
-          <div
-            className="pb-[30px] "
-            key={`${product?.product?.brandName}${product?.product_name}${product?.size?.name}`}
-          >
-            <div className="flex pt-5 pb-2.5">
-              <Image
-                src={product?.product?.image_url}
-                alt="이미지"
-                width={70}
-                height={70}
-              />
-              <div className="flex flex-col w-[calc(100%-70px)] pl-2.5">
-                <span className="font-bold">
-                  {deliveryStatusMap[product?.delivery_status]}
-                </span>
-                <Link href="" className="overflow-hidden text-ellipsis">
-                  <span className="text-sm ">
-                    {product?.product?.brandName}
-                  </span>
-                </Link>
-                <Link href="" className="overflow-hidden text-ellipsis">
-                  <span className="text-sm font-bold ">
-                    {product?.product_name}
-                  </span>
-                </Link>
-                <div className="flex text-sm">
-                  <span>{product?.size?.name || ""}</span>
-                  <span className="mx-2 ">|</span>
-                  <span>{product?.quantity}개</span>
-                </div>
-              </div>
-            </div>
-            <div className=" pl-[85px] pr-5 pb-5">
-              <div className="flex justify-between ">
-                <span className="text-sm">주문 금액 (상세)</span>
-                <div
-                  className="flex"
-                  onClick={() =>
-                    toggleDetails(
-                      Number(`${product?.product?.id}${product?.size?.id}`)
-                    )
-                  }
-                >
-                  <span className="font-bold">
-                    {product?.price?.toLocaleString()}원
-                  </span>
-                  <button className="w-5 h-5 mt-0.5">
-                    <Image src={arrowDown} alt="downImg" />
-                  </button>
-                </div>
-              </div>
-
-              {!indexArray?.includes(
-                Number(`${product?.product?.id}${product?.size?.id}`)
-              ) && (
-                <>
-                  <div className="flex justify-between text-sm mt-2">
-                    <span>상품 금액</span>
-                    <span>{product?.origin_price?.toLocaleString()}원</span>
-                  </div>
-                  <div className="flex justify-between text-sm mt-2">
-                    <span>상품 할인</span>
-                    <span className="text-primary">
-                      -
-                      {(
-                        product?.origin_price - product?.price
-                      ).toLocaleString()}
-                      원
-                    </span>
-                  </div>
-                </>
-              )}
-            </div>
-            <button className="w-full h-10 border-[1px] border-secondary">
-              배송 조회
-            </button>
-          </div>
-        ))}
-      </div>
       <HorizontalLine />
       {isOpen ? (
         <div className="pb-5">
@@ -233,6 +145,106 @@ export default function Client({ orderData }: Props) {
         </>
       )}
       <HorizontalLine />
+      <div className="flex gap-2 p-5 justify-between">
+        <span>No. {orderData?.id}</span>
+        <span className="text-sm text-[#aaa]">
+          {changeDateFormat(orderData?.created_at)}
+        </span>
+      </div>
+      <div className="px-5">
+        <span className="text-lg font-bold">
+          주문 상품 {orderData?.order_details?.length || 0}개
+        </span>
+        {orderData?.order_details?.map((product: OrderProduct) => (
+          <div
+            className="pb-[30px] "
+            key={`${product?.product?.brandName}${product?.product_name}${product?.size?.name}`}
+          >
+            <div className="flex pt-5 pb-2.5">
+              <Image
+                src={product?.product?.image_url}
+                alt="이미지"
+                width={70}
+                height={70}
+              />
+              <div className="flex flex-col w-[calc(100%-70px)] pl-2.5">
+                <span className="font-bold">
+                  {deliveryStatusMap[product?.delivery_status]}
+                </span>
+                <Link href="" className="overflow-hidden text-ellipsis">
+                  <span className="text-sm ">
+                    {product?.product?.brandName}
+                  </span>
+                </Link>
+                <Link href="" className="overflow-hidden text-ellipsis">
+                  <span className="text-sm font-bold ">
+                    {product?.product_name}
+                  </span>
+                </Link>
+                <div className="flex text-sm">
+                  <span>{product?.size?.name || ""}</span>
+                  <span className="mx-2 ">|</span>
+                  <span>{product?.quantity}개</span>
+                </div>
+              </div>
+            </div>
+            <div className=" pl-[85px] pr-5 pb-5">
+              <div className="flex justify-between ">
+                <span className="text-sm">주문 금액 (상세)</span>
+                <div
+                  className="flex"
+                  onClick={() =>
+                    toggleDetails(
+                      Number(`${product?.product?.id}${product?.size?.id}`)
+                    )
+                  }
+                >
+                  <span className="font-bold">
+                    {product?.price?.toLocaleString()}원
+                  </span>
+                  <button className="w-5 h-5 mt-0.5">
+                    <Image src={arrowDown} alt="downImg" />
+                  </button>
+                </div>
+              </div>
+              <span></span>
+              {!indexArray?.includes(
+                Number(`${product?.product?.id}${product?.size?.id}`)
+              ) && (
+                <>
+                  <div className="flex justify-between text-sm mt-2">
+                    <span>상품 금액</span>
+                    <span>{product?.origin_price?.toLocaleString()}원</span>
+                  </div>
+                  <div className="flex justify-between text-sm mt-2">
+                    <span>상품 할인</span>
+                    <span className="text-primary">
+                      -
+                      {(
+                        product?.origin_price - product?.price
+                      ).toLocaleString()}
+                      원
+                    </span>
+                  </div>
+                </>
+              )}
+            </div>
+            <div className="flex gap-1">
+              <Link
+                href={`/mypage/delivery/trace?orderDetailId=${product?.id}&orderId=${orderId}`}
+                className="w-full"
+              >
+                <button className="w-full h-10 border-[1px] border-secondary rounded">
+                  배송 조회
+                </button>
+              </Link>
+              <button className="w-full h-10 border-[1px] border-secondary rounded">
+                후기 작성
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
     </section>
   );
 }

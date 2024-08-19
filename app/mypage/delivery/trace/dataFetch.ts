@@ -10,20 +10,20 @@ export default async function trackingInfoFetch({
   const clientId = process.env.NEXT_PUBLIC_CLIENT_ID;
   const clientSecret = process.env.NEXT_PUBLIC_CLIENT_SECRET;
 
-  const body = `grant_type=client_credentials&client_id=${clientId}&client_secret=${clientSecret}`;
+  // const body = `grant_type=client_credentials&client_id=${clientId}&client_secret=${clientSecret}`;
 
-  const res = await fetch("https://auth.tracker.delivery/oauth2/token", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
-    },
-    body: body,
-  });
-  const jsonData = await res.json();
+  // const res = await fetch("https://auth.tracker.delivery/oauth2/token", {
+  //   method: "POST",
+  //   headers: {
+  //     "Content-Type": "application/x-www-form-urlencoded",
+  //   },
+  //   body: body,
+  // });
+  // const jsonData = await res.json();
 
-  if (!jsonData.access_token) {
-    throw new Error("Failed to get access token");
-  }
+  // if (!jsonData.access_token) {
+  //   throw new Error("Failed to get access token");
+  // }
 
   let trackResponse = await fetch("https://apis.tracker.delivery/graphql", {
     method: "POST",
