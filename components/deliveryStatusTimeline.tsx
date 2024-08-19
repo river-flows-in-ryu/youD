@@ -76,12 +76,21 @@ export default function DeliveryStatusTimeline({
       </div>
       <div className="w-[20%]">
         <div className="flex justify-center">
-          <Image
-            src={completeDeliveryColor}
-            alt="배송대기이미지"
-            width={30}
-            height={30}
-          />
+          {status === "DELIVERED" ? (
+            <Image
+              src={completeDeliveryColor}
+              alt="배송대기이미지"
+              width={30}
+              height={30}
+            />
+          ) : (
+            <Image
+              src={completeDelivery}
+              alt="배송대기이미지"
+              width={30}
+              height={30}
+            />
+          )}
         </div>
         <p
           className={`${status === "DELIVERED" ? "text-primary" : "text-secondary"} font-bold mt-[10px]`}
