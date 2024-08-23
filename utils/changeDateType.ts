@@ -1,4 +1,4 @@
-export default function changeDateType(utcDatestr: string) {
+export function changeDateType(utcDatestr: string) {
   const parsedDate = Date.parse(utcDatestr);
 
   if (!isNaN(parsedDate)) {
@@ -8,4 +8,8 @@ export default function changeDateType(utcDatestr: string) {
   } else {
     return "";
   }
+}
+
+export function changeEndTime(date: string) {
+  return date.slice(0, 19).replaceAll("-", ".").replace("T", " ");
 }

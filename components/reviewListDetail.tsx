@@ -7,7 +7,7 @@ import { useSearchParams } from "next/navigation";
 import { commonFetch } from "@/utils/commonFetch";
 
 import Pagination from "@/utils/pagination";
-import changeDateType from "@/utils/changeDateType";
+import { changeDateType } from "@/utils/changeDateType";
 import { nameMasking } from "@/utils/masking";
 
 interface Props {
