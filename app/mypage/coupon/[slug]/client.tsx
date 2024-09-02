@@ -4,9 +4,11 @@ import React, { useEffect, useState } from "react";
 
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import { DatePicker, TimePicker } from "antd";
+import dayjs from "dayjs";
+
+import { commonFetch } from "@/utils/commonFetch";
 
 import FormInputArea from "@/components/formInputArea";
-import { commonFetch } from "@/utils/commonFetch";
 
 type Inputs = {
   code: string;
@@ -28,8 +30,10 @@ type Inputs = {
 
 export default function Client({
   userProductNames,
+  userId,
 }: {
   userProductNames: { id: number; productName: string }[];
+  userId: number;
 }) {
   const [products, setProducts] = useState<
     { id: number; productName: string }[]
@@ -47,11 +51,16 @@ export default function Client({
   const {
     register,
     handleSubmit,
-    watch,
-    setValue,
-    formState: { errors },
+    formState: { errors, isLoading },
     control,
-  } = useForm<Inputs>();
+  } = useForm<Inputs>({
+    defaultValues: {
+      active: true,
+    },
+  });
+
+  const REQUIRED_MESSAGE = "필수 작성입니다.";
+
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     const {
       code,
@@ -77,36 +86,34 @@ export default function Client({
     const payload = {
       code,
       name,
-      discountType,
-      discountvalue,
-      minPurchase,
-      maxDiscount,
-      fromDate: fromDateTime,
-      toDate: toDateTime,
+      discount_type: discountType,
+      discount_value: Number(discountvalue),
+      min_purchase: Number(minPurchase),
+      max_discount: Number(maxDiscount),
+      valid_from: dayjs(fromDateTime).toISOString(),
+      valid_to: dayjs(toDateTime).toISOString(),
       active,
-      usageLimit,
-      usedCount: 0,
-      perUserLimit,
-      issuerType: "seller",
-      duplication,
-      applicableProduct,
+      usage_limit: Number(usageLimit),
+      used_count: 0,
+      per_user_limit: Number(perUserLimit),
+      issuer_type: "seller",
+      allow_multiple_use: duplication,
+      applicable_product:
+        Number(applicableProduct) === 0 ? null : Number(applicableProduct),
+      userId,
     };
 
-    const res = await commonFetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/coupons/`,
-      "post",
-      payload
-    );
-  };
-
-  const ErrorMessage = ({ name, text }: { name: string; text: string }) => {
-    return (
-      <div className="h-10">
-        {errors.name && (
-          <span className="text-red-500 text-sm leading-10">{text}</span>
-        )}
-      </div>
-    );
+    try {
+      const res = await commonFetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/coupons/`,
+        "post",
+        payload
+      );
+      if (res?.result === "SUCCESS") {
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -120,9 +127,10 @@ export default function Client({
           required
           placeholder="6-10자 영문+숫자"
           pattern={/^[A-Za-z0-9]+$/}
+          requiredMessage={REQUIRED_MESSAGE}
           patternMessage="쿠폰 코드는 영문자와 숫자만 포함 가능"
+          errors={errors}
         />
-        <ErrorMessage name="code" text="필수 작성입니다" />
 
         <FormInputArea
           label="쿠폰 이름"
@@ -130,13 +138,14 @@ export default function Client({
           register={register}
           required
           placeholder="쿠폰 이름을 작성해주세요"
+          errors={errors}
+          requiredMessage={REQUIRED_MESSAGE}
         />
-        <ErrorMessage name="name" text="필수 작성입니다" />
 
         <label className="pb-2">할인 타입</label>
         <select
           {...register("discountType", { required: true })}
-          className="h-[45px] mb-10 border border-secondary px-5"
+          className="h-[45px] mb-10 border border-secondary pl-4"
         >
           <option value="fixed">금액</option>
           <option value="percent">퍼센트</option>
@@ -148,28 +157,36 @@ export default function Client({
           stateName="discountvalue"
           required
           placeholder="정수의 값만 가능합니다."
+          pattern={/^\d+$/}
+          patternMessage="정수의 값만 입력해주세요"
+          errors={errors}
+          requiredMessage={REQUIRED_MESSAGE}
         />
-        <ErrorMessage name="discountvalue" text="필수 작성입니다." />
 
         <FormInputArea
           label="최소 주문금액"
           stateName="minPurchase"
           register={register}
           placeholder="숫자만 허용"
+          pattern={/^\d+$/}
+          patternMessage="정수의 값만 입력해주세요"
+          errors={errors}
         />
-        <ErrorMessage name="minPurchase" text="정수의 값만 허용됩니다." />
 
         <FormInputArea
           label="최대 할인금액"
           register={register}
           stateName="maxDiscount"
           placeholder="숫자만 허용"
+          pattern={/^\d+$/}
+          patternMessage="정수의 값만 입력해주세요"
+          errors={errors}
         />
-        <ErrorMessage name="maxDiscount" text="정수의 값만 허용됩니다." />
+
         <label className="pt-4 pb-2">
           쿠폰 시작일<span className="text-red-500"> *</span>
         </label>
-        <div className="flex gap-5 h-[45px] mb-5">
+        <div className="flex gap-5 h-[45px] ">
           <Controller
             control={control}
             name="fromDate"
@@ -193,11 +210,18 @@ export default function Client({
             )}
           />
         </div>
+        <div className="h-10 pl-4">
+          {errors.fromDate || errors.fromTime ? (
+            <span className="text-red-500 text-sm leading-10">
+              날짜와 시간 모두 선택해주세요
+            </span>
+          ) : null}
+        </div>
 
         <label className="pt-4 pb-2">
           쿠폰 종료일<span className="text-red-500"> *</span>
         </label>
-        <div className="flex gap-5 h-[45px] mb-5">
+        <div className="flex gap-5 h-[45px]">
           <Controller
             control={control}
             name="toDate"
@@ -221,6 +245,13 @@ export default function Client({
             )}
           />
         </div>
+        <div className="h-10 pl-4">
+          {errors.toDate || errors.toTime ? (
+            <span className="text-red-500 text-sm leading-10">
+              날짜와 시간 모두 선택해주세요
+            </span>
+          ) : null}
+        </div>
 
         <div className="flex gap-2 mb-10">
           <input {...register("active")} type="checkbox" />
@@ -228,21 +259,26 @@ export default function Client({
         </div>
 
         <FormInputArea
+          errors={errors}
           label="쿠폰 최대 발급 수량"
           placeholder="숫자만 허용"
           stateName="usageLimit"
           register={register}
+          pattern={/^\d+$/}
+          patternMessage="정수의 값만 입력해주세요"
         />
-        <ErrorMessage name="usageLimit" text="정수의 숫자만 허용" />
 
         <FormInputArea
+          errors={errors}
           required
           label="유저 사용 가능 횟수"
           placeholder="숫자만 허용"
           stateName="perUserLimit"
           register={register}
+          pattern={/^\d+$/}
+          patternMessage="정수의 값만 입력해주세요"
+          requiredMessage={REQUIRED_MESSAGE}
         />
-        <ErrorMessage name="perUserLimit" text="정수의 숫자만 허용" />
 
         <div className="flex gap-2 mb-10">
           <input {...register("duplication")} type="checkbox" />
@@ -251,7 +287,7 @@ export default function Client({
 
         <label className="pb-2">상품 적용</label>
         <select
-          {...register("applicableProduct", { required: true })}
+          {...register("applicableProduct")}
           className="h-[45px] mb-10 border border-secondary px-5"
         >
           {products?.map((product) => (
