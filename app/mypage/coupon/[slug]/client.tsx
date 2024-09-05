@@ -5,6 +5,8 @@ import React, { useEffect, useState } from "react";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import { DatePicker, TimePicker } from "antd";
 import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
 
 import { commonFetch } from "@/utils/commonFetch";
 
@@ -31,13 +33,21 @@ type Inputs = {
 export default function Client({
   userProductNames,
   userId,
+  couponData,
 }: {
   userProductNames: { id: number; productName: string }[];
   userId: number;
+  couponData: any;
 }) {
+  dayjs.extend(utc);
+  dayjs.extend(timezone);
+
   const [products, setProducts] = useState<
     { id: number; productName: string }[]
   >([]);
+
+  if (couponData) {
+  }
 
   useEffect(() => {
     if (userProductNames && userProductNames.length > 0) {
@@ -53,11 +63,49 @@ export default function Client({
     handleSubmit,
     formState: { errors, isLoading },
     control,
+    reset,
   } = useForm<Inputs>({
     defaultValues: {
       active: true,
     },
   });
+
+  useEffect(() => {
+    if (couponData) {
+      const {
+        code,
+        name,
+        discount_type,
+        discount_value,
+        min_purchase,
+        max_discount,
+        valid_from,
+        valid_to,
+        active,
+        usage_limit,
+        per_user_limit,
+        allow_multiple_use,
+        applicable_product,
+      } = couponData?.data;
+      reset({
+        code,
+        name,
+        discountType: discount_type,
+        discountvalue: Number(discount_value),
+        minPurchase: min_purchase,
+        maxDiscount: max_discount,
+        fromDate: dayjs.utc(valid_from).tz("Asia/Seoul").format("YYYY-MM-DD"),
+        fromTime: dayjs.utc(valid_from).tz("Asia/Seoul").format("HH:mm:ss"),
+        toDate: dayjs.utc(valid_to).tz("Asia/Seoul").format("YYYY-MM-DD"),
+        toTime: dayjs.utc(valid_to).tz("Asia/Seoul").format("HH:mm:ss"),
+        active: active,
+        usageLimit: usage_limit,
+        perUserLimit: per_user_limit,
+        duplication: allow_multiple_use,
+        applicableProduct: applicable_product === null ? 0 : applicable_product,
+      });
+    }
+  }, [couponData]);
 
   const REQUIRED_MESSAGE = "필수 작성입니다.";
 
@@ -193,6 +241,7 @@ export default function Client({
             rules={{ required: true }}
             render={({ field }) => (
               <DatePicker
+                value={field.value ? dayjs(field.value) : null}
                 className="w-[50%]"
                 onChange={(date, dateString) => field.onChange(dateString)}
               />
@@ -204,6 +253,7 @@ export default function Client({
             rules={{ required: true }}
             render={({ field }) => (
               <TimePicker
+                value={field.value ? dayjs(field.value, "HH:mm:ss") : null}
                 className="w-[50%]"
                 onChange={(time, timeString) => field.onChange(timeString)}
               />
@@ -228,6 +278,7 @@ export default function Client({
             rules={{ required: true }}
             render={({ field }) => (
               <DatePicker
+                value={field.value ? dayjs(field.value) : null}
                 className="w-[50%]"
                 onChange={(date, dateString) => field.onChange(dateString)}
               />
@@ -239,6 +290,7 @@ export default function Client({
             rules={{ required: true }}
             render={({ field }) => (
               <TimePicker
+                value={field.value ? dayjs(field.value, "HH:mm:ss") : null}
                 className="w-[50%]"
                 onChange={(time, timeString) => field.onChange(timeString)}
               />
