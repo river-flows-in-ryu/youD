@@ -45,6 +45,7 @@ export default function Client({
   const [products, setProducts] = useState<
     { id: number; productName: string }[]
   >([]);
+  const [isCodeCheck, setIsCodeCheck] = useState(false);
 
   if (couponData) {
   }
@@ -64,6 +65,8 @@ export default function Client({
     formState: { errors, isLoading },
     control,
     reset,
+    getValues,
+    setFocus,
   } = useForm<Inputs>({
     defaultValues: {
       active: true,
@@ -150,17 +153,53 @@ export default function Client({
         Number(applicableProduct) === 0 ? null : Number(applicableProduct),
       userId,
     };
-
-    try {
-      const res = await commonFetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/coupons/`,
-        "post",
-        payload
-      );
-      if (res?.result === "SUCCESS") {
+    if (isCodeCheck) {
+      try {
+        const res = await commonFetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/coupons/`,
+          "post",
+          payload
+        );
+        if (res?.result === "SUCCESS") {
+        }
+      } catch (error) {
+        console.log(error);
       }
-    } catch (error) {
-      console.log(error);
+    } else {
+      alert("코드 중복 확인 필요!");
+      setFocus("code");
+    }
+  };
+
+  // useEffect(() => {
+  //   if (getValues("code")) {
+  //     setIsCodeCheck(false);
+  //   }
+  // }, [getValues("code")]);
+
+  const handleClickDuplicateCheck = async (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    event.preventDefault();
+    const code = getValues("code");
+
+    const payload = {
+      code,
+      userId,
+    };
+    if (code === "" || !/^[A-Za-z0-9]+$/.test(code)) {
+      return alert("코드가 비어있거나 유효하지 않습니다.");
+    }
+    const res = await commonFetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/coupons/coupon/check-code`,
+      "post",
+      payload
+    );
+    if (res?.message === "SUCCESS") {
+      alert("사용 가능한 쿠폰 코드입니다.");
+      setIsCodeCheck(true);
+    } else {
+      alert("이미 등록된 쿠폰입니다.");
     }
   };
 
@@ -168,17 +207,28 @@ export default function Client({
     <>
       <h2 className="text-center font-bold py-5 text-lg	">쿠폰</h2>
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col px-5 ">
-        <FormInputArea
-          label="쿠폰 코드"
-          stateName="code"
-          register={register}
-          required
-          placeholder="6-10자 영문+숫자"
-          pattern={/^[A-Za-z0-9]+$/}
-          requiredMessage={REQUIRED_MESSAGE}
-          patternMessage="쿠폰 코드는 영문자와 숫자만 포함 가능"
-          errors={errors}
-        />
+        <div className="flex items-center gap-[10px]">
+          <div className="w-[80%]">
+            <FormInputArea
+              label="쿠폰 코드"
+              stateName="code"
+              register={register}
+              required
+              placeholder="6-10자 영문+숫자"
+              pattern={/^[A-Za-z0-9]+$/}
+              requiredMessage={REQUIRED_MESSAGE}
+              patternMessage="쿠폰 코드는 영문자와 숫자만 포함 가능"
+              errors={errors}
+            />
+          </div>
+          <button
+            className="w-[20%] h-[45px] border border-primary text-primary rounded mb-2 text-sm"
+            onClick={handleClickDuplicateCheck}
+            disabled={isCodeCheck}
+          >
+            {!isCodeCheck ? "중복확인" : "확인완료"}
+          </button>
+        </div>
 
         <FormInputArea
           label="쿠폰 이름"
