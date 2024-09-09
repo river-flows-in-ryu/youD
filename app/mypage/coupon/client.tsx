@@ -3,6 +3,7 @@
 import React from "react";
 
 import { Tabs } from "antd";
+import { useRouter } from "next/navigation";
 
 import type { TabsProps } from "antd";
 
@@ -83,10 +84,23 @@ export default function Client({
       children: <BrandCouponData brandCoupon={brandCoupon} />,
     },
   ];
+  const router = useRouter();
+
+  const handleClickCouponRegister = () => {
+    router?.push("/mypage/coupon-register");
+  };
 
   return (
     <section className="sm:w-[650px] sm:mx-auto w-full">
       <h2 className=" font-bold text-xl py-5 px-5">보유 쿠폰 목록</h2>
+      <div className="pr-5 text-right">
+        <button
+          className="h-[30px] border border-secondary px-2 rounded"
+          onClick={handleClickCouponRegister}
+        >
+          + 쿠폰등록
+        </button>
+      </div>
       <div className="px-5">
         <Tabs defaultActiveKey="1" items={items} />
       </div>

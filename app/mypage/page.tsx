@@ -90,9 +90,9 @@ export default function Page() {
               <Image
                 src={fullHeart}
                 alt="Flaticon_image_fullHeart"
-                className="w-[50px] h-[50px]"
+                className="w-[55px] h-[50px]"
               />
-              <span className="mt-2">관심 목록</span>
+              <span className="mt-2">관심목록</span>
             </Link>
           </div>
           <div className="flex flex-col items-center w-[33.3%]">
@@ -100,21 +100,25 @@ export default function Page() {
               <Image
                 src={coins}
                 alt="Flaticon_image_fullHeart"
-                className="w-[50px] h-[50px]"
+                className="w-[55px] h-[50px]"
               />
-              <span className="mt-2">판매 목록</span>
+              <span className="mt-2">판매목록</span>
             </Link>
           </div>
           <div className="flex flex-col items-center w-[33.3%]">
-            <Link href={"/mypage/purchaselist"}>
+            <Link href={"/mypage/orderlist"}>
               <Image
                 src={products}
                 alt="Flaticon_image_fullHeart"
-                className="w-[50px] h-[50px]"
+                className="w-[55px] h-[50px]"
               />
-              <span className="mt-2">구매 목록</span>
+              <span className="mt-2">구매목록</span>
             </Link>
           </div>
+        </div>
+        <div className="flex w-full justify-between">
+          <span>주소지 관리</span>
+          <span>&gt;</span>
         </div>
       </div>
     </Container>
