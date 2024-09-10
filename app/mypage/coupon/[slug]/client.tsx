@@ -7,6 +7,7 @@ import { DatePicker, TimePicker } from "antd";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
+import { useRouter } from "next/navigation";
 
 import { commonFetch } from "@/utils/commonFetch";
 
@@ -42,13 +43,12 @@ export default function Client({
   dayjs.extend(utc);
   dayjs.extend(timezone);
 
+  const router = useRouter();
+
   const [products, setProducts] = useState<
     { id: number; productName: string }[]
   >([]);
   const [isCodeCheck, setIsCodeCheck] = useState(false);
-
-  if (couponData) {
-  }
 
   useEffect(() => {
     if (userProductNames && userProductNames.length > 0) {
@@ -89,7 +89,12 @@ export default function Client({
         per_user_limit,
         allow_multiple_use,
         applicable_product,
-      } = couponData?.data;
+      } = couponData?.data || {};
+      if (code === undefined) {
+        alert("잘못된 경로입니다. 이전페이지로 돌아갑니다.");
+        router?.back();
+        return;
+      }
       reset({
         code,
         name,
