@@ -19,6 +19,19 @@ import { commonFetch } from "@/utils/commonFetch";
 
 import arrowFoward from "@/public/arrow_forward_balck.png";
 import ProductDetailOption from "@/components/productDetailOption";
+import CouponReceiveModal from "@/components/couponReceiveModal";
+
+interface ProductCoupons {
+  id: number;
+  is_redeemed: boolean;
+  name: string;
+  discount_type: string;
+  discount_value: string;
+  min_purchase: number;
+  max_discount: number;
+  valid_from: string;
+  valid_to: string;
+}
 
 interface Props {
   productData: Products;
@@ -28,6 +41,7 @@ interface Props {
     imageReviewCount: number;
     nomalReviewCount: number;
   };
+  productCouponsdata: ProductCoupons[];
 }
 
 interface Option {
@@ -89,13 +103,19 @@ const initialProductDetailData: Products = {
   },
 };
 
-export default function Client({ productData, slug, reviewData }: Props) {
+export default function Client({
+  productData,
+  slug,
+  reviewData,
+  productCouponsdata,
+}: Props) {
   const Modal = dynamic(() => import("@/components/modal"));
   const { userId } = useUserIdStore();
   const [isOptionChoiceSection, setIsOptionChoiceSection] = useState(false);
   const [optionArray, setOptionArray] = useState<Option[]>([]);
   const [totalQuantity, setTotalQuantity] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isCouponModalOpen, setIsCouponModalOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("info");
 
   const [isLike, setIsLike] = useState<boolean>(false);
@@ -195,6 +215,7 @@ export default function Client({ productData, slug, reviewData }: Props) {
     const optionIndex = optionArray.findIndex((option: Option) => {
       return option.value === value;
     });
+
     if (optionIndex !== -1) {
       const newOptionArray = optionArray.map((option) => {
         if (option.value === value) {
@@ -254,10 +275,21 @@ export default function Client({ productData, slug, reviewData }: Props) {
   };
 
   if (productData === undefined) notFound();
+  console.log(productDetailData);
   return (
     <div className="sm:mx-auto w-full pb-[70px]">
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
         <CartSuccessAddModal onClose={() => setIsModalOpen(false)} />
+      </Modal>
+      <Modal
+        isOpen={isCouponModalOpen}
+        onClose={() => setIsCouponModalOpen(false)}
+      >
+        <CouponReceiveModal
+          onClose={() => setIsCouponModalOpen(false)}
+          productCouponsdata={productCouponsdata}
+          discountPrice={productDetailData?.product?.discountPrice}
+        />
       </Modal>
       <div className="sm:w-full xl:w-[1050px] sm:mt-2.5 sm:mx-auto justify-between ">
         <div className="sm:flex sm:w-full">
@@ -310,6 +342,16 @@ export default function Client({ productData, slug, reviewData }: Props) {
                 {productDetailData?.product?.OriginPrice.toLocaleString()}원
               </span>
             </div>
+            {productCouponsdata?.length !== 0 && (
+              <div className="flex justify-end">
+                <button
+                  className="+ border border-primary bg-primary text-white w-[120px] h-10 rounded"
+                  onClick={() => setIsCouponModalOpen(true)}
+                >
+                  쿠폰 받기
+                </button>
+              </div>
+            )}
             <div className="hidden sm:block w-[400px] mt-[50px]">
               <div className="w-full">
                 <Select
