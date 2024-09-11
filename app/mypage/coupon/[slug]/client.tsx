@@ -18,14 +18,14 @@ type Inputs = {
   name: string;
   discountType: string;
   discountvalue: number;
-  minPurchase: number;
-  maxDiscount: number;
+  minPurchase: number | "";
+  maxDiscount: number | "";
   fromDate: string;
   fromTime: string;
   toDate: string;
   toTime: string;
   active: boolean;
-  usageLimit: number;
+  usageLimit: number | "";
   perUserLimit: number;
   duplication: boolean;
   applicableProduct: number;
@@ -144,12 +144,12 @@ export default function Client({
       name,
       discount_type: discountType,
       discount_value: Number(discountvalue),
-      min_purchase: Number(minPurchase),
-      max_discount: Number(maxDiscount),
+      min_purchase: minPurchase !== "" ? Number(minPurchase) : null,
+      max_discount: maxDiscount !== "" ? Number(maxDiscount) : null,
       valid_from: dayjs(fromDateTime).toISOString(),
       valid_to: dayjs(toDateTime).toISOString(),
       active,
-      usage_limit: Number(usageLimit),
+      usage_limit: usageLimit !== "" ? Number(usageLimit) : null,
       used_count: 0,
       per_user_limit: Number(perUserLimit),
       issuer_type: "seller",
@@ -158,15 +158,16 @@ export default function Client({
         Number(applicableProduct) === 0 ? null : Number(applicableProduct),
       userId,
     };
+    console.log(payload);
     if (isCodeCheck) {
       try {
-        const res = await commonFetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/coupons/`,
-          "post",
-          payload
-        );
-        if (res?.result === "SUCCESS") {
-        }
+        // const res = await commonFetch(
+        //   `${process.env.NEXT_PUBLIC_API_URL}/coupons/`,
+        //   "post",
+        //   payload
+        // );
+        // if (res?.result === "SUCCESS") {
+        // }
       } catch (error) {
         console.log(error);
       }
