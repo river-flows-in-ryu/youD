@@ -1,8 +1,16 @@
-import React from "react";
+"use client";
+import React, { ReactEventHandler, useEffect, useState } from "react";
 
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+
+import { changeDateType } from "@/utils/changeDateType";
+
+import { useUserIdStore } from "@/app/store";
 
 import close from "@/public/close.png";
+import download from "@/public/download.png";
+import { commonFetch } from "@/utils/commonFetch";
 
 interface ProductCoupon {
   id: number;
@@ -26,7 +34,31 @@ export default function CouponReceiveModal({
   productCouponsdata,
   discountPrice,
 }: Props) {
-  console.log(productCouponsdata[0]?.valid_from);
+  const { userId } = useUserIdStore();
+
+  const [downloadedCoupons, setDownloadedCoupons] = useState<number[]>([]);
+
+  const router = useRouter();
+
+  const handleCouponClick =
+    (id: number) => async (evnet: React.MouseEvent<HTMLButtonElement>) => {
+      if (!userId) {
+        alert("로그인해주세요");
+        router.push("/login");
+      }
+      const payload = { user_id: userId, coupon_id: id };
+      try {
+        const res = await commonFetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/coupons/user/register`,
+          "post",
+          payload
+        );
+        if (res?.message === "SUCCESS") {
+          setDownloadedCoupons((prev) => [...prev, id]);
+        }
+      } catch {}
+    };
+
   return (
     <div className="w-[90%] h-[60%] p-6 sm:w-[450px] sm:h-[50%] sm:p-8  bg-white rounded text-center">
       <div className="text-center mb-5 text-xl font-bold relative ">
@@ -41,31 +73,60 @@ export default function CouponReceiveModal({
         쿠폰 받기
       </div>
       {productCouponsdata?.map((coupon) => {
-        const { id, name, discount_type, discount_value, max_discount } =
-          coupon;
+        const {
+          id,
+          name,
+          discount_type,
+          discount_value,
+          max_discount,
+          is_redeemed,
+          valid_to,
+        } = coupon;
+
+        const isDownloaded = downloadedCoupons.includes(id);
         return (
           <ul key={id}>
-            <li>
-              <div className="flex-coll text-left border border-secondary pl-2.5 py-[15px] relative">
-                <p className="text-red-500">
-                  {discount_type === "fixed"
-                    ? max_discount !== null &&
-                      Number(discount_value) > max_discount
-                      ? max_discount.toLocaleString()
-                      : Number(discount_value).toLocaleString()
-                    : max_discount !== null &&
-                        discountPrice * (100 - Number(discount_value)) >
-                          max_discount
-                      ? max_discount.toLocaleString()
-                      : (
-                          discountPrice *
-                          (100 - Number(discount_value))
-                        ).toLocaleString()}
-                  원
-                </p>
-                <p>{name}</p>
-                {<p></p>}
-                <div className="absolute top-0 right-0 h-full">zz</div>
+            <li className="mb-[10px]">
+              <div className="flex-coll text-left border border-secondary pl-2.5 py-[15px] relative flex rounded">
+                <div className="w-[75%]">
+                  <p className="text-red-500">
+                    {discount_type === "fixed"
+                      ? max_discount !== null &&
+                        Number(discount_value) > max_discount
+                        ? max_discount.toLocaleString()
+                        : Number(discount_value).toLocaleString()
+                      : max_discount !== null &&
+                          discountPrice * (100 - Number(discount_value)) >
+                            max_discount
+                        ? max_discount.toLocaleString()
+                        : (
+                            discountPrice *
+                            (100 - Number(discount_value))
+                          ).toLocaleString()}
+                    원
+                  </p>
+                  <p className="font-bold">{name}</p>
+                  {
+                    <p className="text-sm">
+                      {changeDateType(valid_to)}일 까지 사용
+                    </p>
+                  }
+                </div>
+                {!is_redeemed && !isDownloaded ? (
+                  <button
+                    className=" h-full flex-col items-center w-[25%] border-l-[2px] ml-[5px]"
+                    onClick={handleCouponClick(id)}
+                  >
+                    <div className="flex justify-center ">
+                      <Image
+                        src={download}
+                        alt="다운로드이미지"
+                        className="w-[30px] h-[30px]"
+                      />
+                    </div>
+                    <p className="text-sm mt-[10px]">다운로드</p>
+                  </button>
+                ) : null}
               </div>
             </li>
           </ul>
