@@ -31,6 +31,7 @@ interface ProductCoupons {
   max_discount: number;
   valid_from: string;
   valid_to: string;
+  per_user_limit: number;
 }
 
 interface Props {
@@ -275,7 +276,6 @@ export default function Client({
   };
 
   if (productData === undefined) notFound();
-  console.log(productDetailData);
   return (
     <div className="sm:mx-auto w-full pb-[70px]">
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
