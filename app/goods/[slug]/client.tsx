@@ -8,6 +8,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Select } from "antd";
 import { useRouter } from "next/navigation";
+import { EasyZoomOnHover } from "easy-magnify";
 
 import GoodsDetailTabBar from "@/components/goodsDetailTabBar";
 import GoodsOptionTabBar from "@/components/goodsOptionTabBar";
@@ -126,6 +127,8 @@ export default function Client({
   );
   const [options, setOptions] = useState<SelectedOption[]>([]);
 
+  const [imageSize, setImageSize] = useState({ width: 0, height: 0 });
+
   const { reviewTotalCount, imageReviewCount, nomalReviewCount } = reviewData;
 
   const { fetchCartItemCount } = useCartCountStore();
@@ -170,6 +173,27 @@ export default function Client({
     }
     fetchLikeData();
   }, [userId]);
+
+  //이미지 사이즈 계산
+  useEffect(() => {
+    const img = document.createElement("img");
+    img.src = productDetailData?.product?.image_url;
+    img.onload = () => {
+      const maxWidth = 600;
+      const maxHeight = 600;
+
+      const aspectRatio = img?.width / img?.height;
+
+      const newWidth = Math.min(img.width, maxWidth);
+      const newHeight = Math.min(img.height, maxHeight);
+
+      if (newWidth / aspectRatio <= maxHeight) {
+        setImageSize({ width: newWidth, height: newWidth / aspectRatio });
+      } else {
+        setImageSize({ width: newHeight * aspectRatio, height: newHeight });
+      }
+    };
+  }, [productDetailData?.product?.image_url]);
 
   const handleLikeClick = async () => {
     const res = await commonFetch(
@@ -293,16 +317,22 @@ export default function Client({
       </Modal>
       <div className="sm:w-full xl:w-[1050px] sm:mt-2.5 sm:mx-auto justify-between ">
         <div className="sm:flex sm:w-full">
-          <div className="w-full sm:w-[600px] h-[600px] relative flex-shrink-0">
+          <div className="w-full sm:w-[600px] h-[600px] relative flex flex-shrink-0 z-10 justify-center">
             {productDetailData?.product?.image_url && (
-              <Image
-                src={productDetailData?.product?.image_url}
-                alt={productDetailData?.product?.productName}
-                fill
-                style={{ objectFit: "contain" }}
-                loading="eager"
-                priority={true}
-                sizes=""
+              <EasyZoomOnHover
+                mainImage={{
+                  src: productDetailData?.product?.image_url,
+                  alt: productDetailData?.product?.image_url,
+                  width: imageSize?.width,
+                  height: imageSize?.height,
+                }}
+                zoomImage={{
+                  src: productDetailData?.product?.image_url,
+                  alt: `zoom ${productDetailData?.product?.image_url}`,
+                }}
+                zoomContainerWidth={600}
+                zoomContainerHeight={600}
+                delayTimer={0}
               />
             )}
           </div>
