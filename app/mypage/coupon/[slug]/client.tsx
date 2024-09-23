@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 
-import { useForm, SubmitHandler, Controller } from "react-hook-form";
+import { useForm, SubmitHandler, Controller, useWatch } from "react-hook-form";
 import { DatePicker, TimePicker } from "antd";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
@@ -35,10 +35,14 @@ export default function Client({
   userProductNames,
   userId,
   couponData,
+  slug,
+  couponId,
 }: {
   userProductNames: { id: number; productName: string }[];
   userId: number;
   couponData: any;
+  slug: "add" | "modify";
+  couponId: string;
 }) {
   dayjs.extend(utc);
   dayjs.extend(timezone);
@@ -49,15 +53,6 @@ export default function Client({
     { id: number; productName: string }[]
   >([]);
   const [isCodeCheck, setIsCodeCheck] = useState(false);
-
-  useEffect(() => {
-    if (userProductNames && userProductNames.length > 0) {
-      const newProductList = [{ id: 0, productName: "-" }, ...userProductNames];
-      setProducts(newProductList);
-    } else {
-      setProducts([{ id: 0, productName: "-" }]);
-    }
-  }, [userProductNames]);
 
   const {
     register,
@@ -72,6 +67,31 @@ export default function Client({
       active: true,
     },
   });
+
+  useEffect(() => {
+    if (slug === "modify") {
+      setIsCodeCheck(true);
+    }
+  }, []);
+
+  const watchedCode = useWatch({ control, name: "code" });
+
+  useEffect(() => {
+    if (couponData?.data?.code === watchedCode) {
+      setIsCodeCheck(true);
+    } else {
+      setIsCodeCheck(false);
+    }
+  }, [watchedCode]);
+
+  useEffect(() => {
+    if (userProductNames && userProductNames.length > 0) {
+      const newProductList = [{ id: 0, productName: "-" }, ...userProductNames];
+      setProducts(newProductList);
+    } else {
+      setProducts([{ id: 0, productName: "-" }]);
+    }
+  }, [userProductNames]);
 
   useEffect(() => {
     if (couponData) {
@@ -158,18 +178,31 @@ export default function Client({
         Number(applicableProduct) === 0 ? null : Number(applicableProduct),
       userId,
     };
-    console.log(payload);
+
     if (isCodeCheck) {
-      try {
-        // const res = await commonFetch(
-        //   `${process.env.NEXT_PUBLIC_API_URL}/coupons/`,
-        //   "post",
-        //   payload
-        // );
-        // if (res?.result === "SUCCESS") {
-        // }
-      } catch (error) {
-        console.log(error);
+      if (slug === "add") {
+        try {
+          const res = await commonFetch(
+            `${process.env.NEXT_PUBLIC_API_URL}/coupons/`,
+            "post",
+            payload
+          );
+          if (res?.result === "SUCCESS") {
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      } else {
+        try {
+          const res = await commonFetch(
+            `${process.env.NEXT_PUBLIC_API_URL}/coupons/${couponId}/`,
+            "PUT",
+            payload
+          );
+          console.log(res);
+        } catch (error) {
+          console.log(error);
+        }
       }
     } else {
       alert("코드 중복 확인 필요!");
@@ -228,7 +261,7 @@ export default function Client({
             />
           </div>
           <button
-            className="w-[20%] h-[45px] border border-primary text-primary rounded mb-2 text-sm"
+            className={`w-[20%] h-[45px] border rounded mb-2 text-sm ${isCodeCheck ? "border-secondary text-secondary" : " border-primary text-primary "}`}
             onClick={handleClickDuplicateCheck}
             disabled={isCodeCheck}
           >
