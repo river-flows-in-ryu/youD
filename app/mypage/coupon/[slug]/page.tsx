@@ -10,10 +10,10 @@ import decodingJwttsx from "@/utils/decodingJwt";
 
 interface Request {
   params: {
-    slug: string;
+    slug: "add" | "modify";
   };
   searchParams: {
-    productId: string;
+    couponId: string;
   };
 }
 
@@ -24,14 +24,14 @@ export default async function Page(request: Request) {
   const userId = decodingJwt?.user_id;
 
   const { slug } = request?.params;
-  const { productId } = request?.searchParams;
+  const { couponId } = request?.searchParams;
 
   let couponDetailData = null;
 
-  if (slug === "modify" && productId && userId) {
+  if (slug === "modify" && couponId && userId) {
     const fetchCouponDetail = async () => {
       const res = await commonFetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/coupons/coupon/${Number(productId)}/${userId}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/coupons/coupon/${Number(couponId)}/${userId}`,
         "get"
       );
       return res;
@@ -56,6 +56,8 @@ export default async function Page(request: Request) {
           userProductNames={userProductNames?.data}
           userId={userId}
           couponData={couponDetailData}
+          slug={slug}
+          couponId={couponId}
         />
       </div>
     </Container>
