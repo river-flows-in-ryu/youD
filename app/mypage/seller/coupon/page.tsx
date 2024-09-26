@@ -20,6 +20,9 @@ export default function Page() {
   const router = useRouter();
 
   const [sellerCouponData, setSellerCouponData] = useState([]);
+  const sellerCouponLength = sellerCouponData?.length;
+
+  const [checkedItems, setCheckedItems] = useState<Number[]>([]);
 
   useEffect(() => {
     if (userId) {
@@ -45,11 +48,54 @@ export default function Page() {
     }
   }, [userId]);
 
+  const handleCheckboxChange = (index: number) => {
+    setCheckedItems((prev) => {
+      if (checkedItems?.includes(index)) {
+        return checkedItems.filter((item) => item !== index);
+      } else {
+        return [...prev, index];
+      }
+    });
+  };
+
+  const handleAllCheckChange = () => {
+    if (checkedItems?.length === sellerCouponLength) {
+      setCheckedItems([]);
+    } else {
+      setCheckedItems(sellerCouponData?.map((coupon: Coupon) => coupon?.id));
+    }
+  };
+
+  async function handleClickDelete() {
+    if (checkedItems?.length === 0) {
+      alert("선택된 사항이 없습니다.");
+      return;
+    }
+    if (
+      confirm(`${checkedItems?.length}건의 쿠폰을 정말로 삭제하시겠습니까?`)
+    ) {
+      const res = await commonFetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/coupons/seller/delete`,
+        "delete",
+        {
+          data: checkedItems,
+        }
+      );
+      console.log(res);
+      if (res?.message === "SUCCESS") {
+        alert(res?.data);
+        router?.refresh();
+      }
+    } else {
+      return;
+    }
+  }
+
   return (
     <Container>
       <div className="sm:w-[650px] sm:mx-auto">
         <h2 className=" font-bold text-xl py-5 px-5">SELLER 쿠폰목록</h2>
-        <div className="flex justify-end mb-5 gap-[10px]">
+        <div className="flex justify-end mb-5 gap-[10px] pr-2.5">
           <button
             className="px-4 py-1 border border-primary rounded bg-primary text-white"
             onClick={() => {
@@ -58,7 +104,10 @@ export default function Page() {
           >
             추가
           </button>
-          <button className="px-4 py-1 border border-red-500 rounded bg-red-500 text-white">
+          <button
+            className="px-4 py-1 border border-red-500 rounded bg-red-500 text-white"
+            onClick={handleClickDelete}
+          >
             삭제
           </button>
         </div>
@@ -71,7 +120,8 @@ export default function Page() {
                   <input
                     type="checkbox"
                     className={`w-5 h-5 checked:bg-primary border  border-[#ccc] checked:border-primary bg-[#fff] rounded-full mr-2.5 appearance-none checked:bg-checkedWhite cursor-pointer`}
-                    // checked={checkedItems.length === totalCount}
+                    onChange={handleAllCheckChange}
+                    checked={checkedItems.length === sellerCouponLength}
                     style={{
                       backgroundImage: "url('/check_white.png')",
                       backgroundRepeat: "no-repeat",
@@ -94,7 +144,8 @@ export default function Page() {
                     <input
                       type="checkbox"
                       className={`w-5 h-5 checked:bg-primary border  border-[#ccc] checked:border-primary bg-[#fff] rounded-full mr-2.5 appearance-none checked:bg-checkedWhite cursor-pointer`}
-                      // checked={checkedItems.length === totalCount}
+                      checked={checkedItems?.includes(coupon?.id)}
+                      onChange={() => handleCheckboxChange(coupon?.id)}
                       style={{
                         backgroundImage: "url('/check_white.png')",
                         backgroundRepeat: "no-repeat",
