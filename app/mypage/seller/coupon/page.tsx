@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 import Container from "@/components/container";
 
@@ -19,12 +19,19 @@ export default function Page() {
   const { userId } = useUserIdStore();
 
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   const [sellerCouponData, setSellerCouponData] = useState([]);
   const [totalCount, setTotalCount] = useState(0);
 
   const [checkedItems, setCheckedItems] = useState<Number[]>([]);
-  const [page, setPage] = useState(1);
+
+  const currentPage = parseInt(searchParams.get("page") || "1");
+  const [page, setPage] = useState(currentPage);
+
+  useEffect(() => {
+    setPage(currentPage);
+  }, [currentPage]);
 
   useEffect(() => {
     if (userId) {
