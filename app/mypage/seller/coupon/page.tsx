@@ -13,6 +13,7 @@ import { changeDateType } from "@/utils/changeDateType";
 
 import { Coupon } from "@/types/coupon";
 import Link from "next/link";
+import Pagination from "@/utils/pagination";
 
 export default function Page() {
   const { userId } = useUserIdStore();
@@ -20,21 +21,22 @@ export default function Page() {
   const router = useRouter();
 
   const [sellerCouponData, setSellerCouponData] = useState([]);
-  const sellerCouponLength = sellerCouponData?.length;
+  const [totalCount, setTotalCount] = useState(0);
 
   const [checkedItems, setCheckedItems] = useState<Number[]>([]);
+  const [page, setPage] = useState(1);
 
   useEffect(() => {
     if (userId) {
       try {
         const fetchData = async () => {
           const res = await commonFetch(
-            `${process.env.NEXT_PUBLIC_API_URL}/coupons/seller/${userId}`,
+            `${process.env.NEXT_PUBLIC_API_URL}/coupons/seller/${userId}?offset=${(page - 1) * 10}&limit=10`,
             "get"
           );
           if (res?.result === "SUCCESS") {
-            console.log(res?.data);
             setSellerCouponData(res?.data);
+            setTotalCount(res?.total_count);
           } else {
             alert("네트워크 오류입니다.");
           }
@@ -46,7 +48,7 @@ export default function Page() {
         }
       }
     }
-  }, [userId]);
+  }, [userId, page]);
 
   const handleCheckboxChange = (index: number) => {
     setCheckedItems((prev) => {
@@ -59,7 +61,7 @@ export default function Page() {
   };
 
   const handleAllCheckChange = () => {
-    if (checkedItems?.length === sellerCouponLength) {
+    if (checkedItems?.length === 10) {
       setCheckedItems([]);
     } else {
       setCheckedItems(sellerCouponData?.map((coupon: Coupon) => coupon?.id));
@@ -112,7 +114,7 @@ export default function Page() {
           </button>
         </div>
 
-        <div className="w-full overflow-x-auto">
+        <div className="w-full overflow-x-auto mb-[30px]">
           <table className="sm:w-full  text-center table-auto min-w-[650px]">
             <thead className="h-[55px]">
               <tr className="bg-[#f9f9f9]">
@@ -121,7 +123,7 @@ export default function Page() {
                     type="checkbox"
                     className={`w-5 h-5 checked:bg-primary border  border-[#ccc] checked:border-primary bg-[#fff] rounded-full mr-2.5 appearance-none checked:bg-checkedWhite cursor-pointer`}
                     onChange={handleAllCheckChange}
-                    checked={checkedItems.length === sellerCouponLength}
+                    checked={checkedItems.length === 10}
                     style={{
                       backgroundImage: "url('/check_white.png')",
                       backgroundRepeat: "no-repeat",
@@ -181,6 +183,12 @@ export default function Page() {
             </tbody>
           </table>
         </div>
+        <Pagination
+          page={page}
+          totalCount={totalCount}
+          pageSize={10}
+          onChange={setPage}
+        />
       </div>
     </Container>
   );
