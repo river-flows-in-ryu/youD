@@ -30,9 +30,6 @@ export default function Client({ scheduleData }: Props) {
   // 다음달의 요일
   const nextMonthStartDay = startOfNextMonth.day();
 
-  // 다음날 일자
-  const nextMonthRemainderDays = 35 - ThisMonthRemainderDays;
-
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
@@ -61,6 +58,7 @@ export default function Client({ scheduleData }: Props) {
     }
     return "text-black";
   }
+  const tableCellStyle = "w-[14.28%] h-10 text-center";
 
   return (
     <>
@@ -93,13 +91,12 @@ export default function Client({ scheduleData }: Props) {
                   {thisMonthDays
                     .slice(weekIndex * 7, weekIndex * 7 + 7)
                     .map((day) => {
-                      console.log(day);
                       return (
                         <td
                           key={day.format("YYYY-MM-DD")}
                           className={`${
                             day.month() === currentMonth ? "" : "other-month"
-                          } `}
+                          }${tableCellStyle} `}
                         >
                           <button
                             className={`w-10 h-10 ${colorDate(day)} ${day.isBefore(today) ? "cursor-default bg-secondary" : "cursor-pointer"} rounded-full `}
@@ -118,19 +115,43 @@ export default function Client({ scheduleData }: Props) {
 
       <p>{currentMonth + 2}월</p>
       <table className="w-full text-center">
+        <thead>
+          <tr>
+            {weekDays.map((day) => (
+              <th
+                key={day}
+                className={`${
+                  day === "토"
+                    ? "text-blue-500"
+                    : day === "일"
+                      ? "text-red-500"
+                      : "text-black"
+                }`}
+              >
+                {day}
+              </th>
+            ))}
+          </tr>
+        </thead>
         <tbody>
           {Array.from(
-            { length: Math.ceil(nextdays.length / 7) }, // 전체 주 수 계산
+            { length: Math.ceil(nextdays.length / 7) },
             (_, weekIndex) => (
-              <tr key={weekIndex}>
+              <tr key={weekIndex} className="h-10">
                 {nextdays
-                  .slice(weekIndex * 7, weekIndex * 7 + 7) // 한 주씩 (7일) 자르기
+                  .slice(weekIndex * 7, weekIndex * 7 + 7)
                   .map((day, index) => (
                     <td
                       key={index}
-                      className={`w-1/7 h-10 ${day ? colorDate(day) : ""} cursor-pointer`} // 빈칸 처리 및 날짜 색상 적용
+                      className={`${day ? "" : "other-month"} ${tableCellStyle}`}
                     >
-                      {day ? day.date() : null}{" "}
+                      {day && (
+                        <button
+                          className={`w-10 h-10 ${colorDate(day)} cursor-pointer rounded-full`}
+                        >
+                          {day.date()}
+                        </button>
+                      )}
                     </td>
                   ))}
               </tr>
